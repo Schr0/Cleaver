@@ -21,11 +21,10 @@ public class CleaverEvent
 	public void onLivingAttackEvent(LivingAttackEvent event)
 	{
 		EntityLivingBase target = event.getEntityLiving();
-		DamageSource damageSource = event.getSource();
 		float attackAmmount = event.getAmount();
-		float targetHealth = (target.getHealth() + target.getAbsorptionAmount());
+		DamageSource damageSource = event.getSource();
 
-		if (this.isInvalidLivingAttackEvent(target, damageSource))
+		if (this.isInvalidAttack(target, damageSource))
 		{
 			return;
 		}
@@ -38,12 +37,13 @@ public class CleaverEvent
 			if (stackMainHand.getItem() instanceof ItemCleaver)
 			{
 				ItemCleaver itemCleaver = (ItemCleaver) stackMainHand.getItem();
-
-				target.hurtResistantTime = 0;
+				float targetHealth = (target.getHealth() + target.getAbsorptionAmount());
 
 				if (attackAmmount < targetHealth)
 				{
 					event.setCanceled(true);
+
+					target.hurtResistantTime = 0;
 
 					target.attackEntityFrom(getCleaverDamageSource(target, damageSource), attackAmmount);
 				}
@@ -59,7 +59,7 @@ public class CleaverEvent
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static boolean isInvalidLivingAttackEvent(EntityLivingBase target, DamageSource damageSource)
+	private static boolean isInvalidAttack(EntityLivingBase target, DamageSource damageSource)
 	{
 		if (target.getEntityWorld().isRemote)
 		{
