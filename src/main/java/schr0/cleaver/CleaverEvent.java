@@ -2,11 +2,14 @@ package schr0.cleaver;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CleaverEvent
@@ -21,7 +24,6 @@ public class CleaverEvent
 	public void onLivingAttackEvent(LivingAttackEvent event)
 	{
 		EntityLivingBase target = event.getEntityLiving();
-		float attackAmmount = event.getAmount();
 		DamageSource damageSource = event.getSource();
 
 		if (this.isInvalidAttack(target, damageSource))
@@ -37,23 +39,48 @@ public class CleaverEvent
 			if (stackMainHand.getItem() instanceof ItemCleaver)
 			{
 				ItemCleaver itemCleaver = (ItemCleaver) stackMainHand.getItem();
-				float targetHealth = (target.getHealth() + target.getAbsorptionAmount());
+				float attackAmmount = itemCleaver.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
+				boolean isCriticalAttack = (0.0F < attacker.fallDistance) && !attacker.onGround && !attacker.isOnLadder() && !attacker.isInWater() && !attacker.isPotionActive(MobEffects.BLINDNESS) && !attacker.isRiding();
 
-				if (attackAmmount < targetHealth)
+				if (isCriticalAttack)
 				{
-					event.setCanceled(true);
+					attackAmmount *= 1.5F;
 
-					target.hurtResistantTime = 0;
+					if (attacker instanceof EntityPlayer)
+					{
+						EntityPlayer player = (EntityPlayer) attacker;
 
-					target.attackEntityFrom(getCleaverDamageSource(target, damageSource), attackAmmount);
+						if (isCriticalAttack)
+						{
+							player.onCriticalHit(target);
+						}
+					}
 				}
-				else
-				{
-					damageSource.setDamageBypassesArmor().setDamageIsAbsolute();
-				}
 
-				itemCleaver.onAttackTarget(stackMainHand, target, attacker, itemCleaver.isCleaveTarget(stackMainHand, target, attacker));
+				event.setCanceled(true);
+
+				target.hurtResistantTime = 0;
+
+				target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
+
+				itemCleaver.onAttackTarget(stackMainHand, target, attacker, attackAmmount, itemCleaver.isCleaveTarget(stackMainHand, target, attacker, attackAmmount));
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onLivingDeathEvent(LivingDeathEvent event)
+	{
+		EntityLivingBase target = event.getEntityLiving();
+		DamageSource damageSource = event.getSource();
+
+		if (damageSource instanceof CleaverDamageSource)
+		{
+			CleaverDamageSource cleaverDamageSource = (CleaverDamageSource) damageSource;
+
+			event.setCanceled(true);
+
+			target.onDeath(DamageSource.causeMobDamage(cleaverDamageSource.getAttacker()));
 		}
 	}
 
@@ -66,7 +93,7 @@ public class CleaverEvent
 			return true;
 		}
 
-		if (target == null || (target != null && (target.isDead || target.getHealth() <= 0)))
+		if ((target == null) || (target != null && (target.isDead || target.getHealth() <= 0)))
 		{
 			return true;
 		}
@@ -74,9 +101,9 @@ public class CleaverEvent
 		return (damageSource instanceof EntityDamageSourceIndirect);
 	}
 
-	public static DamageSource getCleaverDamageSource(EntityLivingBase target, DamageSource damageSource)
+	private static DamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		DamageSource cleaver = CleaverDamageSource.CLEAVER;
+		DamageSource cleaver = new CleaverDamageSource(attacker);
 
 		if (target instanceof EntityDragon)
 		{

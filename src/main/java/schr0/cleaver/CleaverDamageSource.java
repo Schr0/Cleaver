@@ -1,10 +1,23 @@
 package schr0.cleaver;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 
-public class CleaverDamageSource
+public class CleaverDamageSource extends DamageSource
 {
 
-	public static final DamageSource CLEAVER = new DamageSource("cleaver");
+	private EntityLivingBase attacker;
+
+	public CleaverDamageSource(EntityLivingBase attacker)
+	{
+		super("cleaver");
+
+		this.attacker = attacker;
+	}
+
+	public EntityLivingBase getAttacker()
+	{
+		return this.attacker;
+	}
 
 }

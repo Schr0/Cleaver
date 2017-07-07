@@ -113,8 +113,10 @@ public abstract class ItemCleaver extends Item
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	public abstract boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	public abstract float getAttackAmmount(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
-	public abstract void onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, boolean isCleaveTarget);
+	public abstract boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount);
+
+	public abstract void onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount, boolean isCleaveTarget);
 
 }
