@@ -74,13 +74,21 @@ public class CleaverEvent
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (damageSource instanceof CleaverDamageSource)
+		if (damageSource.getDamageType().equals(CleaverDamageSource.DAMAGE_TYPE))
 		{
 			CleaverDamageSource cleaverDamageSource = (CleaverDamageSource) damageSource;
+			EntityLivingBase attacker = cleaverDamageSource.getAttacker();
 
 			event.setCanceled(true);
 
-			target.onDeath(DamageSource.causeMobDamage(cleaverDamageSource.getAttacker()));
+			if (attacker instanceof EntityPlayer)
+			{
+				target.onDeath(DamageSource.causePlayerDamage((EntityPlayer) attacker));
+			}
+			else
+			{
+				target.onDeath(DamageSource.causeMobDamage(attacker));
+			}
 		}
 	}
 

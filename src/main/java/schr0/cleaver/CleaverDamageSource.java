@@ -6,11 +6,13 @@ import net.minecraft.util.DamageSource;
 public class CleaverDamageSource extends DamageSource
 {
 
+	public static final String DAMAGE_TYPE = Cleaver.MOD_ID + ".cleaver";
+
 	private EntityLivingBase attacker;
 
 	public CleaverDamageSource(EntityLivingBase attacker)
 	{
-		super("cleaver");
+		super(DAMAGE_TYPE);
 
 		this.attacker = attacker;
 	}
