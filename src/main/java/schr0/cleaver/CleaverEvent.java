@@ -10,6 +10,7 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CleaverEvent
@@ -74,7 +75,7 @@ public class CleaverEvent
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (damageSource.getDamageType().equals(CleaverDamageSource.DAMAGE_TYPE))
+		if (damageSource instanceof CleaverDamageSource)
 		{
 			CleaverDamageSource cleaverDamageSource = (CleaverDamageSource) damageSource;
 			EntityLivingBase attacker = cleaverDamageSource.getAttacker();
@@ -83,7 +84,7 @@ public class CleaverEvent
 
 			if (attacker instanceof EntityPlayer)
 			{
-				target.onDeath(DamageSource.causePlayerDamage((EntityPlayer) attacker));
+				onKillPlayer(target, (EntityPlayer) attacker);
 			}
 			else
 			{
@@ -159,6 +160,14 @@ public class CleaverEvent
 		}
 
 		return cleaver;
+	}
+
+	private static void onKillPlayer(EntityLivingBase target, EntityPlayer player)
+	{
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit");
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer");
+
+		target.onDeath(DamageSource.causePlayerDamage(player));
 	}
 
 }
