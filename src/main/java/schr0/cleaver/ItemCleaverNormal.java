@@ -62,6 +62,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import schr0.cleaver.api.CleaverMaterial;
+import schr0.cleaver.api.ItemCleaver;
 
 public class ItemCleaverNormal extends ItemCleaver
 {
@@ -72,9 +74,9 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public float getAttackAmmount(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		return attackAmmount;
+		return rawAttackAmmount;
 	}
 
 	@Override
@@ -100,8 +102,8 @@ public class ItemCleaverNormal extends ItemCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			int used = Math.min((this.getSharpnessAmount(attackAmmount) + 3), 7);
-			ArrayList<ItemStack> equipments = getEquipmentsLivingBase((random.nextInt(used)), stack, target, attacker);
+			int used = random.nextInt(Math.min((3 + this.getSharpnessAmount(attackAmmount)), 7));
+			ArrayList<ItemStack> equipments = getEquipmentsLivingBase(used, stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -115,10 +117,10 @@ public class ItemCleaverNormal extends ItemCleaver
 				return;
 			}
 
-			int rarity = Math.max((100 - (this.getSharpnessAmount(attackAmmount) * 2)), 80);
-			ArrayList<ItemStack> drops = getDropsLivingBase(random.nextInt(rarity), stack, target, attacker);
+			int rarity = random.nextInt(Math.max((100 - (this.getSharpnessAmount(attackAmmount) * 2)), 80));
+			ArrayList<ItemStack> drops = getDropsLivingBase(rarity, stack, target, attacker);
 
-			if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, target, stack, attacker)))
+			if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
 			{
 				return;
 			}

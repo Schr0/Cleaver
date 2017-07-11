@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.api;
 
 public enum CleaverMaterial
 {

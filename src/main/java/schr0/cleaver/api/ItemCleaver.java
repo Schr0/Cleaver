@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.api;
 
 import com.google.common.collect.Multimap;
 
@@ -113,10 +113,31 @@ public abstract class ItemCleaver extends Item
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	public abstract float getAttackAmmount(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	/**
+	 * @param rawAttackAmmount
+	 * @param stack
+	 * @param target
+	 * @param attacker
+	 * @return
+	 */
+	public abstract float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
+	/**
+	 * @param stack
+	 * @param target
+	 * @param attacker
+	 * @param attackAmmount
+	 * @return
+	 */
 	public abstract boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount);
 
+	/**
+	 * @param stack
+	 * @param target
+	 * @param attacker
+	 * @param attackAmmount
+	 * @param isCleaveTarget
+	 */
 	public abstract void onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount, boolean isCleaveTarget);
 
 }
