@@ -58,11 +58,13 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import schr0.cleaver.api.CleaverMaterial;
+import schr0.cleaver.api.CleaverNormalEvent;
 import schr0.cleaver.api.ItemCleaver;
 
 public class ItemCleaverNormal extends ItemCleaver
@@ -94,8 +96,7 @@ public class ItemCleaverNormal extends ItemCleaver
 
 		if (isCleaveTarget)
 		{
-			World world = target.getEntityWorld();
-			Random random = world.rand;
+			Random random = target.getEntityWorld().rand;
 
 			if (target instanceof EntityLiving)
 			{
@@ -103,7 +104,7 @@ public class ItemCleaverNormal extends ItemCleaver
 			}
 
 			int used = random.nextInt(Math.min((3 + this.getSharpnessAmount(attackAmmount)), 7));
-			ArrayList<ItemStack> equipments = getEquipmentsLivingBase(used, stack, target, attacker);
+			ArrayList<ItemStack> equipments = getCleaveEquipments(used, stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -117,8 +118,8 @@ public class ItemCleaverNormal extends ItemCleaver
 				return;
 			}
 
-			int rarity = random.nextInt(Math.max((100 - (this.getSharpnessAmount(attackAmmount) * 2)), 80));
-			ArrayList<ItemStack> drops = getDropsLivingBase(rarity, stack, target, attacker);
+			EnumRarity rarity = getCleaveRarity(random.nextInt(Math.max((100 - (this.getSharpnessAmount(attackAmmount) * 2)), 80)));
+			ArrayList<ItemStack> drops = getCleaveDrops(rarity, stack, target, attacker);
 
 			if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
 			{
@@ -144,17 +145,24 @@ public class ItemCleaverNormal extends ItemCleaver
 		return (int) Math.round(attackAmmount);
 	}
 
-	private static ArrayList<ItemStack> getEquipmentsLivingBase(int used, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	private void spawnEntityItem(ItemStack itemStack, EntityLivingBase target)
+	{
+		World world = target.getEntityWorld();
+
+		world.spawnEntity(new EntityItem(world, target.posX, target.posY + (double) 1.0, target.posZ, itemStack));
+	}
+
+	private static ArrayList<ItemStack> getCleaveEquipments(int used, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
 		if (target instanceof EntityLiving)
 		{
-			EntityLiving entityLiving = (EntityLiving) target;
+			EntityLiving living = (EntityLiving) target;
 
 			for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
 			{
-				ItemStack stackEquipment = entityLiving.getItemStackFromSlot(equipmentSlot);
+				ItemStack stackEquipment = living.getItemStackFromSlot(equipmentSlot);
 
 				if (!stackEquipment.isEmpty())
 				{
@@ -167,7 +175,7 @@ public class ItemCleaverNormal extends ItemCleaver
 
 					equipments.add(stackEquipment);
 
-					entityLiving.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
+					living.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
 
 					return equipments;
 				}
@@ -177,7 +185,27 @@ public class ItemCleaverNormal extends ItemCleaver
 		return equipments;
 	}
 
-	private static ArrayList<ItemStack> getDropsLivingBase(int rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	private static EnumRarity getCleaveRarity(int rarity)
+	{
+		if (rarity < 10)// 10
+		{
+			return EnumRarity.EPIC;
+		}
+
+		if (rarity < 30)// 20
+		{
+			return EnumRarity.RARE;
+		}
+
+		if (rarity < 60)// 30
+		{
+			return EnumRarity.UNCOMMON;
+		}
+
+		return EnumRarity.COMMON;
+	}
+
+	private static ArrayList<ItemStack> getCleaveDrops(EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
 		World world = target.getEntityWorld();
@@ -193,261 +221,254 @@ public class ItemCleaverNormal extends ItemCleaver
 
 		if (EntityList.getKey(EntityDragon.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsDragon(drops, rarity, stack, (EntityDragon) target, attacker);
+			return ItemCleaverNormalHelper.getDropsDragon(drops, rarity, stack, (EntityDragon) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWither.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsWither(drops, rarity, stack, (EntityWither) target, attacker);
+			return ItemCleaverNormalHelper.getDropsWither(drops, rarity, stack, (EntityWither) target, attacker);
 		}
 
 		// TODO /* ======================================== MONSTER =====================================*/
 
 		if (EntityList.getKey(EntityBlaze.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsBlaze(drops, rarity, stack, (EntityBlaze) target, attacker);
+			return ItemCleaverNormalHelper.getDropsBlaze(drops, rarity, stack, (EntityBlaze) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityCaveSpider.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsCaveSpider(drops, rarity, stack, (EntityCaveSpider) target, attacker);
+			return ItemCleaverNormalHelper.getDropsCaveSpider(drops, rarity, stack, (EntityCaveSpider) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityCreeper.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsCreeper(drops, rarity, stack, (EntityCreeper) target, attacker);
+			return ItemCleaverNormalHelper.getDropsCreeper(drops, rarity, stack, (EntityCreeper) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityElderGuardian.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsElderGuardian(drops, rarity, stack, (EntityElderGuardian) target, attacker);
+			return ItemCleaverNormalHelper.getDropsElderGuardian(drops, rarity, stack, (EntityElderGuardian) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityEnderman.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsEnderman(drops, rarity, stack, (EntityEnderman) target, attacker);
+			return ItemCleaverNormalHelper.getDropsEnderman(drops, rarity, stack, (EntityEnderman) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityEndermite.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsEndermite(drops, rarity, stack, (EntityEndermite) target, attacker);
+			return ItemCleaverNormalHelper.getDropsEndermite(drops, rarity, stack, (EntityEndermite) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityEvoker.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsEvoker(drops, rarity, stack, (EntityEvoker) target, attacker);
+			return ItemCleaverNormalHelper.getDropsEvoker(drops, rarity, stack, (EntityEvoker) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityGhast.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsGhast(drops, rarity, stack, (EntityGhast) target, attacker);
+			return ItemCleaverNormalHelper.getDropsGhast(drops, rarity, stack, (EntityGhast) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityGiantZombie.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsGiantZombie(drops, rarity, stack, (EntityGiantZombie) target, attacker);
+			return ItemCleaverNormalHelper.getDropsGiantZombie(drops, rarity, stack, (EntityGiantZombie) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityGuardian.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsGuardian(drops, rarity, stack, (EntityGuardian) target, attacker);
+			return ItemCleaverNormalHelper.getDropsGuardian(drops, rarity, stack, (EntityGuardian) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityHusk.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsHusk(drops, rarity, stack, (EntityHusk) target, attacker);
+			return ItemCleaverNormalHelper.getDropsHusk(drops, rarity, stack, (EntityHusk) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityIllusionIllager.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsIllusionIllager(drops, rarity, stack, (EntityIllusionIllager) target, attacker);
+			return ItemCleaverNormalHelper.getDropsIllusionIllager(drops, rarity, stack, (EntityIllusionIllager) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityIronGolem.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsIronGolem(drops, rarity, stack, (EntityIronGolem) target, attacker);
+			return ItemCleaverNormalHelper.getDropsIronGolem(drops, rarity, stack, (EntityIronGolem) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMagmaCube.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsMagmaCube(drops, rarity, stack, (EntityMagmaCube) target, attacker);
+			return ItemCleaverNormalHelper.getDropsMagmaCube(drops, rarity, stack, (EntityMagmaCube) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPigZombie.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsPigZombie(drops, rarity, stack, (EntityPigZombie) target, attacker);
+			return ItemCleaverNormalHelper.getDropsPigZombie(drops, rarity, stack, (EntityPigZombie) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPolarBear.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsPolarBear(drops, rarity, stack, (EntityPolarBear) target, attacker);
+			return ItemCleaverNormalHelper.getDropsPolarBear(drops, rarity, stack, (EntityPolarBear) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityShulker.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsShulker(drops, rarity, stack, (EntityShulker) target, attacker);
+			return ItemCleaverNormalHelper.getDropsShulker(drops, rarity, stack, (EntityShulker) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySilverfish.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySkeleton.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySlime.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSlime(drops, rarity, stack, (EntitySlime) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSlime(drops, rarity, stack, (EntitySlime) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySnowman.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSnowman(drops, rarity, stack, (EntitySnowman) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSnowman(drops, rarity, stack, (EntitySnowman) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySpider.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSpider(drops, rarity, stack, (EntitySpider) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSpider(drops, rarity, stack, (EntitySpider) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityStray.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsStray(drops, rarity, stack, (EntityStray) target, attacker);
+			return ItemCleaverNormalHelper.getDropsStray(drops, rarity, stack, (EntityStray) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityVex.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsVex(drops, rarity, stack, (EntityVex) target, attacker);
+			return ItemCleaverNormalHelper.getDropsVex(drops, rarity, stack, (EntityVex) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityVindicator.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsVindicator(drops, rarity, stack, (EntityVindicator) target, attacker);
+			return ItemCleaverNormalHelper.getDropsVindicator(drops, rarity, stack, (EntityVindicator) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWitch.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsWitch(drops, rarity, stack, (EntityWitch) target, attacker);
+			return ItemCleaverNormalHelper.getDropsWitch(drops, rarity, stack, (EntityWitch) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWitherSkeleton.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsWitherSkeleton(drops, rarity, stack, (EntityWitherSkeleton) target, attacker);
+			return ItemCleaverNormalHelper.getDropsWitherSkeleton(drops, rarity, stack, (EntityWitherSkeleton) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityZombie.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsZombie(drops, rarity, stack, (EntityZombie) target, attacker);
+			return ItemCleaverNormalHelper.getDropsZombie(drops, rarity, stack, (EntityZombie) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityZombieVillager.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsZombieVillager(drops, rarity, stack, (EntityZombieVillager) target, attacker);
+			return ItemCleaverNormalHelper.getDropsZombieVillager(drops, rarity, stack, (EntityZombieVillager) target, attacker);
 		}
 
 		// TODO /* ======================================== PASSIVE =====================================*/
 
 		if (EntityList.getKey(EntityBat.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsBat(drops, rarity, stack, (EntityBat) target, attacker);
+			return ItemCleaverNormalHelper.getDropsBat(drops, rarity, stack, (EntityBat) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityChicken.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsChicken(drops, rarity, stack, (EntityChicken) target, attacker);
+			return ItemCleaverNormalHelper.getDropsChicken(drops, rarity, stack, (EntityChicken) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityCow.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsCow(drops, rarity, stack, (EntityCow) target, attacker);
+			return ItemCleaverNormalHelper.getDropsCow(drops, rarity, stack, (EntityCow) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityDonkey.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsDonkey(drops, rarity, stack, (EntityDonkey) target, attacker);
+			return ItemCleaverNormalHelper.getDropsDonkey(drops, rarity, stack, (EntityDonkey) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityHorse.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsHorse(drops, rarity, stack, (EntityHorse) target, attacker);
+			return ItemCleaverNormalHelper.getDropsHorse(drops, rarity, stack, (EntityHorse) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityLlama.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsLlama(drops, rarity, stack, (EntityLlama) target, attacker);
+			return ItemCleaverNormalHelper.getDropsLlama(drops, rarity, stack, (EntityLlama) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMooshroom.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsMooshroom(drops, rarity, stack, (EntityMooshroom) target, attacker);
+			return ItemCleaverNormalHelper.getDropsMooshroom(drops, rarity, stack, (EntityMooshroom) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMule.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsMule(drops, rarity, stack, (EntityMule) target, attacker);
+			return ItemCleaverNormalHelper.getDropsMule(drops, rarity, stack, (EntityMule) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityOcelot.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsOcelot(drops, rarity, stack, (EntityOcelot) target, attacker);
+			return ItemCleaverNormalHelper.getDropsOcelot(drops, rarity, stack, (EntityOcelot) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityParrot.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsParrot(drops, rarity, stack, (EntityParrot) target, attacker);
+			return ItemCleaverNormalHelper.getDropsParrot(drops, rarity, stack, (EntityParrot) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPig.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsPig(drops, rarity, stack, (EntityPig) target, attacker);
+			return ItemCleaverNormalHelper.getDropsPig(drops, rarity, stack, (EntityPig) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityRabbit.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsRabbit(drops, rarity, stack, (EntityRabbit) target, attacker);
+			return ItemCleaverNormalHelper.getDropsRabbit(drops, rarity, stack, (EntityRabbit) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySheep.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSheep(drops, rarity, stack, (EntitySheep) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSheep(drops, rarity, stack, (EntitySheep) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySkeletonHorse.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSkeletonHorse(drops, rarity, stack, (EntitySkeletonHorse) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSkeletonHorse(drops, rarity, stack, (EntitySkeletonHorse) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySquid.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsSquid(drops, rarity, stack, (EntitySquid) target, attacker);
+			return ItemCleaverNormalHelper.getDropsSquid(drops, rarity, stack, (EntitySquid) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityVillager.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsVillager(drops, rarity, stack, (EntityVillager) target, attacker);
+			return ItemCleaverNormalHelper.getDropsVillager(drops, rarity, stack, (EntityVillager) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWolf.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsWolf(drops, rarity, stack, (EntityWolf) target, attacker);
+			return ItemCleaverNormalHelper.getDropsWolf(drops, rarity, stack, (EntityWolf) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityZombieHorse.class).equals(targetKey))
 		{
-			return CleaverDropsVanilla.getDropsZombieHorse(drops, rarity, stack, (EntityZombieHorse) target, attacker);
+			return ItemCleaverNormalHelper.getDropsZombieHorse(drops, rarity, stack, (EntityZombieHorse) target, attacker);
 		}
 
 		return drops;
-	}
-
-	private void spawnEntityItem(ItemStack itemStack, EntityLivingBase target)
-	{
-		World world = target.getEntityWorld();
-
-		world.spawnEntity(new EntityItem(world, target.posX, target.posY + (double) 1.0, target.posZ, itemStack));
 	}
 
 }

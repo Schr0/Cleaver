@@ -1,8 +1,9 @@
-package schr0.cleaver;
+package schr0.cleaver.api;
 
 import java.util.ArrayList;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -14,12 +15,26 @@ public class CleaverNormalEvent
 	public static class CleaveDropsEvent extends Event
 	{
 		private final ArrayList<ItemStack> drops;
-		private final int rarity;
+		private final EnumRarity rarity;
 		private final ItemStack stack;
 		private final EntityLivingBase target;
 		private final EntityLivingBase attacker;
 
-		public CleaveDropsEvent(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+		/**
+		 * ItemCleaverNormalの剥ぎ取りEvent.
+		 *
+		 * @param drops
+		 *            剥ぎ取りされるArrayList<ItemStack>.
+		 * @param rarity
+		 *            剥ぎ取りレアリティ（COMMON, UNCOMMON, RARE, EPIC）
+		 * @param stack
+		 *            ICleaverItemのItemStack.
+		 * @param target
+		 *            剥ぎ取りをされるEntityLivingBase.
+		 * @param attacker
+		 *            剥ぎ取りをするEntityLivingBase.
+		 */
+		public CleaveDropsEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 		{
 			this.drops = drops;
 			this.rarity = rarity;
@@ -33,7 +48,7 @@ public class CleaverNormalEvent
 			return this.drops;
 		}
 
-		public int getRarity()
+		public EnumRarity getRarity()
 		{
 			return this.rarity;
 		}

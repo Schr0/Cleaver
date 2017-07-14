@@ -72,23 +72,22 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
-public class CleaverDropsVanilla
+public class ItemCleaverNormalHelper
 {
 
-	private static final int EPIC_AMOUNT = 10;
-	private static final int RARE_AMOUNT = 20;
-	private static final int UNCOMMON_AMOUNT = 30;
+	private static final int RARE = 20;
+	private static final int COMMON = 40;
 
 	// TODO /* ======================================== BOSS =====================================*/
 
 	// EntityDragon
-	public static ArrayList<ItemStack> getDropsDragon(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityDragon target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsDragon(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityDragon target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityWither
-	public static ArrayList<ItemStack> getDropsWither(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityWither target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsWither(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityWither target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
@@ -96,9 +95,9 @@ public class CleaverDropsVanilla
 	// TODO /* ======================================== MONSTER =====================================*/
 
 	// EntityBlaze
-	public static ArrayList<ItemStack> getDropsBlaze(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityBlaze target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsBlaze(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityBlaze target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -132,15 +131,15 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityCaveSpider
-	public static ArrayList<ItemStack> getDropsCaveSpider(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityCaveSpider target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsCaveSpider(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityCaveSpider target, EntityLivingBase attacker)
 	{
 		return getDropsSpider(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityCreeper
-	public static ArrayList<ItemStack> getDropsCreeper(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityCreeper target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsCreeper(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityCreeper target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -173,13 +172,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityElderGuardian
-	public static ArrayList<ItemStack> getDropsElderGuardian(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityElderGuardian target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsElderGuardian(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityElderGuardian target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -192,7 +191,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -223,7 +222,7 @@ public class CleaverDropsVanilla
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -236,7 +235,7 @@ public class CleaverDropsVanilla
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
@@ -252,9 +251,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityEnderman
-	public static ArrayList<ItemStack> getDropsEnderman(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityEnderman target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsEnderman(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityEnderman target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -290,7 +289,7 @@ public class CleaverDropsVanilla
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 				}
@@ -318,15 +317,15 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityEndermite
-	public static ArrayList<ItemStack> getDropsEndermite(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityEndermite target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsEndermite(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityEndermite target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityEvoker
-	public static ArrayList<ItemStack> getDropsEvoker(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityEvoker target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsEvoker(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityEvoker target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -357,9 +356,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityGhast
-	public static ArrayList<ItemStack> getDropsGhast(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityGhast target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsGhast(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityGhast target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -391,13 +390,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityGiantZombie
-	public static ArrayList<ItemStack> getDropsGiantZombie(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityGiantZombie target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsGiantZombie(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityGiantZombie target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -418,7 +417,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -446,13 +445,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityGuardian
-	public static ArrayList<ItemStack> getDropsGuardian(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityGuardian target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsGuardian(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityGuardian target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -465,7 +464,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -496,7 +495,7 @@ public class CleaverDropsVanilla
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -518,21 +517,21 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityHusk
-	public static ArrayList<ItemStack> getDropsHusk(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityHusk target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsHusk(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityHusk target, EntityLivingBase attacker)
 	{
 		return getDropsZombie(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityIllusionIllager
-	public static ArrayList<ItemStack> getDropsIllusionIllager(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityIllusionIllager target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsIllusionIllager(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityIllusionIllager target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityIronGolem
-	public static ArrayList<ItemStack> getDropsIronGolem(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityIronGolem target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsIronGolem(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityIronGolem target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -563,9 +562,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityMagmaCube
-	public static ArrayList<ItemStack> getDropsMagmaCube(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityMagmaCube target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsMagmaCube(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMagmaCube target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -596,13 +595,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityPigZombie
-	public static ArrayList<ItemStack> getDropsPigZombie(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityPigZombie target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsPigZombie(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityPigZombie target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -615,7 +614,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -643,9 +642,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityPolarBear
-	public static ArrayList<ItemStack> getDropsPolarBear(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityPolarBear target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsPolarBear(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityPolarBear target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -704,21 +703,21 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityShulker
-	public static ArrayList<ItemStack> getDropsShulker(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityShulker target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsShulker(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityShulker target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntitySilverfish
-	public static ArrayList<ItemStack> getDropsSilverfish(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySilverfish target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSilverfish(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySilverfish target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntitySkeleton
-	public static ArrayList<ItemStack> getDropsSkeleton(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySkeleton target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSkeleton(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySkeleton target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -751,9 +750,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySlime
-	public static ArrayList<ItemStack> getDropsSlime(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySlime target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSlime(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySlime target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -784,9 +783,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySnowman
-	public static ArrayList<ItemStack> getDropsSnowman(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySnowman target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSnowman(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySnowman target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -817,9 +816,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySpider
-	public static ArrayList<ItemStack> getDropsSpider(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySpider target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSpider(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySpider target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -866,9 +865,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityStray
-	public static ArrayList<ItemStack> getDropsStray(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityStray target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsStray(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityStray target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -901,15 +900,15 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityVex
-	public static ArrayList<ItemStack> getDropsVex(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityVex target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsVex(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityVex target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityVindicator
-	public static ArrayList<ItemStack> getDropsVindicator(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityVindicator target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsVindicator(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityVindicator target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -940,9 +939,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityWitch
-	public static ArrayList<ItemStack> getDropsWitch(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityWitch target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsWitch(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityWitch target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -952,7 +951,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -965,7 +964,7 @@ public class CleaverDropsVanilla
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
@@ -978,7 +977,7 @@ public class CleaverDropsVanilla
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 				}
@@ -994,13 +993,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityWitherSkeleton
-	public static ArrayList<ItemStack> getDropsWitherSkeleton(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityWitherSkeleton target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsWitherSkeleton(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityWitherSkeleton target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < UNCOMMON_AMOUNT)
+				if (getRandom(target).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 				}
@@ -1036,13 +1035,13 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityZombie
-	public static ArrayList<ItemStack> getDropsZombie(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityZombie target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsZombie(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityZombie target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -1063,7 +1062,7 @@ public class CleaverDropsVanilla
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < EPIC_AMOUNT)
+				if (getRandom(target).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1091,7 +1090,7 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityZombieVillager
-	public static ArrayList<ItemStack> getDropsZombieVillager(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityZombieVillager target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsZombieVillager(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityZombieVillager target, EntityLivingBase attacker)
 	{
 		return getDropsZombie(drops, rarity, stack, target, attacker);
 	}
@@ -1099,15 +1098,15 @@ public class CleaverDropsVanilla
 	// TODO /* ======================================== PASSIVE =====================================*/
 
 	// EntityBat
-	public static ArrayList<ItemStack> getDropsBat(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityBat target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsBat(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityBat target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityChicken
-	public static ArrayList<ItemStack> getDropsChicken(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityChicken target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsChicken(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityChicken target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1154,9 +1153,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityCow
-	public static ArrayList<ItemStack> getDropsCow(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityCow target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsCow(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityCow target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1203,9 +1202,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityDonkey
-	public static ArrayList<ItemStack> getDropsDonkey(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityDonkey target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsDonkey(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityDonkey target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1236,9 +1235,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityHorse
-	public static ArrayList<ItemStack> getDropsHorse(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityHorse target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsHorse(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityHorse target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1269,9 +1268,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityLlama
-	public static ArrayList<ItemStack> getDropsLlama(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityLlama target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsLlama(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLlama target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1302,9 +1301,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityMooshroom
-	public static ArrayList<ItemStack> getDropsMooshroom(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityMooshroom target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsMooshroom(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMooshroom target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1368,9 +1367,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityMule
-	public static ArrayList<ItemStack> getDropsMule(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityMule target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsMule(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMule target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1401,15 +1400,15 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityOcelot
-	public static ArrayList<ItemStack> getDropsOcelot(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityOcelot target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsOcelot(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityOcelot target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityParrot
-	public static ArrayList<ItemStack> getDropsParrot(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityParrot target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsParrot(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityParrot target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1440,9 +1439,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityPig
-	public static ArrayList<ItemStack> getDropsPig(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityPig target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsPig(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityPig target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1508,9 +1507,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityRabbit
-	public static ArrayList<ItemStack> getDropsRabbit(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityRabbit target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsRabbit(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityRabbit target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1557,9 +1556,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySheep
-	public static ArrayList<ItemStack> getDropsSheep(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySheep target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSheep(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySheep target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1651,9 +1650,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySkeletonHorse
-	public static ArrayList<ItemStack> getDropsSkeletonHorse(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySkeletonHorse target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSkeletonHorse(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySkeletonHorse target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1685,9 +1684,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntitySquid
-	public static ArrayList<ItemStack> getDropsSquid(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntitySquid target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsSquid(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySquid target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1718,9 +1717,9 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityVillager
-	public static ArrayList<ItemStack> getDropsVillager(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityVillager target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsVillager(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityVillager target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1785,15 +1784,15 @@ public class CleaverDropsVanilla
 	}
 
 	// EntityWolf
-	public static ArrayList<ItemStack> getDropsWolf(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityWolf target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsWolf(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityWolf target, EntityLivingBase attacker)
 	{
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityZombieHorse
-	public static ArrayList<ItemStack> getDropsZombieHorse(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityZombieHorse target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDropsZombieHorse(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityZombieHorse target, EntityLivingBase attacker)
 	{
-		switch (getEnumRarity(rarity))
+		switch (rarity)
 		{
 			case COMMON :
 
@@ -1825,7 +1824,7 @@ public class CleaverDropsVanilla
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, int rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	private static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (target instanceof EntityAgeable)
 		{
@@ -1843,26 +1842,6 @@ public class CleaverDropsVanilla
 	private static boolean isSmelting(ItemStack stack, EntityLivingBase target)
 	{
 		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
-	}
-
-	private static EnumRarity getEnumRarity(int rarity)
-	{
-		if (rarity < EPIC_AMOUNT)
-		{
-			return EnumRarity.EPIC;
-		}
-
-		if (rarity < RARE_AMOUNT)
-		{
-			return EnumRarity.RARE;
-		}
-
-		if (rarity < UNCOMMON_AMOUNT)
-		{
-			return EnumRarity.UNCOMMON;
-		}
-
-		return EnumRarity.COMMON;
 	}
 
 	private static Random getRandom(EntityLivingBase target)

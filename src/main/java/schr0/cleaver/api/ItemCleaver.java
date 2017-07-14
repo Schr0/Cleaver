@@ -20,8 +20,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class ItemCleaver extends Item
+public abstract class ItemCleaver extends Item implements ICleaverItem
 {
+
+	private static final String CLEAVER_MODIFIER = "Cleaver modifier";
 
 	private float attackDamage;
 	private int enchantability;
@@ -34,8 +36,8 @@ public abstract class ItemCleaver extends Item
 		this.enchantability = material.getEnchantability();
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public boolean isFull3D()
 	{
 		return true;
@@ -48,7 +50,7 @@ public abstract class ItemCleaver extends Item
 
 		if (slot == EntityEquipmentSlot.MAINHAND)
 		{
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Cleaver modifier", (double) this.attackDamage, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, CLEAVER_MODIFIER, (double) this.attackDamage, 0));
 		}
 
 		return multimap;
@@ -110,34 +112,5 @@ public abstract class ItemCleaver extends Item
 
 		return true;
 	}
-
-	// TODO /* ======================================== MOD START =====================================*/
-
-	/**
-	 * @param rawAttackAmmount
-	 * @param stack
-	 * @param target
-	 * @param attacker
-	 * @return
-	 */
-	public abstract float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
-
-	/**
-	 * @param stack
-	 * @param target
-	 * @param attacker
-	 * @param attackAmmount
-	 * @return
-	 */
-	public abstract boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount);
-
-	/**
-	 * @param stack
-	 * @param target
-	 * @param attacker
-	 * @param attackAmmount
-	 * @param isCleaveTarget
-	 */
-	public abstract void onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount, boolean isCleaveTarget);
 
 }

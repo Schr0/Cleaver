@@ -12,7 +12,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import schr0.cleaver.api.ItemCleaver;
+import schr0.cleaver.api.ICleaverItem;
 
 public class CleaverEvent
 {
@@ -38,10 +38,10 @@ public class CleaverEvent
 			EntityLivingBase attacker = (EntityLivingBase) damageSource.getTrueSource();
 			ItemStack stackMainHand = attacker.getHeldItemMainhand();
 
-			if (stackMainHand.getItem() instanceof ItemCleaver)
+			if (stackMainHand.getItem() instanceof ICleaverItem)
 			{
-				ItemCleaver itemCleaver = (ItemCleaver) stackMainHand.getItem();
-				float attackAmmount = itemCleaver.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
+				ICleaverItem cleaverItem = (ICleaverItem) stackMainHand.getItem();
+				float attackAmmount = cleaverItem.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
 				boolean isCriticalAttack = (0.0F < attacker.fallDistance) && !attacker.onGround && !attacker.isOnLadder() && !attacker.isInWater() && !attacker.isPotionActive(MobEffects.BLINDNESS) && !attacker.isRiding();
 
 				if (isCriticalAttack)
@@ -65,7 +65,7 @@ public class CleaverEvent
 
 				target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
 
-				itemCleaver.onAttackTarget(stackMainHand, target, attacker, attackAmmount, itemCleaver.isCleaveTarget(stackMainHand, target, attacker, attackAmmount));
+				cleaverItem.onAttackTarget(stackMainHand, target, attacker, attackAmmount, cleaverItem.isCleaveTarget(stackMainHand, target, attacker, attackAmmount));
 			}
 		}
 	}
