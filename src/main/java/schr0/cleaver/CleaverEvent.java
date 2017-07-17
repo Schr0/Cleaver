@@ -1,8 +1,10 @@
 package schr0.cleaver;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -28,7 +30,7 @@ public class CleaverEvent
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (this.isInvalidAttack(target, damageSource))
+		if (isInvalidAttack(target, damageSource))
 		{
 			return;
 		}
@@ -62,6 +64,13 @@ public class CleaverEvent
 				event.setCanceled(true);
 
 				target.hurtResistantTime = 0;
+
+				int levelFireAspect = EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stackMainHand);
+
+				if (0 < levelFireAspect)
+				{
+					target.setFire(levelFireAspect * 4);
+				}
 
 				target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
 
@@ -111,56 +120,56 @@ public class CleaverEvent
 		return (damageSource instanceof EntityDamageSourceIndirect);
 	}
 
-	private static DamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
+	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		DamageSource cleaver = new CleaverDamageSource(attacker);
+		CleaverDamageSource cleaverDamageSource = new CleaverDamageSource(attacker);
 
 		if (target instanceof EntityDragon)
 		{
-			cleaver.setExplosion();
+			cleaverDamageSource.setExplosion();
 		}
 
 		if (damageSource.isProjectile())
 		{
-			cleaver.setProjectile();
+			cleaverDamageSource.setProjectile();
 		}
 
 		if (damageSource.isExplosion())
 		{
-			cleaver.setExplosion();
+			cleaverDamageSource.setExplosion();
 		}
 
 		if (damageSource.isUnblockable())
 		{
-			cleaver.setDamageBypassesArmor();
+			cleaverDamageSource.setDamageBypassesArmor();
 		}
 
 		if (damageSource.canHarmInCreative())
 		{
-			cleaver.setDamageAllowedInCreativeMode();
+			cleaverDamageSource.setDamageAllowedInCreativeMode();
 		}
 
 		if (damageSource.isDamageAbsolute())
 		{
-			cleaver.setDamageIsAbsolute();
+			cleaverDamageSource.setDamageIsAbsolute();
 		}
 
 		if (damageSource.isFireDamage())
 		{
-			cleaver.setFireDamage();
+			cleaverDamageSource.setFireDamage();
 		}
 
 		if (damageSource.isDifficultyScaled())
 		{
-			cleaver.setDifficultyScaled();
+			cleaverDamageSource.setDifficultyScaled();
 		}
 
 		if (damageSource.isMagicDamage())
 		{
-			cleaver.setMagicDamage();
+			cleaverDamageSource.setMagicDamage();
 		}
 
-		return cleaver;
+		return cleaverDamageSource;
 	}
 
 	private static void onKillPlayer(EntityLivingBase target, EntityPlayer player)

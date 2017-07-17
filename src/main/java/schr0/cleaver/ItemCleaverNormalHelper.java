@@ -68,9 +68,13 @@ import net.minecraft.item.ItemFishFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.MinecraftForge;
+import schr0.cleaver.api.CleaverNormalEvent;
 
 public class ItemCleaverNormalHelper
 {
@@ -178,7 +182,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -191,7 +195,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -222,7 +226,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -235,7 +239,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
@@ -289,7 +293,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 				}
@@ -396,7 +400,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -417,7 +421,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -451,7 +455,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -464,7 +468,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -495,7 +499,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -601,7 +605,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -614,7 +618,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -951,7 +955,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -964,7 +968,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
@@ -977,7 +981,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 				}
@@ -999,7 +1003,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(100) < COMMON)
 				{
 					drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 				}
@@ -1041,7 +1045,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -1062,7 +1066,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(target).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(100) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1641,11 +1645,6 @@ public class ItemCleaverNormalHelper
 				break;
 		}
 
-		if (!target.getSheared())
-		{
-			target.setSheared(true);
-		}
-
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
 
@@ -1742,7 +1741,7 @@ public class ItemCleaverNormalHelper
 
 					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
 					{
-						int merchantSize = getRandom(target).nextInt(merchantrecipelist.size());
+						int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
 						MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
 						ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
 
@@ -1766,7 +1765,7 @@ public class ItemCleaverNormalHelper
 
 					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
 					{
-						int merchantSize = getRandom(target).nextInt(merchantrecipelist.size());
+						int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
 						MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
 						ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
 
@@ -1836,6 +1835,23 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
+		if (target instanceof IShearable)
+		{
+			IShearable shearable = (IShearable) target;
+			World world = target.getEntityWorld();
+			BlockPos pos = new BlockPos(target.posX, target.posY, target.posZ);
+
+			if (shearable.isShearable(stack, world, pos))
+			{
+				drops.addAll(shearable.onSheared(stack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack)));
+			}
+		}
+
+		if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
+		{
+			drops.clear();
+		}
+
 		return drops;
 	}
 
@@ -1844,9 +1860,9 @@ public class ItemCleaverNormalHelper
 		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
 	}
 
-	private static Random getRandom(EntityLivingBase target)
+	private static Random getRandom(EntityLivingBase attacker)
 	{
-		return target.getEntityWorld().rand;
+		return attacker.getEntityWorld().rand;
 	}
 
 }

@@ -31,7 +31,7 @@ public class Cleaver
 	/**
 	 * Modのバージョン.
 	 */
-	public static final String MOD_VERSION = "1.1.0";
+	public static final String MOD_VERSION = "1.0.0";
 
 	/**
 	 * Forgeのバージョン.
@@ -84,7 +84,7 @@ public class Cleaver
 
 		if (event.getSide().isClient())
 		{
-			// none
+			(new CleaverPacket()).registerClientMessages();
 		}
 	}
 

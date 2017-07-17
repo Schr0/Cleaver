@@ -98,7 +98,12 @@ public abstract class ItemCleaver extends Item implements ICleaverItem
 		{
 			Material material = state.getMaterial();
 
-			return (material != Material.PLANTS) && (material != Material.VINE) && (material != Material.CORAL) && (material != Material.LEAVES) && (material != Material.GOURD) ? 1.0F : 1.5F;
+			if ((material == Material.PLANTS) || (material == Material.VINE) || (material == Material.CORAL) || (material == Material.LEAVES) || (material == Material.GOURD))
+			{
+				return 1.5F;
+			}
+
+			return 1.0F;
 		}
 	}
 

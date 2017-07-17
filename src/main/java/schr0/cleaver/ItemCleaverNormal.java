@@ -1,8 +1,13 @@
 package schr0.cleaver;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -56,15 +61,21 @@ import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.EntityZombieHorse;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
-import schr0.cleaver.api.CleaverNormalEvent;
 import schr0.cleaver.api.ItemCleaver;
 
 public class ItemCleaverNormal extends ItemCleaver
@@ -76,6 +87,138 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	{
+		Block block = state.getBlock();
+
+		if ((block == Blocks.WEB) || (state.getMaterial() == Material.LEAVES))
+		{
+			return 15.0F;
+		}
+
+		if (block == Blocks.WOOL)
+		{
+			return 5.0F;
+		}
+
+		return 1.0F;
+	}
+
+	@Override
+	public boolean canHarvestBlock(IBlockState blockIn)
+	{
+		Block block = blockIn.getBlock();
+
+		return (block == Blocks.WEB) || (block == Blocks.REDSTONE_WIRE) || (block == Blocks.TRIPWIRE);
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
+	{
+		if (!worldIn.isRemote)
+		{
+			stack.damageItem(1, entityLiving);
+		}
+
+		Block block = state.getBlock();
+
+		if (block instanceof IShearable)
+		{
+			return true;
+		}
+
+		if ((state.getMaterial() == Material.LEAVES) || (block == Blocks.WEB) || (block == Blocks.TALLGRASS) || (block == Blocks.VINE) || (block == Blocks.TRIPWIRE) || (block == Blocks.WOOL))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean itemInteractionForEntity(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
+	{
+		World world = entity.getEntityWorld();
+
+		if (world.isRemote)
+		{
+			return false;
+		}
+
+		if (entity instanceof IShearable)
+		{
+			IShearable target = (IShearable) entity;
+			BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+
+			if (target.isShearable(itemstack, entity.world, pos))
+			{
+				List<ItemStack> drops = target.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
+				Random random = this.getRandom(entity);
+
+				for (ItemStack stack : drops)
+				{
+					EntityItem entityItem = entity.entityDropItem(stack, 1.0F);
+					entityItem.motionY += random.nextFloat() * 0.05F;
+					entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
+					entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+				}
+
+				itemstack.damageItem(1, entity);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
+	{
+		World world = player.getEntityWorld();
+
+		if (world.isRemote || player.capabilities.isCreativeMode)
+		{
+			return false;
+		}
+
+		Block block = world.getBlockState(pos).getBlock();
+
+		if (block instanceof IShearable)
+		{
+			IShearable shearable = (IShearable) block;
+
+			if (shearable.isShearable(itemstack, world, pos))
+			{
+				List<ItemStack> drops = shearable.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
+				Random random = this.getRandom(player);
+
+				for (ItemStack stack : drops)
+				{
+					float r = 0.7F;
+					double xR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
+					double yR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
+					double zR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
+					EntityItem entityItem = new EntityItem(world, (double) pos.getX() + xR, (double) pos.getY() + yR, (double) pos.getZ() + zR, stack);
+					entityItem.setDefaultPickupDelay();
+
+					world.spawnEntity(entityItem);
+				}
+
+				itemstack.damageItem(1, player);
+				player.addStat(StatList.getBlockStats(block));
+				world.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// TODO /* ======================================== MOD START =====================================*/
+
+	@Override
 	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return rawAttackAmmount;
@@ -84,9 +227,9 @@ public class ItemCleaverNormal extends ItemCleaver
 	@Override
 	public boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount)
 	{
-		int chance = Math.min((10 + (this.getSharpnessAmount(attackAmmount) * 10)), 80);
+		int chance = Math.min(((this.getSharpnessAmount(attackAmmount, stack) * 10) + 10), 80);
 
-		return (target.getEntityWorld().rand.nextInt(100) < chance);
+		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
 
 	@Override
@@ -96,15 +239,16 @@ public class ItemCleaverNormal extends ItemCleaver
 
 		if (isCleaveTarget)
 		{
-			Random random = target.getEntityWorld().rand;
+			Random random = this.getRandom(attacker);
+			int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack);
 
 			if (target instanceof EntityLiving)
 			{
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			int used = random.nextInt(Math.min((3 + this.getSharpnessAmount(attackAmmount)), 7));
-			ArrayList<ItemStack> equipments = getCleaveEquipments(used, stack, target, attacker);
+			int usedAmmount = Math.min((sharpnessAmount + 3), 7);
+			ArrayList<ItemStack> equipments = getCleaveEquipments(random.nextInt(usedAmmount), stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -113,18 +257,13 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.spawnEntityItem(stackEquipment, target);
 				}
 
-				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+				this.effectCleave(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, target);
 
 				return;
 			}
 
-			EnumRarity rarity = getCleaveRarity(random.nextInt(Math.max((100 - (this.getSharpnessAmount(attackAmmount) * 2)), 80)));
-			ArrayList<ItemStack> drops = getCleaveDrops(rarity, stack, target, attacker);
-
-			if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
-			{
-				return;
-			}
+			int rarityAmmount = Math.max((100 - (sharpnessAmount * 2)), 80);
+			ArrayList<ItemStack> drops = getCleaveDrops(random.nextInt(rarityAmmount), stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
@@ -133,26 +272,62 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.spawnEntityItem(stackDrop, target);
 				}
 
-				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+				this.effectCleave(SoundEvents.ENTITY_ITEM_PICKUP, target);
+
+				return;
 			}
 		}
 	}
 
-	// TODO /* ======================================== MOD START =====================================*/
-
-	private int getSharpnessAmount(float attackAmmount)
+	private Random getRandom(EntityLivingBase attacker)
 	{
-		return (int) Math.round(attackAmmount);
+		return attacker.getEntityWorld().rand;
 	}
 
-	private void spawnEntityItem(ItemStack itemStack, EntityLivingBase target)
+	private int getSharpnessAmount(float attackAmmount, ItemStack stack)
 	{
-		World world = target.getEntityWorld();
+		attackAmmount = Math.max(attackAmmount, 1.0F);
 
-		world.spawnEntity(new EntityItem(world, target.posX, target.posY + (double) 1.0, target.posZ, itemStack));
+		return (int) Math.round(attackAmmount) * (EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack) + 1);
 	}
 
-	private static ArrayList<ItemStack> getCleaveEquipments(int used, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	private void spawnEntityItem(ItemStack stack, EntityLivingBase target)
+	{
+		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
+		Random random = this.getRandom(target);
+		entityItem.motionY += random.nextFloat() * 0.05F;
+		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
+		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+	}
+
+	private static EnumRarity getCleaveRarity(int rarityAmount)
+	{
+		if (rarityAmount < 10)
+		{
+			return EnumRarity.EPIC;// 10
+		}
+
+		if (rarityAmount < 30)
+		{
+			return EnumRarity.RARE;// 20
+		}
+
+		if (rarityAmount < 60)
+		{
+			return EnumRarity.UNCOMMON;// 30
+		}
+
+		return EnumRarity.COMMON;// 40
+	}
+
+	private void effectCleave(SoundEvent soundEvent, EntityLivingBase target)
+	{
+		CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, 0));
+
+		target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+	}
+
+	private static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
@@ -168,7 +343,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				{
 					if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
 					{
-						int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / used));
+						int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
 
 						stackEquipment.setItemDamage(Math.max(stackAmount, 0));
 					}
@@ -185,27 +360,7 @@ public class ItemCleaverNormal extends ItemCleaver
 		return equipments;
 	}
 
-	private static EnumRarity getCleaveRarity(int rarity)
-	{
-		if (rarity < 10)// 10
-		{
-			return EnumRarity.EPIC;
-		}
-
-		if (rarity < 30)// 20
-		{
-			return EnumRarity.RARE;
-		}
-
-		if (rarity < 60)// 30
-		{
-			return EnumRarity.UNCOMMON;
-		}
-
-		return EnumRarity.COMMON;
-	}
-
-	private static ArrayList<ItemStack> getCleaveDrops(EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	private static ArrayList<ItemStack> getCleaveDrops(int rarityAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
 		World world = target.getEntityWorld();
@@ -216,6 +371,7 @@ public class ItemCleaverNormal extends ItemCleaver
 		}
 
 		ResourceLocation targetKey = EntityList.getKey(target);
+		EnumRarity rarity = getCleaveRarity(rarityAmmount);
 
 		// TODO /* ======================================== BOSS =====================================*/
 
