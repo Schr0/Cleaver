@@ -111,7 +111,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.BLAZE_POWDER, 2));
+				drops.add(new ItemStack(Items.BLAZE_POWDER));
 
 				break;
 
@@ -147,25 +147,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 1));
+				//none
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 2));
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 3));
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 4));
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 		}
@@ -372,7 +372,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 2));
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 
@@ -572,25 +572,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM, 1));
+				drops.add(new ItemStack(Items.MAGMA_CREAM));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM, 2));
+				drops.add(new ItemStack(Items.MAGMA_CREAM));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM, 3));
+				drops.add(new ItemStack(Items.MAGMA_CREAM));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM, 4));
+				drops.add(new ItemStack(Items.MAGMA_CREAM));
 
 				break;
 		}
@@ -667,11 +667,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 2, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 
 				break;
@@ -680,11 +680,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 3, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 3, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 
 				break;
@@ -693,11 +693,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 4, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 4, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 
 				break;
@@ -760,25 +760,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.SLIME_BALL, 1));
+				drops.add(new ItemStack(Items.SLIME_BALL));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.SLIME_BALL, 2));
+				drops.add(new ItemStack(Items.SLIME_BALL));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.SLIME_BALL, 3));
+				drops.add(new ItemStack(Items.SLIME_BALL));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.SLIME_BALL, 4));
+				drops.add(new ItemStack(Items.SLIME_BALL));
 
 				break;
 		}
@@ -793,25 +793,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.SNOWBALL, 1));
+				drops.add(new ItemStack(Items.SNOWBALL));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.SNOWBALL, 2));
+				drops.add(new ItemStack(Items.SNOWBALL));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.SNOWBALL, 3));
+				drops.add(new ItemStack(Items.SNOWBALL));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.SNOWBALL, 4));
+				drops.add(new ItemStack(Items.SNOWBALL));
 
 				break;
 		}
@@ -832,7 +832,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.STRING, 2));
+				drops.add(new ItemStack(Items.STRING));
 
 				break;
 
@@ -928,13 +928,13 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				// none
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.EMERALD, 2));
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 		}
@@ -1003,34 +1003,27 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
-				{
-					drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.COAL));
-				}
+				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.BONE));
+				drops.add(new ItemStack(Items.COAL));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.ARROW));
+				drops.add(new ItemStack(Items.BONE));
 
 				break;
 
 			case EPIC :
 
 				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
+				drops.add(new ItemStack(Items.COAL));
 				drops.add(new ItemStack(Items.BONE));
-				drops.add(new ItemStack(Items.ARROW));
 
 				break;
 		}
@@ -1120,7 +1113,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.FEATHER, 2));
+				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
 
@@ -1169,7 +1162,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
@@ -1212,25 +1205,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 1));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER, 3));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER, 4));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1245,25 +1238,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 1));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER, 3));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER, 4));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1278,25 +1271,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 1));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER, 3));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER, 4));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1317,7 +1310,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
@@ -1377,25 +1370,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 1));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER, 3));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER, 4));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1416,25 +1409,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.FEATHER, 1));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.FEATHER, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.FEATHER, 3));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.FEATHER, 4));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1451,11 +1444,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP, 1));
+					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.PORKCHOP, 1));
+					drops.add(new ItemStack(Items.PORKCHOP));
 				}
 
 				break;
@@ -1464,11 +1457,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP, 2));
+					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.PORKCHOP, 2));
+					drops.add(new ItemStack(Items.PORKCHOP));
 				}
 
 				break;
@@ -1477,11 +1470,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP, 3));
+					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.PORKCHOP, 3));
+					drops.add(new ItemStack(Items.PORKCHOP));
 				}
 
 				break;
@@ -1490,11 +1483,11 @@ public class ItemCleaverNormalHelper
 
 				if (isSmelting(stack, target))
 				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP, 4));
+					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.PORKCHOP, 4));
+					drops.add(new ItemStack(Items.PORKCHOP));
 				}
 
 				break;
@@ -1523,7 +1516,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.RABBIT_HIDE, 2));
+				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
 				break;
 
@@ -1570,11 +1563,11 @@ public class ItemCleaverNormalHelper
 				{
 					if (isSmelting(stack, target))
 					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON, 1));
+						drops.add(new ItemStack(Items.COOKED_MUTTON));
 					}
 					else
 					{
-						drops.add(new ItemStack(Items.MUTTON, 1));
+						drops.add(new ItemStack(Items.MUTTON));
 					}
 				}
 				else
@@ -1590,16 +1583,16 @@ public class ItemCleaverNormalHelper
 				{
 					if (isSmelting(stack, target))
 					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON, 2));
+						drops.add(new ItemStack(Items.COOKED_MUTTON));
 					}
 					else
 					{
-						drops.add(new ItemStack(Items.MUTTON, 2));
+						drops.add(new ItemStack(Items.MUTTON));
 					}
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 2, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1610,16 +1603,16 @@ public class ItemCleaverNormalHelper
 				{
 					if (isSmelting(stack, target))
 					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON, 3));
+						drops.add(new ItemStack(Items.COOKED_MUTTON));
 					}
 					else
 					{
-						drops.add(new ItemStack(Items.MUTTON, 3));
+						drops.add(new ItemStack(Items.MUTTON));
 					}
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 3, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1630,16 +1623,16 @@ public class ItemCleaverNormalHelper
 				{
 					if (isSmelting(stack, target))
 					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON, 4));
+						drops.add(new ItemStack(Items.COOKED_MUTTON));
 					}
 					else
 					{
-						drops.add(new ItemStack(Items.MUTTON, 4));
+						drops.add(new ItemStack(Items.MUTTON));
 					}
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 4, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1661,7 +1654,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.DYE, 2, EnumDyeColor.WHITE.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 
 				break;
 
@@ -1695,19 +1688,19 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.DYE, 2, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.DYE, 3, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.DYE, 4, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 		}
@@ -1795,25 +1788,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 1));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 2));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 3));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 4));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH));
 
 				break;
 		}

@@ -71,7 +71,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -257,7 +256,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.spawnEntityItem(stackEquipment, target);
 				}
 
-				this.effectCleave(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, target);
+				this.effectCleave(target);
 
 				return;
 			}
@@ -272,7 +271,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.spawnEntityItem(stackDrop, target);
 				}
 
-				this.effectCleave(SoundEvents.ENTITY_ITEM_PICKUP, target);
+				this.effectCleave(target);
 
 				return;
 			}
@@ -320,7 +319,7 @@ public class ItemCleaverNormal extends ItemCleaver
 		return EnumRarity.COMMON;// 40
 	}
 
-	private void effectCleave(SoundEvent soundEvent, EntityLivingBase target)
+	private void effectCleave(EntityLivingBase target)
 	{
 		CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, 0));
 
