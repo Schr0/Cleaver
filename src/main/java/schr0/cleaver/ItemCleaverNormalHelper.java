@@ -67,7 +67,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
@@ -79,8 +78,9 @@ import schr0.cleaver.api.CleaverNormalEvent;
 public class ItemCleaverNormalHelper
 {
 
-	private static final int RARE = 20;
+	private static final int PERCENT = 100;
 	private static final int COMMON = 40;
+	private static final int RARE = 20;
 
 	// TODO /* ======================================== BOSS =====================================*/
 
@@ -147,7 +147,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				//none
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 
@@ -182,7 +182,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -195,7 +195,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -226,7 +226,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -239,7 +239,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
@@ -261,7 +261,14 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.ENDER_EYE));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.ENDER_PEARL));
+				}
 
 				break;
 
@@ -293,7 +300,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 				}
@@ -333,13 +340,13 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
 			case UNCOMMON :
 
-				// none
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
@@ -400,7 +407,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -421,7 +428,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -455,7 +462,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -468,7 +475,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
 
@@ -499,7 +506,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -539,7 +546,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				drops.add(new ItemStack(Blocks.RED_FLOWER));
 
 				break;
 
@@ -605,7 +612,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -618,7 +625,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -916,19 +923,19 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
 			case UNCOMMON :
 
-				// none
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
 			case RARE :
 
-				// none
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
@@ -949,13 +956,20 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				{
+					drops.add(new ItemStack(Items.GLASS_BOTTLE));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.STICK));
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -968,7 +982,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
@@ -981,7 +995,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(100) < COMMON)
+				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 				}
@@ -1038,7 +1052,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					if (isSmelting(stack, target))
 					{
@@ -1059,7 +1073,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(100) < RARE)
+				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1107,33 +1121,38 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.FEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_CHICKEN));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.CHICKEN));
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.FEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_CHICKEN));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.CHICKEN));
+				}
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_CHICKEN));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.CHICKEN));
-				}
+				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.FEATHER));
-
 				if (isSmelting(stack, target))
 				{
 					drops.add(new ItemStack(Items.COOKED_CHICKEN));
@@ -1142,6 +1161,8 @@ public class ItemCleaverNormalHelper
 				{
 					drops.add(new ItemStack(Items.CHICKEN));
 				}
+
+				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
 		}
@@ -1156,33 +1177,38 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_BEEF));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.BEEF));
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_BEEF));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.BEEF));
+				}
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
-
 				if (isSmelting(stack, target))
 				{
 					drops.add(new ItemStack(Items.COOKED_BEEF));
@@ -1191,6 +1217,8 @@ public class ItemCleaverNormalHelper
 				{
 					drops.add(new ItemStack(Items.BEEF));
 				}
+
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1304,33 +1332,38 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_BEEF));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.BEEF));
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_BEEF));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.BEEF));
+				}
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
-
 				if (isSmelting(stack, target))
 				{
 					drops.add(new ItemStack(Items.COOKED_BEEF));
@@ -1339,6 +1372,8 @@ public class ItemCleaverNormalHelper
 				{
 					drops.add(new ItemStack(Items.BEEF));
 				}
+
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 		}
@@ -1348,8 +1383,6 @@ public class ItemCleaverNormalHelper
 		entitycow.setLocationAndAngles(target.posX, target.posY, target.posZ, target.rotationYaw, target.rotationPitch);
 		entitycow.setHealth(target.getHealth());
 		entitycow.renderYawOffset = target.renderYawOffset;
-
-		world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, target.posX, target.posY + (double) (target.height / 2.0F), target.posZ, 0.0D, 0.0D, 0.0D);
 
 		if (target.hasCustomName())
 		{
@@ -1510,33 +1543,38 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.RABBIT_HIDE));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_RABBIT));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.RABBIT));
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.RABBIT_HIDE));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.COOKED_RABBIT));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.RABBIT));
+				}
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_RABBIT));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.RABBIT));
-				}
+				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.RABBIT_HIDE));
-
 				if (isSmelting(stack, target))
 				{
 					drops.add(new ItemStack(Items.COOKED_RABBIT));
@@ -1545,6 +1583,8 @@ public class ItemCleaverNormalHelper
 				{
 					drops.add(new ItemStack(Items.RABBIT));
 				}
+
+				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
 				break;
 		}
@@ -1715,42 +1755,66 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				// none
+				if (attacker instanceof EntityPlayer)
+				{
+					EntityPlayer player = (EntityPlayer) attacker;
+					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
+
+					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
+					{
+						for (int count = 0; count < 1; count++)
+						{
+							int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
+							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
+							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
+
+							if (stackMerchant != null)
+							{
+								stackMerchant.setCount(1);
+
+								drops.add(stackMerchant);
+							}
+						}
+					}
+				}
 
 				break;
 
 			case UNCOMMON :
 
-				// none
+				if (attacker instanceof EntityPlayer)
+				{
+					EntityPlayer player = (EntityPlayer) attacker;
+					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
+
+					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
+					{
+						for (int count = 0; count < 2; count++)
+						{
+							int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
+							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
+							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
+
+							if (stackMerchant != null)
+							{
+								stackMerchant.setCount(1);
+
+								drops.add(stackMerchant);
+							}
+						}
+					}
+				}
 
 				break;
 
 			case RARE :
 
-				if (attacker instanceof EntityPlayer)
-				{
-					EntityPlayer player = (EntityPlayer) attacker;
-					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
-
-					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
-					{
-						int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
-						MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
-						ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
-
-						if (stackMerchant != null)
-						{
-							drops.add(stackMerchant);
-						}
-					}
-				}
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.EMERALD, 1));
-
 				if (attacker instanceof EntityPlayer)
 				{
 					EntityPlayer player = (EntityPlayer) attacker;
@@ -1758,16 +1822,23 @@ public class ItemCleaverNormalHelper
 
 					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
 					{
-						int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
-						MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
-						ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
-
-						if (stackMerchant != null)
+						for (int count = 0; count < 3; count++)
 						{
-							drops.add(stackMerchant);
+							int merchantSize = getRandom(attacker).nextInt(merchantrecipelist.size());
+							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
+							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
+
+							if (stackMerchant != null)
+							{
+								stackMerchant.setCount(1);
+
+								drops.add(stackMerchant);
+							}
 						}
 					}
 				}
+
+				drops.add(new ItemStack(Items.EMERALD));
 
 				break;
 		}

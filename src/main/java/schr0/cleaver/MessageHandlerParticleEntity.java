@@ -29,7 +29,13 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 			{
 				case 0 :
 
-					particleNormal(world, entity, random);
+					particleNormalDisarmament(world, entity, random);
+
+					break;
+
+				case 1 :
+
+					particleNormalCleave(world, entity, random);
 
 					break;
 			}
@@ -40,10 +46,15 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static void particleNormal(World world, Entity entity, Random random)
+	private static void particleNormalDisarmament(World world, Entity entity, Random random)
 	{
 		double size = 0.85D;
 		world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, size, 0.0D, 0.0D, new int[0]);
+	}
+
+	private static void particleNormalCleave(World world, Entity entity, Random random)
+	{
+		world.spawnParticle(EnumParticleTypes.SWEEP_ATTACK, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
 	}
 
 }

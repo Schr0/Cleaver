@@ -46,35 +46,31 @@ public class CleaverEvent
 				float attackAmmount = cleaverItem.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
 				boolean isCriticalAttack = (0.0F < attacker.fallDistance) && !attacker.onGround && !attacker.isOnLadder() && !attacker.isInWater() && !attacker.isPotionActive(MobEffects.BLINDNESS) && !attacker.isRiding();
 
+				event.setCanceled(true);
+
 				if (isCriticalAttack)
 				{
 					attackAmmount *= 1.5F;
+				}
 
-					if (attacker instanceof EntityPlayer)
+				if (cleaverItem.onAttackTarget(stackMainHand, target, attacker, attackAmmount, cleaverItem.isCleaveTarget(stackMainHand, target, attacker, attackAmmount)))
+				{
+					target.hurtResistantTime = 0;
+
+					int levelFireAspect = EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stackMainHand);
+
+					if (0 < levelFireAspect)
 					{
-						EntityPlayer player = (EntityPlayer) attacker;
+						target.setFire(levelFireAspect * 4);
+					}
 
-						if (isCriticalAttack)
-						{
-							player.onCriticalHit(target);
-						}
+					target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
+
+					if (isCriticalAttack && (attacker instanceof EntityPlayer))
+					{
+						((EntityPlayer) attacker).onCriticalHit(target);
 					}
 				}
-
-				event.setCanceled(true);
-
-				target.hurtResistantTime = 0;
-
-				int levelFireAspect = EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stackMainHand);
-
-				if (0 < levelFireAspect)
-				{
-					target.setFire(levelFireAspect * 4);
-				}
-
-				target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
-
-				cleaverItem.onAttackTarget(stackMainHand, target, attacker, attackAmmount, cleaverItem.isCleaveTarget(stackMainHand, target, attacker, attackAmmount));
 			}
 		}
 	}
@@ -94,7 +90,7 @@ public class CleaverEvent
 
 			if (attacker instanceof EntityPlayer)
 			{
-				onKillPlayer(target, (EntityPlayer) attacker);
+				onDeathByPlayer(target, (EntityPlayer) attacker);
 			}
 			else
 			{
@@ -172,7 +168,7 @@ public class CleaverEvent
 		return cleaverDamageSource;
 	}
 
-	private static void onKillPlayer(EntityLivingBase target, EntityPlayer player)
+	private static void onDeathByPlayer(EntityLivingBase target, EntityPlayer player)
 	{
 		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit");
 		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer");
