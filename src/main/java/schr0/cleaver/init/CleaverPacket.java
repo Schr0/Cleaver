@@ -1,9 +1,12 @@
-package schr0.cleaver;
+package schr0.cleaver.init;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import schr0.cleaver.Cleaver;
+import schr0.cleaver.packet.MessageHandlerParticleEntity;
+import schr0.cleaver.packet.MessageParticleEntity;
 
 public class CleaverPacket
 {

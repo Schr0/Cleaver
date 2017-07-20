@@ -1,7 +1,8 @@
-package schr0.cleaver;
+package schr0.cleaver.init;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import schr0.cleaver.Cleaver;
 
 public class CleaverCreativeTabs
 {

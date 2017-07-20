@@ -1,10 +1,8 @@
-package schr0.cleaver;
+package schr0.cleaver.init;
 
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -57,18 +55,18 @@ public class CleaverEvent
 				{
 					target.hurtResistantTime = 0;
 
-					int levelFireAspect = EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stackMainHand);
-
-					if (0 < levelFireAspect)
-					{
-						target.setFire(levelFireAspect * 4);
-					}
-
 					target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
 
-					if (isCriticalAttack && (attacker instanceof EntityPlayer))
+					if (attacker instanceof EntityPlayer)
 					{
-						((EntityPlayer) attacker).onCriticalHit(target);
+						EntityPlayer player = (EntityPlayer) attacker;
+
+						if (isCriticalAttack)
+						{
+							player.onCriticalHit(target);
+						}
+
+						player.resetCooldown();
 					}
 				}
 			}

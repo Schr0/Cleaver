@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.item;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -1,7 +1,8 @@
-package schr0.cleaver;
+package schr0.cleaver.init;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import schr0.cleaver.Cleaver;
 
 public class CleaverDamageSource extends DamageSource
 {

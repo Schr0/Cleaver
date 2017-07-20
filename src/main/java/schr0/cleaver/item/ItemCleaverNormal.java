@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +76,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
+import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.packet.MessageParticleEntity;
 
 public class ItemCleaverNormal extends ItemCleaver
 {
@@ -168,7 +170,9 @@ public class ItemCleaverNormal extends ItemCleaver
 				}
 
 				itemstack.damageItem(1, player);
+
 				player.addStat(StatList.getBlockStats(block));
+
 				world.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
 
 				return true;
@@ -196,14 +200,10 @@ public class ItemCleaverNormal extends ItemCleaver
 			if (target.isShearable(itemstack, entity.world, pos))
 			{
 				List<ItemStack> drops = target.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
-				Random random = this.getRandom(entity);
 
 				for (ItemStack stack : drops)
 				{
-					EntityItem entityItem = entity.entityDropItem(stack, 1.0F);
-					entityItem.motionY += random.nextFloat() * 0.05F;
-					entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
-					entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+					this.onEntityDropItem(stack, entity);
 				}
 
 				itemstack.damageItem(1, entity);
@@ -224,7 +224,7 @@ public class ItemCleaverNormal extends ItemCleaver
 	@Override
 	public boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount)
 	{
-		int chance = Math.min(((this.getSharpnessAmount(attackAmmount, stack) * 10) + 10), 80);
+		int chance = Math.min(((this.getSharpnessAmount(attackAmmount, stack, attacker) * 10) + 10), 80);
 
 		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
@@ -240,7 +240,7 @@ public class ItemCleaverNormal extends ItemCleaver
 		if (isCleaveTarget)
 		{
 			Random random = this.getRandom(attacker);
-			int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack);
+			int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack, attacker);
 
 			if (target instanceof EntityLiving)
 			{
@@ -254,7 +254,7 @@ public class ItemCleaverNormal extends ItemCleaver
 			{
 				for (ItemStack stackEquipment : equipments)
 				{
-					this.spawnEntityItem(stackEquipment, target);
+					this.onEntityDropItem(stackEquipment, target);
 				}
 
 				return this.onSuccessCleave(0, target);
@@ -267,7 +267,7 @@ public class ItemCleaverNormal extends ItemCleaver
 			{
 				for (ItemStack stackDrop : drops)
 				{
-					this.spawnEntityItem(stackDrop, target);
+					this.onEntityDropItem(stackDrop, target);
 				}
 
 				return this.onSuccessCleave(1, target);
@@ -284,21 +284,28 @@ public class ItemCleaverNormal extends ItemCleaver
 		return attacker.getEntityWorld().rand;
 	}
 
-	private int getSharpnessAmount(float attackAmmount, ItemStack stack)
+	private int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)
 	{
 		attackAmmount = Math.max(Math.round(attackAmmount), 1);
 		int lootingAmmount = Math.min(EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack), 1);
 
+		if (attacker instanceof EntityPlayer)
+		{
+			lootingAmmount += (int) ((EntityPlayer) attacker).getLuck();
+		}
+
 		return (int) (attackAmmount * lootingAmmount);
 	}
 
-	private void spawnEntityItem(ItemStack stack, EntityLivingBase target)
+	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)
 	{
 		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
 		Random random = this.getRandom(target);
 		entityItem.motionY += random.nextFloat() * 0.05F;
 		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
 		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+
+		entityItem.setDefaultPickupDelay();
 	}
 
 	private boolean onSuccessCleave(int particleType, EntityLivingBase target)

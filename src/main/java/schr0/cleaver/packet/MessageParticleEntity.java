@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.packet;
 
 import javax.annotation.Nullable;
 

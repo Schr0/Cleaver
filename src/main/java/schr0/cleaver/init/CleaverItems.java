@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.init;
 
 import java.util.ArrayList;
 
@@ -14,27 +14,35 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
+import schr0.cleaver.Cleaver;
+import schr0.cleaver.item.ItemCleaverNormal;
+import schr0.cleaver.item.ItemMaterialCleaverNormal;
 
 public class CleaverItems
 {
 
+	public static final Item MATERIAL_CLEAVER_NORMAL;
 	public static final Item CLEAVER_NORMAL;
 
+	public static final String NAME_MATERIAL_CLEAVER_NORMAL = "material_cleaver_normal";
 	public static final String NAME_CLEAVER_NORMAL = "cleaver_normal";
 
 	static
 	{
+		MATERIAL_CLEAVER_NORMAL = new ItemMaterialCleaverNormal().setUnlocalizedName(NAME_MATERIAL_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
 		CLEAVER_NORMAL = new ItemCleaverNormal().setUnlocalizedName(NAME_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
 	}
 
 	public void registerItems(IForgeRegistry<Item> registry)
 	{
+		registerItem(registry, MATERIAL_CLEAVER_NORMAL, NAME_MATERIAL_CLEAVER_NORMAL);
 		registerItem(registry, CLEAVER_NORMAL, NAME_CLEAVER_NORMAL);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void registerModels()
 	{
+		registerModel(MATERIAL_CLEAVER_NORMAL);
 		registerModel(CLEAVER_NORMAL);
 	}
 
