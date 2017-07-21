@@ -26,7 +26,7 @@ public class CleaverNormalEvent
 		 * @param drops
 		 *            剥ぎ取りされるArrayList<ItemStack>.
 		 * @param rarity
-		 *            剥ぎ取りレアリティ（COMMON, UNCOMMON, RARE, EPIC）
+		 *            剥ぎ取りレアリティ（COMMON < UNCOMMON < RARE < EPIC）
 		 * @param stack
 		 *            ICleaverItemのItemStack.
 		 * @param target

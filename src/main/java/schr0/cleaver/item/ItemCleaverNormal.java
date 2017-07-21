@@ -123,12 +123,7 @@ public class ItemCleaverNormal extends ItemCleaver
 
 		Block block = state.getBlock();
 
-		if (block instanceof IShearable)
-		{
-			return true;
-		}
-
-		if ((state.getMaterial() == Material.LEAVES) || (block == Blocks.WEB) || (block == Blocks.TALLGRASS) || (block == Blocks.VINE) || (block == Blocks.TRIPWIRE) || (block == Blocks.WOOL))
+		if ((state.getMaterial() == Material.LEAVES) || (block instanceof IShearable) || (block == Blocks.WEB) || (block == Blocks.TALLGRASS) || (block == Blocks.VINE) || (block == Blocks.TRIPWIRE) || (block == Blocks.WOOL))
 		{
 			return true;
 		}

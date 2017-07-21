@@ -7,7 +7,7 @@ public class ItemMaterialCleaverNormal extends Item
 
 	public ItemMaterialCleaverNormal()
 	{
-
+		this.setMaxStackSize(16);
 	}
 
 }
