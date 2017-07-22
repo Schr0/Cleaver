@@ -1,0 +1,21 @@
+{
+    "parent": "minecraft:recipes/root",
+    "criteria": {
+        "recipe_first": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "minecraft:iron_ingot",
+                        "item": "schr0cleaver:material_cleaver_normal"
+                    }
+                ]
+            }
+        }
+    },
+    "rewards": {
+        "recipes": [
+            "schr0cleaver:material_cleaver_normal"
+        ]
+    }
+}

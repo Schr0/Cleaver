@@ -1,0 +1,22 @@
+{
+    "parent": "minecraft:recipes/root",
+    "criteria": {
+        "recipe_first": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "schr0cleaver:material_cleaver_normal",
+                        "item": "schr0cleaver:cleaver_normal"
+                    }
+                ]
+            }
+        }
+    },
+    "rewards": {
+        "recipes": [
+            "schr0cleaver:material_cleaver_normal",
+            "schr0cleaver:cleaver_normal"
+        ]
+    }
+}

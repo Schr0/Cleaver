@@ -1,9 +1,9 @@
-package schr0.cleaver;
+package schr0.cleaver.api;
 
 public enum CleaverMaterial
 {
 
-	NORMAL(500, 0.5F, 14);
+	NORMAL(500, -0.5F, 14);
 
 	private final int maxUses;
 	private final float damageVsEntity;
