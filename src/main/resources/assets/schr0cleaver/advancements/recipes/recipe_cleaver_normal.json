@@ -6,8 +6,7 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "schr0cleaver:material_cleaver_normal",
-                        "item": "schr0cleaver:cleaver_normal"
+                        "item": "schr0cleaver:material_cleaver_normal"
                     }
                 ]
             }

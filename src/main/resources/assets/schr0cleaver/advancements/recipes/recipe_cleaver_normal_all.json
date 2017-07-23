@@ -6,7 +6,7 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "minecraft:iron_ingot"
+                        "item": "schr0cleaver:cleaver_normal"
                     }
                 ]
             }
@@ -14,7 +14,8 @@
     },
     "rewards": {
         "recipes": [
-            "schr0cleaver:material_cleaver_normal"
+            "schr0cleaver:material_cleaver_normal",
+            "schr0cleaver:cleaver_normal"
         ]
     }
 }

@@ -36,7 +36,7 @@ public class Cleaver
 	/**
 	 * Modのバージョン.
 	 */
-	public static final String MOD_VERSION = "1.0.0";
+	public static final String MOD_VERSION = "1.0.1";
 
 	/**
 	 * Forgeのバージョン.
@@ -106,7 +106,6 @@ public class Cleaver
 			// none
 		}
 	}
-
 	// TODO /* ======================================== MOD START =====================================*/
 
 	/**
