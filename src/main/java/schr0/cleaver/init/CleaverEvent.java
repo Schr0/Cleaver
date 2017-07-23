@@ -168,8 +168,25 @@ public class CleaverEvent
 
 	private static void onDeathByPlayer(EntityLivingBase target, EntityPlayer player)
 	{
-		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit");
-		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer");
+		/*
+				try
+				{
+					Field f1 = EntityLivingBase.class.getDeclaredFields()[37];
+					Field f2 = EntityLivingBase.class.getDeclaredFields()[38];
+		
+					f1.setAccessible(true);
+					f2.setAccessible(true);
+		
+					FMLLog.info("%s", f1.getName() + " : " + f2.getName());
+				}
+				catch (Exception e)
+				{
+					throw new UnableToAccessFieldException(new String[0], e);
+				}
+		//*/
+
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, 37/*"attackingPlayer"*/);
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, 38/*"recentlyHit"*/);
 
 		target.onDeath(DamageSource.causePlayerDamage(player));
 	}
