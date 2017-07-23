@@ -185,8 +185,8 @@ public class CleaverEvent
 				}
 		//*/
 
-		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, 37/*"attackingPlayer"*/);
-		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, 38/*"recentlyHit"*/);
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer", "field_70717_bb");
+		ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit", "field_70718_bc");
 
 		target.onDeath(DamageSource.causePlayerDamage(player));
 	}
