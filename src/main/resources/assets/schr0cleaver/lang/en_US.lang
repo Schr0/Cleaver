@@ -4,4 +4,5 @@ itemGroup.schr0cleaver.item=Cleaver : Items
 // ======================================== ITEM ===================================== //
 item.material_cleaver_normal.name=Cleaver Blade
 item.cleaver_normal.name=Cleaver
-
+item.material_cleaver_blaze.name=Blaze Heart
+item.cleaver_blaze.name=Blaze Cleaver

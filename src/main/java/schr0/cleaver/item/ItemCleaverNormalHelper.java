@@ -1911,7 +1911,7 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
+		if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}

@@ -116,15 +116,25 @@ public class ItemCleaverNormal extends ItemCleaver
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
 	{
-		if (!worldIn.isRemote)
-		{
-			stack.damageItem(1, entityLiving);
-		}
-
 		Block block = state.getBlock();
 
 		if ((state.getMaterial() == Material.LEAVES) || (block instanceof IShearable) || (block == Blocks.WEB) || (block == Blocks.TALLGRASS) || (block == Blocks.VINE) || (block == Blocks.TRIPWIRE) || (block == Blocks.WOOL))
 		{
+			if (!worldIn.isRemote)
+			{
+				stack.damageItem(1, entityLiving);
+			}
+
+			return true;
+		}
+
+		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
+		{
+			if (!worldIn.isRemote)
+			{
+				stack.damageItem(2, entityLiving);
+			}
+
 			return true;
 		}
 
@@ -152,13 +162,13 @@ public class ItemCleaverNormal extends ItemCleaver
 				List<ItemStack> drops = shearable.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
 				Random random = this.getRandom(player);
 
-				for (ItemStack stack : drops)
+				for (ItemStack stackDrop : drops)
 				{
 					float r = 0.7F;
-					double xR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
-					double yR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
-					double zR = (double) (random.nextFloat() * r) + (double) (1.0F - r) * 0.5D;
-					EntityItem entityItem = new EntityItem(world, (double) pos.getX() + xR, (double) pos.getY() + yR, (double) pos.getZ() + zR, stack);
+					double xR = (double) pos.getX() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
+					double yR = (double) pos.getY() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
+					double zR = (double) pos.getZ() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
+					EntityItem entityItem = new EntityItem(world, xR, yR, zR, stackDrop);
 					entityItem.setDefaultPickupDelay();
 
 					world.spawnEntity(entityItem);
@@ -274,9 +284,9 @@ public class ItemCleaverNormal extends ItemCleaver
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private Random getRandom(EntityLivingBase attacker)
+	private Random getRandom(EntityLivingBase owner)
 	{
-		return attacker.getEntityWorld().rand;
+		return owner.getEntityWorld().rand;
 	}
 
 	private int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)

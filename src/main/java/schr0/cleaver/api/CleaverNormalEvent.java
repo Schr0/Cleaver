@@ -12,7 +12,7 @@ public class CleaverNormalEvent
 {
 
 	@Cancelable
-	public static class CleaveDropsEvent extends Event
+	public static class CleaveEvent extends Event
 	{
 		private final ArrayList<ItemStack> drops;
 		private final EnumRarity rarity;
@@ -34,7 +34,7 @@ public class CleaverNormalEvent
 		 * @param attacker
 		 *            剥ぎ取りをするEntityLivingBase.
 		 */
-		public CleaveDropsEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+		public CleaveEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 		{
 			this.drops = drops;
 			this.rarity = rarity;

@@ -15,7 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import schr0.cleaver.Cleaver;
+import schr0.cleaver.item.ItemCleaverBlaze;
 import schr0.cleaver.item.ItemCleaverNormal;
+import schr0.cleaver.item.ItemMaterialCleaverBlaze;
 import schr0.cleaver.item.ItemMaterialCleaverNormal;
 
 public class CleaverItems
@@ -23,20 +25,28 @@ public class CleaverItems
 
 	public static final Item MATERIAL_CLEAVER_NORMAL;
 	public static final Item CLEAVER_NORMAL;
+	public static final Item MATERIAL_CLEAVER_BLAZE;
+	public static final Item CLEAVER_BLAZE;
 
 	public static final String NAME_MATERIAL_CLEAVER_NORMAL = "material_cleaver_normal";
 	public static final String NAME_CLEAVER_NORMAL = "cleaver_normal";
+	public static final String NAME_MATERIAL_CLEAVER_BLAZE = "material_cleaver_blaze";
+	public static final String NAME_CLEAVER_BLAZE = "cleaver_blaze";
 
 	static
 	{
 		MATERIAL_CLEAVER_NORMAL = new ItemMaterialCleaverNormal().setUnlocalizedName(NAME_MATERIAL_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
 		CLEAVER_NORMAL = new ItemCleaverNormal().setUnlocalizedName(NAME_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
+		MATERIAL_CLEAVER_BLAZE = new ItemMaterialCleaverBlaze().setUnlocalizedName(NAME_MATERIAL_CLEAVER_BLAZE).setCreativeTab(CleaverCreativeTabs.ITEM);
+		CLEAVER_BLAZE = new ItemCleaverBlaze().setUnlocalizedName(NAME_CLEAVER_BLAZE).setCreativeTab(CleaverCreativeTabs.ITEM);
 	}
 
 	public void registerItems(IForgeRegistry<Item> registry)
 	{
 		registerItem(registry, MATERIAL_CLEAVER_NORMAL, NAME_MATERIAL_CLEAVER_NORMAL);
 		registerItem(registry, CLEAVER_NORMAL, NAME_CLEAVER_NORMAL);
+		registerItem(registry, MATERIAL_CLEAVER_BLAZE, NAME_MATERIAL_CLEAVER_BLAZE);
+		registerItem(registry, CLEAVER_BLAZE, NAME_CLEAVER_BLAZE);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -44,6 +54,8 @@ public class CleaverItems
 	{
 		registerModel(MATERIAL_CLEAVER_NORMAL);
 		registerModel(CLEAVER_NORMAL);
+		registerModel(MATERIAL_CLEAVER_BLAZE);
+		registerModel(CLEAVER_BLAZE);
 	}
 
 	// TODO /* ======================================== MOD START =====================================*/
