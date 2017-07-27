@@ -2,58 +2,98 @@ package schr0.cleaver.api;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 
 public interface ICleaverItem
 {
 
 	/**
-	 * 攻撃力の値.
+	 * 攻撃力.
 	 *
 	 * @param rawAttackAmmount
-	 *            攻撃力の元値.
-	 * @param stack
-	 *            ICleaverItemのItemStack.
+	 *            元の攻撃力.
 	 * @param target
 	 *            攻撃をされるEntityLivingBase.
+	 * @param stack
+	 *            ICleaverItemのItemStack.
 	 * @param attacker
 	 *            攻撃をするEntityLivingBase.
 	 *
-	 * @return 攻撃力の値.
+	 * @return 攻撃力.
 	 */
-	float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	float getAttackAmmount(float rawAttackAmmount, EntityLivingBase target, ItemStack stack, EntityLivingBase attacker);
 
 	/**
 	 * 剥ぎ取りの判定.
 	 *
+	 * @param attackAmmount
+	 *            攻撃力.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
 	 *            剥ぎ取りをされるEntityLivingBase.
 	 * @param attacker
 	 *            剥ぎ取りをするEntityLivingBase.
-	 * @param attackAmmount
-	 *            攻撃力の値.
-	 *
 	 * @return 剥ぎ取りの判定.
 	 */
-	boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount);
+	boolean isCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
-	 * 攻撃の判定.
+	 * 攻撃の処理.
 	 *
+	 * @param attackAmmount
+	 *            攻撃力.
+	 * @param isCleaveTarget
+	 *            剥ぎ取りの判定.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
 	 *            攻撃をされるEntityLivingBase.
 	 * @param attacker
 	 *            攻撃をするEntityLivingBase.
-	 * @param attackAmmount
-	 *            攻撃力の値.
-	 * @param isCleaveTarget
-	 *            剥ぎ取りの判定.
 	 *
 	 * @return 攻撃の判定.
 	 */
-	boolean onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount, boolean isCleaveTarget);
+	boolean onAttackTarget(float attackAmmount, boolean isCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+
+	/**
+	 * 所持者ダメージの判定.
+	 *
+	 * @param rawDamageAmmount
+	 *            元の所持者ダメージ値.
+	 * @param damageSource
+	 *            所持者が受けたDamageSource.
+	 * @param stack
+	 *            ICleaverItemのItemStack.
+	 * @param slot
+	 *            所持しているスロットの番号.
+	 * @param isSelected
+	 *            手に持っているかの判定.
+	 * @param owner
+	 *            所持者のEntityLivingBase.
+	 *
+	 * @return 所持者のダメージ判定.
+	 */
+	boolean shouldDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
+
+	/**
+	 * 所持者ダメージの処理.
+	 *
+	 * @param rawDamageAmmount
+	 *            元の所持者ダメージ値.
+	 * @param damageSource
+	 *            所持者が受けたDamageSource.
+	 * @param stack
+	 *            ICleaverItemのItemStack.
+	 * @param slot
+	 *            所持しているスロットの番号.
+	 * @param isSelected
+	 *            手に持っているかの判定.
+	 * @param owner
+	 *            所持者のEntityLivingBase.
+	 *
+	 * @return 所持者ダメージ値.
+	 */
+	float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
 
 }

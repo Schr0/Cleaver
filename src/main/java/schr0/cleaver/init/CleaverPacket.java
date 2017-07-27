@@ -6,7 +6,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import schr0.cleaver.Cleaver;
 import schr0.cleaver.packet.MessageHandlerParticleEntity;
+import schr0.cleaver.packet.MessageHandlerParticlePosition;
 import schr0.cleaver.packet.MessageParticleEntity;
+import schr0.cleaver.packet.MessageParticlePosition;
 
 public class CleaverPacket
 {
@@ -15,6 +17,7 @@ public class CleaverPacket
 	public static final SimpleNetworkWrapper DISPATCHER = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL_NAME);
 
 	public static final int ID_PARTICLE_ENTITY = 0;
+	public static final int ID_PARTICLE_POSITION = 1;
 
 	public void registerMessages()
 	{
@@ -25,6 +28,7 @@ public class CleaverPacket
 	public void registerClientMessages()
 	{
 		DISPATCHER.registerMessage(MessageHandlerParticleEntity.class, MessageParticleEntity.class, ID_PARTICLE_ENTITY, Side.CLIENT);
+		DISPATCHER.registerMessage(MessageHandlerParticlePosition.class, MessageParticlePosition.class, ID_PARTICLE_POSITION, Side.CLIENT);
 	}
 
 }

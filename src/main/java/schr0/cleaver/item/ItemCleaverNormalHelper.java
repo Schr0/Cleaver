@@ -5,6 +5,7 @@ import java.util.Random;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -1924,7 +1925,7 @@ public class ItemCleaverNormalHelper
 		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
 	}
 
-	private static Random getRandom(EntityLivingBase attacker)
+	private static Random getRandom(Entity attacker)
 	{
 		return attacker.getEntityWorld().rand;
 	}

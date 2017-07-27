@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -69,6 +70,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -114,34 +116,6 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
-	{
-		Block block = state.getBlock();
-
-		if ((state.getMaterial() == Material.LEAVES) || (block instanceof IShearable) || (block == Blocks.WEB) || (block == Blocks.TALLGRASS) || (block == Blocks.VINE) || (block == Blocks.TRIPWIRE) || (block == Blocks.WOOL))
-		{
-			if (!worldIn.isRemote)
-			{
-				stack.damageItem(1, entityLiving);
-			}
-
-			return true;
-		}
-
-		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
-		{
-			if (!worldIn.isRemote)
-			{
-				stack.damageItem(2, entityLiving);
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
 	{
 		World world = player.getEntityWorld();
@@ -159,16 +133,17 @@ public class ItemCleaverNormal extends ItemCleaver
 
 			if (shearable.isShearable(itemstack, world, pos))
 			{
-				List<ItemStack> drops = shearable.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
 				Random random = this.getRandom(player);
+				List<ItemStack> drops = shearable.onSheared(itemstack, world, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
 
 				for (ItemStack stackDrop : drops)
 				{
-					float r = 0.7F;
-					double xR = (double) pos.getX() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
-					double yR = (double) pos.getY() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
-					double zR = (double) pos.getZ() + ((random.nextFloat() * r) + (double) (1.0F - r) * 0.5D);
-					EntityItem entityItem = new EntityItem(world, xR, yR, zR, stackDrop);
+					float randomPos = 0.5F;
+					double posXdrop = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+					double posYdrop = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+					double posZdrop = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackDrop);
+
 					entityItem.setDefaultPickupDelay();
 
 					world.spawnEntity(entityItem);
@@ -182,6 +157,22 @@ public class ItemCleaverNormal extends ItemCleaver
 
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
+	{
+		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
+		{
+			if (!worldIn.isRemote)
+			{
+				stack.damageItem(2, entityLiving);
+			}
+
+			return true;
 		}
 
 		return false;
@@ -221,13 +212,13 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public float getAttackAmmount(float rawAttackAmmount, EntityLivingBase target, ItemStack stack, EntityLivingBase attacker)
 	{
 		return rawAttackAmmount;
 	}
 
 	@Override
-	public boolean isCleaveTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount)
+	public boolean isCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		int chance = Math.min(((this.getSharpnessAmount(attackAmmount, stack, attacker) * 10) + 10), 80);
 
@@ -235,7 +226,7 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public boolean onAttackTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker, float attackAmmount, boolean isCleaveTarget)
+	public boolean onAttackTarget(float attackAmmount, boolean isCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (!attacker.getEntityWorld().isRemote)
 		{
@@ -282,9 +273,21 @@ public class ItemCleaverNormal extends ItemCleaver
 		return true;
 	}
 
+	@Override
+	public boolean shouldDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner)
+	{
+		return true;
+	}
+
+	@Override
+	public float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner)
+	{
+		return rawDamageAmmount;
+	}
+
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private Random getRandom(EntityLivingBase owner)
+	private Random getRandom(Entity owner)
 	{
 		return owner.getEntityWorld().rand;
 	}
@@ -341,29 +344,24 @@ public class ItemCleaverNormal extends ItemCleaver
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
-		if (target instanceof EntityLiving)
+		for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
 		{
-			EntityLiving living = (EntityLiving) target;
+			ItemStack stackEquipment = target.getItemStackFromSlot(equipmentSlot);
 
-			for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
+			if (!stackEquipment.isEmpty())
 			{
-				ItemStack stackEquipment = living.getItemStackFromSlot(equipmentSlot);
-
-				if (!stackEquipment.isEmpty())
+				if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
 				{
-					if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
-					{
-						int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
+					int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
 
-						stackEquipment.setItemDamage(Math.max(stackAmount, 0));
-					}
-
-					equipments.add(stackEquipment);
-
-					living.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
-
-					return equipments;
+					stackEquipment.setItemDamage(Math.max(stackAmount, 0));
 				}
+
+				equipments.add(stackEquipment);
+
+				target.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
+
+				return equipments;
 			}
 		}
 
