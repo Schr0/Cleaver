@@ -67,6 +67,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.potion.PotionType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
@@ -198,29 +199,11 @@ public class ItemCleaverNormalHelper
 
 				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
-					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
-
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_FISH, 1, metaSalmon));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.FISH, 1, metaSalmon));
-					}
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					int metaCod = ItemFishFood.FishType.COD.getMetadata();
-
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_FISH, 1, metaCod));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.FISH, 1, metaCod));
-					}
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.COD.getMetadata()));
 				}
 
 				break;
@@ -288,14 +271,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.CHORUS_FRUIT_POPPED));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.CHORUS_FRUIT));
-				}
+				drops.add(new ItemStack(Items.CHORUS_FRUIT));
 
 				break;
 
@@ -410,14 +386,7 @@ public class ItemCleaverNormalHelper
 
 				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.BAKED_POTATO, 10));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.POTATO, 10));
-					}
+					drops.add(new ItemStack(Items.POTATO, 10));
 
 				}
 				else
@@ -478,29 +447,11 @@ public class ItemCleaverNormalHelper
 
 				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
 				{
-					int metaSalmon = ItemFishFood.FishType.SALMON.getMetadata();
-
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_FISH, 1, metaSalmon));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.FISH, 1, metaSalmon));
-					}
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					int metaCod = ItemFishFood.FishType.COD.getMetadata();
-
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_FISH, 1, metaCod));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.FISH, 1, metaCod));
-					}
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.COD.getMetadata()));
 				}
 
 				break;
@@ -660,53 +611,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
+				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
+				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
+				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-				}
+				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 		}
@@ -1055,14 +978,7 @@ public class ItemCleaverNormalHelper
 
 				if (getRandom(attacker).nextInt(PERCENT) < RARE)
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.BAKED_POTATO));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.POTATO));
-					}
+					drops.add(new ItemStack(Items.POTATO));
 
 				}
 				else
@@ -1122,27 +1038,13 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_CHICKEN));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.CHICKEN));
-				}
+				drops.add(new ItemStack(Items.CHICKEN));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_CHICKEN));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.CHICKEN));
-				}
+				drops.add(new ItemStack(Items.CHICKEN));
 
 				break;
 
@@ -1154,14 +1056,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_CHICKEN));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.CHICKEN));
-				}
+				drops.add(new ItemStack(Items.CHICKEN));
 
 				drops.add(new ItemStack(Items.FEATHER));
 
@@ -1178,27 +1073,13 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				break;
 
@@ -1210,14 +1091,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				drops.add(new ItemStack(Items.LEATHER));
 
@@ -1333,27 +1207,13 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				break;
 
@@ -1365,14 +1225,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_BEEF));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.BEEF));
-				}
+				drops.add(new ItemStack(Items.BEEF));
 
 				drops.add(new ItemStack(Items.LEATHER));
 
@@ -1476,53 +1329,25 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.PORKCHOP));
-				}
+				drops.add(new ItemStack(Items.PORKCHOP));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.PORKCHOP));
-				}
+				drops.add(new ItemStack(Items.PORKCHOP));
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.PORKCHOP));
-				}
+				drops.add(new ItemStack(Items.PORKCHOP));
 
 				break;
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_PORKCHOP));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.PORKCHOP));
-				}
+				drops.add(new ItemStack(Items.PORKCHOP));
 
 				break;
 		}
@@ -1544,27 +1369,13 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_RABBIT));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.RABBIT));
-				}
+				drops.add(new ItemStack(Items.RABBIT));
 
 				break;
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_RABBIT));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.RABBIT));
-				}
+				drops.add(new ItemStack(Items.RABBIT));
 
 				break;
 
@@ -1576,14 +1387,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.COOKED_RABBIT));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.RABBIT));
-				}
+				drops.add(new ItemStack(Items.RABBIT));
 
 				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
@@ -1602,14 +1406,7 @@ public class ItemCleaverNormalHelper
 
 				if (target.getSheared())
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.MUTTON));
-					}
+					drops.add(new ItemStack(Items.MUTTON));
 				}
 				else
 				{
@@ -1622,14 +1419,7 @@ public class ItemCleaverNormalHelper
 
 				if (target.getSheared())
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.MUTTON));
-					}
+					drops.add(new ItemStack(Items.MUTTON));
 				}
 				else
 				{
@@ -1642,14 +1432,7 @@ public class ItemCleaverNormalHelper
 
 				if (target.getSheared())
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.MUTTON));
-					}
+					drops.add(new ItemStack(Items.MUTTON));
 				}
 				else
 				{
@@ -1662,14 +1445,7 @@ public class ItemCleaverNormalHelper
 
 				if (target.getSheared())
 				{
-					if (isSmelting(stack, target))
-					{
-						drops.add(new ItemStack(Items.COOKED_MUTTON));
-					}
-					else
-					{
-						drops.add(new ItemStack(Items.MUTTON));
-					}
+					drops.add(new ItemStack(Items.MUTTON));
 				}
 				else
 				{
@@ -1888,18 +1664,18 @@ public class ItemCleaverNormalHelper
 
 	// TODO /* ======================================== MOD START =====================================*/
 
+	private static Random getRandom(Entity attacker)
+	{
+		return attacker.getEntityWorld().rand;
+	}
+
+	private static boolean isSmelting(ItemStack stack, EntityLivingBase target)
+	{
+		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
+	}
+
 	private static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		if (target instanceof EntityAgeable)
-		{
-			EntityAgeable entityAgeable = (EntityAgeable) target;
-
-			if (entityAgeable.isChild())
-			{
-				drops.clear();
-			}
-		}
-
 		if (target instanceof IShearable)
 		{
 			IShearable shearable = (IShearable) target;
@@ -1912,22 +1688,43 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
+		if (!drops.isEmpty() && isSmelting(stack, target))
+		{
+			ArrayList<ItemStack> dropsSmelting = new ArrayList<ItemStack>();
+
+			for (ItemStack stackDrop : drops)
+			{
+				if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
+				{
+					dropsSmelting.add(stackDrop);
+				}
+				else
+				{
+					dropsSmelting.add(FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy());
+				}
+			}
+
+			drops.clear();
+
+			drops.addAll(dropsSmelting);
+		}
+
+		if (target instanceof EntityAgeable)
+		{
+			EntityAgeable entityAgeable = (EntityAgeable) target;
+
+			if (entityAgeable.isChild())
+			{
+				drops.clear();
+			}
+		}
+
 		if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}
 
 		return drops;
-	}
-
-	private static boolean isSmelting(ItemStack stack, EntityLivingBase target)
-	{
-		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
-	}
-
-	private static Random getRandom(Entity attacker)
-	{
-		return attacker.getEntityWorld().rand;
 	}
 
 }

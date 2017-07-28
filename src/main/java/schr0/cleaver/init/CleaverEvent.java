@@ -53,17 +53,17 @@ public class CleaverEvent
 
 				if (isCriticalAttack)
 				{
-					attackAmmount = cleaverItem.getAttackAmmount((event.getAmount() * 1.5F), target, stackMainHand, attacker);
+					attackAmmount = cleaverItem.getAttackAmmount((event.getAmount() * 1.5F), stackMainHand, target, attacker);
 				}
 				else
 				{
-					attackAmmount = cleaverItem.getAttackAmmount(event.getAmount(), target, stackMainHand, attacker);
+					attackAmmount = cleaverItem.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
 
 				}
 
 				event.setCanceled(true);
 
-				if (cleaverItem.onAttackTarget(attackAmmount, cleaverItem.isCleaveTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
+				if (cleaverItem.shouldAttackTarget(attackAmmount, cleaverItem.canCleaveTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
 				{
 					target.hurtResistantTime = 0;
 
@@ -91,7 +91,7 @@ public class CleaverEvent
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (isInvalidDeathTarget(target))
+		if (isInvalidDeathTarget(target, damageSource))
 		{
 			return;
 		}
@@ -107,6 +107,7 @@ public class CleaverEvent
 			{
 				EntityPlayer player = (EntityPlayer) attacker;
 
+				// TODO Reflection : forge1.12-14.21.1.2387
 				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer", "field_70717_bb");
 				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit", "field_70718_bc");
 
@@ -187,9 +188,9 @@ public class CleaverEvent
 					else
 					{
 						event.setCanceled(true);
-					}
 
-					return;
+						return;
+					}
 				}
 			}
 		}
@@ -271,7 +272,7 @@ public class CleaverEvent
 			return true;
 		}
 
-		if (!(damageSource instanceof EntityDamageSourceIndirect))
+		if (damageSource instanceof EntityDamageSourceIndirect)
 		{
 			return true;
 		}
@@ -279,9 +280,14 @@ public class CleaverEvent
 		return false;
 	}
 
-	private static boolean isInvalidDeathTarget(EntityLivingBase target)
+	private static boolean isInvalidDeathTarget(EntityLivingBase target, DamageSource damageSource)
 	{
 		if (target.getEntityWorld().isRemote)
+		{
+			return true;
+		}
+
+		if (damageSource instanceof EntityDamageSourceIndirect)
 		{
 			return true;
 		}
@@ -306,17 +312,7 @@ public class CleaverEvent
 
 	private static boolean isInvalidHurtOwner(EntityLivingBase owner)
 	{
-		if (owner.getEntityWorld().isRemote)
-		{
-			return true;
-		}
-
-		if ((owner == null) || (owner != null && (owner.isDead || owner.getHealth() <= 0)))
-		{
-			return true;
-		}
-
-		return false;
+		return isInvalidAttackOwner(owner);
 	}
 
 	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)

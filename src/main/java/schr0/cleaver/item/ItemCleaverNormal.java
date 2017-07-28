@@ -79,6 +79,7 @@ import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.MessageParticleEntity;
 
 public class ItemCleaverNormal extends ItemCleaver
@@ -92,19 +93,17 @@ public class ItemCleaverNormal extends ItemCleaver
 	@Override
 	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
-		Block block = state.getBlock();
-
-		if ((block == Blocks.WEB) || (state.getMaterial() == Material.LEAVES))
+		if (state.getMaterial() == Material.LEAVES)
 		{
 			return 15.0F;
 		}
 
-		if (block == Blocks.WOOL)
+		if (state.getBlock() == Blocks.WOOL)
 		{
 			return 5.0F;
 		}
 
-		return 1.0F;
+		return super.getStrVsBlock(stack, state);
 	}
 
 	@Override
@@ -112,7 +111,12 @@ public class ItemCleaverNormal extends ItemCleaver
 	{
 		Block block = blockIn.getBlock();
 
-		return (block == Blocks.WEB) || (block == Blocks.REDSTONE_WIRE) || (block == Blocks.TRIPWIRE);
+		if ((block == Blocks.REDSTONE_WIRE) || (block == Blocks.TRIPWIRE))
+		{
+			return true;
+		}
+
+		return super.canHarvestBlock(blockIn);
 	}
 
 	@Override
@@ -163,22 +167,6 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
-	{
-		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
-		{
-			if (!worldIn.isRemote)
-			{
-				stack.damageItem(2, entityLiving);
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public boolean itemInteractionForEntity(ItemStack itemstack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
 		World world = entity.getEntityWorld();
@@ -212,13 +200,13 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public float getAttackAmmount(float rawAttackAmmount, EntityLivingBase target, ItemStack stack, EntityLivingBase attacker)
+	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return rawAttackAmmount;
 	}
 
 	@Override
-	public boolean isCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		int chance = Math.min(((this.getSharpnessAmount(attackAmmount, stack, attacker) * 10) + 10), 80);
 
@@ -226,14 +214,14 @@ public class ItemCleaverNormal extends ItemCleaver
 	}
 
 	@Override
-	public boolean onAttackTarget(float attackAmmount, boolean isCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean shouldAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (!attacker.getEntityWorld().isRemote)
 		{
 			stack.damageItem(1, attacker);
 		}
 
-		if (isCleaveTarget)
+		if (canCleaveTarget)
 		{
 			Random random = this.getRandom(attacker);
 			int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack, attacker);
@@ -253,7 +241,11 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackEquipment, target);
 				}
 
-				return this.onSuccessCleave(0, target);
+				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_DISARMAMENT));
+
+				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+
+				return true;
 			}
 
 			int rarityAmmount = Math.max((100 - (sharpnessAmount * 2)), 80);
@@ -266,7 +258,11 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackDrop, target);
 				}
 
-				return this.onSuccessCleave(1, target);
+				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_CLEAVE));
+
+				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+
+				return true;
 			}
 		}
 
@@ -305,6 +301,26 @@ public class ItemCleaverNormal extends ItemCleaver
 		return (int) (attackAmmount * lootingAmmount);
 	}
 
+	private static EnumRarity getCleaveRarity(int rarityAmount)
+	{
+		if (rarityAmount < 10)
+		{
+			return EnumRarity.EPIC;// 10
+		}
+
+		if (rarityAmount < 30)
+		{
+			return EnumRarity.RARE;// 20
+		}
+
+		if (rarityAmount < 60)
+		{
+			return EnumRarity.UNCOMMON;// 30
+		}
+
+		return EnumRarity.COMMON;// 40
+	}
+
 	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)
 	{
 		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
@@ -314,30 +330,6 @@ public class ItemCleaverNormal extends ItemCleaver
 		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
 
 		entityItem.setDefaultPickupDelay();
-	}
-
-	private boolean onSuccessCleave(int particleType, EntityLivingBase target)
-	{
-		switch (particleType)
-		{
-			case 0 :
-
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, 0));
-
-				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
-
-				break;
-
-			case 1 :
-
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, 1));
-
-				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
-
-				break;
-		}
-
-		return true;
 	}
 
 	private static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
@@ -366,26 +358,6 @@ public class ItemCleaverNormal extends ItemCleaver
 		}
 
 		return equipments;
-	}
-
-	private static EnumRarity getCleaveRarity(int rarityAmount)
-	{
-		if (rarityAmount < 10)
-		{
-			return EnumRarity.EPIC;// 10
-		}
-
-		if (rarityAmount < 30)
-		{
-			return EnumRarity.RARE;// 20
-		}
-
-		if (rarityAmount < 60)
-		{
-			return EnumRarity.UNCOMMON;// 30
-		}
-
-		return EnumRarity.COMMON;// 40
 	}
 
 	private static ArrayList<ItemStack> getCleaveDrops(int rarityAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)

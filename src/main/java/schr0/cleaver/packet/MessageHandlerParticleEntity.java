@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import schr0.cleaver.init.CleaverParticles;
 
 @SideOnly(Side.CLIENT)
 public class MessageHandlerParticleEntity implements IMessageHandler<MessageParticleEntity, IMessage>
@@ -27,17 +28,30 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 		{
 			switch (message.getParticleType())
 			{
-				case 0 :
+				case CleaverParticles.ENTITY_NORMAL_DISARMAMENT :
 
 					particleNormalDisarmament(world, entity, random);
 
 					break;
 
-				case 1 :
+				case CleaverParticles.ENTITY_NORMAL_CLEAVE :
 
 					particleNormalCleave(world, entity, random);
 
 					break;
+
+				case CleaverParticles.ENTITY_BLAZE_SHIELD :
+
+					particleBlazeShield(world, entity, random);
+
+					break;
+
+				case CleaverParticles.ENTITY_BLAZE_CLEAVE :
+
+					particleBlazeCleave(world, entity, random);
+
+					break;
+
 			}
 		}
 
@@ -55,6 +69,22 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 	private static void particleNormalCleave(World world, Entity entity, Random random)
 	{
 		world.spawnParticle(EnumParticleTypes.SWEEP_ATTACK, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
+	}
+
+	private static void particleBlazeShield(World world, Entity entity, Random random)
+	{
+		for (int count = 0; count < 2; count++)
+		{
+			world.spawnParticle(EnumParticleTypes.FLAME, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
+		}
+	}
+
+	private static void particleBlazeCleave(World world, Entity entity, Random random)
+	{
+		for (int count = 0; count < 20; count++)
+		{
+			world.spawnParticle(EnumParticleTypes.FLAME, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
+		}
 	}
 
 }

@@ -12,16 +12,15 @@ public interface ICleaverItem
 	 *
 	 * @param rawAttackAmmount
 	 *            元の攻撃力.
-	 * @param target
-	 *            攻撃をされるEntityLivingBase.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
+	 * @param target
+	 *            攻撃をされるEntityLivingBase.
 	 * @param attacker
 	 *            攻撃をするEntityLivingBase.
-	 *
 	 * @return 攻撃力.
 	 */
-	float getAttackAmmount(float rawAttackAmmount, EntityLivingBase target, ItemStack stack, EntityLivingBase attacker);
+	float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
 	 * 剥ぎ取りの判定.
@@ -36,14 +35,14 @@ public interface ICleaverItem
 	 *            剥ぎ取りをするEntityLivingBase.
 	 * @return 剥ぎ取りの判定.
 	 */
-	boolean isCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
-	 * 攻撃の処理.
+	 * 攻撃の判定.
 	 *
 	 * @param attackAmmount
 	 *            攻撃力.
-	 * @param isCleaveTarget
+	 * @param canCleaveTarget
 	 *            剥ぎ取りの判定.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
@@ -54,7 +53,7 @@ public interface ICleaverItem
 	 *
 	 * @return 攻撃の判定.
 	 */
-	boolean onAttackTarget(float attackAmmount, boolean isCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	boolean shouldAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
 	 * 所持者ダメージの判定.

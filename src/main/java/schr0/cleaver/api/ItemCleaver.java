@@ -2,11 +2,16 @@ package schr0.cleaver.api;
 
 import com.google.common.collect.Multimap;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -71,6 +76,48 @@ public abstract class ItemCleaver extends Item implements ICleaverItem
 	@Override
 	public boolean canDestroyBlockInCreative(World world, BlockPos pos, ItemStack stack, EntityPlayer player)
 	{
+		return false;
+	}
+
+	@Override
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	{
+		Block block = state.getBlock();
+
+		if (block == Blocks.WEB)
+		{
+			return 15.0F;
+		}
+
+		Material material = state.getMaterial();
+
+		if ((material == Material.PLANTS) || (material == Material.VINE) || (material == Material.CORAL) || (material == Material.LEAVES) || (material == Material.GOURD))
+		{
+			return 1.5F;
+		}
+
+		return 1.0F;
+	}
+
+	@Override
+	public boolean canHarvestBlock(IBlockState blockIn)
+	{
+		return (blockIn.getBlock() == Blocks.WEB);
+	}
+
+	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
+	{
+		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
+		{
+			if (!worldIn.isRemote)
+			{
+				stack.damageItem(2, entityLiving);
+			}
+
+			return true;
+		}
+
 		return false;
 	}
 

@@ -3,7 +3,6 @@ package schr0.cleaver.item;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -13,51 +12,32 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.init.CleaverParticles;
+import schr0.cleaver.packet.MessageParticleEntity;
 import schr0.cleaver.packet.MessageParticlePosition;
 
 public class ItemCleaverBlaze extends ItemCleaver
 {
 
+	private static final int POTION_DURATION = 100;
+	private static final int POTION_DURATION_LIMIT = (11 * 20);
+
 	public ItemCleaverBlaze()
 	{
 		super(CleaverMaterial.BLAZE);
-	}
-
-	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
-	{
-		Block block = state.getBlock();
-
-		if (block == Blocks.WEB)
-		{
-			return 15.0F;
-		}
-
-		Material material = state.getMaterial();
-
-		if ((material == Material.PLANTS) || (material == Material.VINE) || (material == Material.CORAL) || (material == Material.LEAVES) || (material == Material.GOURD))
-		{
-			return 1.5F;
-		}
-
-		return 1.0F;
-	}
-
-	@Override
-	public boolean canHarvestBlock(IBlockState blockIn)
-	{
-		return (blockIn.getBlock() == Blocks.WEB);
 	}
 
 	@Override
@@ -115,7 +95,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 			{
 				itemstack.damageItem(1, player);
 
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(pos, 0));
+				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(pos, CleaverParticles.POSITION_BLAZE_SMELTING));
 			}
 
 			player.addStat(StatList.getBlockStats(block));
@@ -129,58 +109,130 @@ public class ItemCleaverBlaze extends ItemCleaver
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)
-	{
-		if ((double) state.getBlockHardness(worldIn, pos) != 0.0D)
-		{
-			if (!worldIn.isRemote)
-			{
-				stack.damageItem(2, entityLiving);
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
-		if (!(entityIn instanceof EntityLivingBase) || !isSelected)
+		if (!isSelected || !(entityIn instanceof EntityLivingBase) || worldIn.isRemote)
 		{
 			return;
 		}
 
 		Random random = this.getRandom(entityIn);
 		EntityLivingBase owner = (EntityLivingBase) entityIn;
+		int heatAmount = this.getHeatAmount(stack, owner);
 
 		if (owner.isBurning())
 		{
 			owner.extinguish();
 		}
 
-		particleFireBarrier(worldIn, owner, random);
+		for (Potion potion : Potion.REGISTRY)
+		{
+			if (potion.isInstant())
+			{
+				continue;
+			}
+
+			if (potion.isBadEffect())
+			{
+				if (owner.isPotionActive(potion))
+				{
+					owner.removePotionEffect(potion);
+				}
+
+				continue;
+			}
+			else
+			{
+				if (owner.isPotionActive(potion))
+				{
+					PotionEffect potionEffect = owner.getActivePotionEffect(potion);
+
+					if (potionEffect.getDuration() < POTION_DURATION_LIMIT)
+					{
+						int duration = (potionEffect.getDuration() + (heatAmount * POTION_DURATION));
+
+						duration = Math.min(duration, (60 * 20));
+						duration = Math.max(duration, (15 * 20));
+
+						owner.addPotionEffect(new PotionEffect(potion, (20 + duration), potionEffect.getAmplifier()));
+
+						stack.damageItem(1, owner);
+					}
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+
+		CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
 	}
 
 	@Override
-	public float getAttackAmmount(float rawAttackAmmount, EntityLivingBase target, ItemStack stack, EntityLivingBase attacker)
+	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return rawAttackAmmount;
 	}
 
 	@Override
-	public boolean isCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		return false;
+		int chance = Math.min(((this.getHeatAmount(stack, attacker) * 4) + 10), 80);
+
+		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
 
 	@Override
-	public boolean onAttackTarget(float attackAmmount, boolean isCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean shouldAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (!attacker.getEntityWorld().isRemote)
 		{
 			stack.damageItem(1, attacker);
+		}
+
+		if (canCleaveTarget)
+		{
+			int heatAmount = this.getHeatAmount(stack, attacker);
+
+			target.clearActivePotions();
+
+			target.setFire(heatAmount * 20);
+
+			for (Potion potion : Potion.REGISTRY)
+			{
+				if (potion.isInstant())
+				{
+					continue;
+				}
+
+				if (potion.isBadEffect())
+				{
+					continue;
+				}
+				else
+				{
+					if (attacker.isPotionActive(potion))
+					{
+						continue;
+					}
+					else
+					{
+						int duration = (heatAmount * POTION_DURATION);
+
+						duration = Math.min(duration, (60 * 20));
+						duration = Math.max(duration, (15 * 20));
+
+						attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
+
+						CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
+
+						target.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
+
+						return true;
+					}
+				}
+			}
 		}
 
 		return true;
@@ -210,9 +262,26 @@ public class ItemCleaverBlaze extends ItemCleaver
 		return owner.getEntityWorld().rand;
 	}
 
-	private static void particleFireBarrier(World world, EntityLivingBase owner, Random random)
+	private int getHeatAmount(ItemStack stack, EntityLivingBase owner)
 	{
-		world.spawnParticle(EnumParticleTypes.FLAME, owner.posX + (double) (random.nextFloat() * owner.width * 2.0F) - (double) owner.width, owner.posY + (double) (random.nextFloat() * owner.height), owner.posZ + (double) (random.nextFloat() * owner.width * 2.0F) - (double) owner.width, 0.0D, 0.0D, 0.0D, new int[0]);
+		int potionCount = 0;
+
+		for (Potion potion : Potion.REGISTRY)
+		{
+			if (owner.isPotionActive(potion))
+			{
+				potionCount++;
+			}
+		}
+
+		int lootingAmmount = Math.min(EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack), 1);
+
+		if (owner instanceof EntityPlayer)
+		{
+			lootingAmmount += (int) ((EntityPlayer) owner).getLuck();
+		}
+
+		return (potionCount + lootingAmmount);
 	}
 
 }
