@@ -1,5 +1,6 @@
 package schr0.cleaver.item;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -118,7 +119,6 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 		Random random = this.getRandom(entityIn);
 		EntityLivingBase owner = (EntityLivingBase) entityIn;
-		int heatAmount = this.getHeatAmount(stack, owner);
 
 		if (owner.isBurning())
 		{
@@ -149,8 +149,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 					if (potionEffect.getDuration() < POTION_DURATION_LIMIT)
 					{
-						int duration = (potionEffect.getDuration() + (heatAmount * POTION_DURATION));
-
+						int duration = (potionEffect.getDuration() + (this.getHeatAmount(stack, owner) * POTION_DURATION));
 						duration = Math.min(duration, (60 * 20));
 						duration = Math.max(duration, (15 * 20));
 
@@ -158,10 +157,6 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 						stack.damageItem(1, owner);
 					}
-				}
-				else
-				{
-					continue;
 				}
 			}
 		}
@@ -178,7 +173,9 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		int chance = Math.min(((this.getHeatAmount(stack, attacker) * 4) + 10), 80);
+		int chance = (this.getHeatAmount(stack, attacker) * 8);
+		chance = Math.min(chance, 80);
+		chance = Math.max(chance, 10);
 
 		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
@@ -197,7 +194,9 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 			target.clearActivePotions();
 
-			target.setFire(heatAmount * 20);
+			target.setFire((5 * 20) + (heatAmount * 20));
+
+			ArrayList<Potion> nonActivePotions = new ArrayList<Potion>();
 
 			for (Potion potion : Potion.REGISTRY)
 			{
@@ -212,27 +211,29 @@ public class ItemCleaverBlaze extends ItemCleaver
 				}
 				else
 				{
-					if (attacker.isPotionActive(potion))
+					if (!attacker.isPotionActive(potion))
 					{
-						continue;
-					}
-					else
-					{
-						int duration = (heatAmount * POTION_DURATION);
-
-						duration = Math.min(duration, (60 * 20));
-						duration = Math.max(duration, (15 * 20));
-
-						attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
-
-						CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
-
-						target.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 1.0F, 1.0F);
-
-						return true;
+						nonActivePotions.add(potion);
 					}
 				}
 			}
+
+			if (!nonActivePotions.isEmpty())
+			{
+				Random random = this.getRandom(attacker);
+				Potion potion = nonActivePotions.get(random.nextInt(nonActivePotions.size()));
+				int duration = (heatAmount * POTION_DURATION);
+
+				duration = Math.min(duration, (60 * 20));
+				duration = Math.max(duration, (15 * 20));
+
+				attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
+			}
+
+			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
+			target.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 0.5F, 1.0F);
+
+			return true;
 		}
 
 		return true;
@@ -264,24 +265,26 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 	private int getHeatAmount(ItemStack stack, EntityLivingBase owner)
 	{
-		int potionCount = 0;
+		int heatAmount = 1;
 
 		for (Potion potion : Potion.REGISTRY)
 		{
 			if (owner.isPotionActive(potion))
 			{
-				potionCount++;
+				heatAmount++;
 			}
 		}
 
-		int lootingAmmount = Math.min(EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack), 1);
+		int lootingAmmount = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
+		lootingAmmount = Math.min(lootingAmmount, 3);
+		lootingAmmount = Math.max(lootingAmmount, 1);
 
 		if (owner instanceof EntityPlayer)
 		{
 			lootingAmmount += (int) ((EntityPlayer) owner).getLuck();
 		}
 
-		return (potionCount + lootingAmmount);
+		return (heatAmount * lootingAmmount);
 	}
 
 }
