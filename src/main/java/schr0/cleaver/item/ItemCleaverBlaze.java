@@ -72,7 +72,6 @@ public class ItemCleaverBlaze extends ItemCleaver
 				if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
 				{
 					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackDrop);
-
 					entityItem.setDefaultPickupDelay();
 
 					world.spawnEntity(entityItem);
@@ -82,7 +81,6 @@ public class ItemCleaverBlaze extends ItemCleaver
 					ItemStack stackResult = FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy();
 					int xpValue = EntityXPOrb.getXPSplit((int) FurnaceRecipes.instance().getSmeltingExperience(stackDrop));
 					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackResult);
-
 					entityItem.setDefaultPickupDelay();
 
 					world.spawnEntity(entityItem);
@@ -190,12 +188,9 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 		if (canCleaveTarget)
 		{
+			Random random = this.getRandom(attacker);
 			int heatAmount = this.getHeatAmount(stack, attacker);
-
-			target.clearActivePotions();
-
-			target.setFire((5 * 20) + (heatAmount * 20));
-
+			ArrayList<Potion> activePotions = new ArrayList<Potion>();
 			ArrayList<Potion> nonActivePotions = new ArrayList<Potion>();
 
 			for (Potion potion : Potion.REGISTRY)
@@ -211,24 +206,77 @@ public class ItemCleaverBlaze extends ItemCleaver
 				}
 				else
 				{
-					if (!attacker.isPotionActive(potion))
+					if (attacker.isPotionActive(potion))
+					{
+						activePotions.add(potion);
+					}
+					else
 					{
 						nonActivePotions.add(potion);
 					}
 				}
 			}
 
-			if (!nonActivePotions.isEmpty())
+			if (activePotions.size() < 5)
 			{
-				Random random = this.getRandom(attacker);
-				Potion potion = nonActivePotions.get(random.nextInt(nonActivePotions.size()));
-				int duration = (heatAmount * POTION_DURATION);
+				if (!nonActivePotions.isEmpty())
+				{
+					Potion potion = nonActivePotions.get(random.nextInt(nonActivePotions.size()));
+					int duration = (heatAmount * POTION_DURATION);
 
-				duration = Math.min(duration, (60 * 20));
-				duration = Math.max(duration, (15 * 20));
+					duration = Math.min(duration, (60 * 20));
+					duration = Math.max(duration, (15 * 20));
 
-				attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
+					attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
+				}
 			}
+			else
+			{
+				if (!activePotions.isEmpty())
+				{
+					boolean successIncrease = false;
+
+					do
+					{
+						Potion potion = activePotions.get(random.nextInt(activePotions.size()));
+						PotionEffect potionEffect = attacker.getActivePotionEffect(potion);
+						int amplifier = potionEffect.getAmplifier();
+
+						++amplifier;
+
+						if (amplifier < 3)
+						{
+							attacker.addPotionEffect(new PotionEffect(potion, potionEffect.getDuration(), amplifier));
+
+							successIncrease = true;
+						}
+						else
+						{
+							successIncrease = false;
+						}
+
+						int limitIncreasePotions = 0;
+
+						for (Potion activePotion : activePotions)
+						{
+							if (2 <= attacker.getActivePotionEffect(potion).getAmplifier())
+							{
+								++limitIncreasePotions;
+							}
+						}
+
+						if (activePotions.size() <= limitIncreasePotions)
+						{
+							successIncrease = true;
+						}
+					}
+					while (!successIncrease);
+				}
+			}
+
+			target.clearActivePotions();
+
+			target.setFire((5 * 20) + (heatAmount * 20));
 
 			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
 			target.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 0.5F, 1.0F);
@@ -271,7 +319,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 		{
 			if (owner.isPotionActive(potion))
 			{
-				heatAmount++;
+				heatAmount += owner.getActivePotionEffect(potion).getAmplifier();
 			}
 		}
 
