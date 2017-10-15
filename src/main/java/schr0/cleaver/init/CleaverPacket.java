@@ -5,10 +5,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import schr0.cleaver.Cleaver;
-import schr0.cleaver.packet.MessageHandlerParticleEntity;
-import schr0.cleaver.packet.MessageHandlerParticlePosition;
-import schr0.cleaver.packet.MessageParticleEntity;
-import schr0.cleaver.packet.MessageParticlePosition;
+import schr0.cleaver.packet.particleentity.MessageHandlerParticleEntity;
+import schr0.cleaver.packet.particleentity.MessageParticleEntity;
+import schr0.cleaver.packet.particleposition.MessageHandlerParticlePosition;
+import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 
 public class CleaverPacket
 {

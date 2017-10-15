@@ -18,6 +18,7 @@ public interface ICleaverItem
 	 *            攻撃をされるEntityLivingBase.
 	 * @param attacker
 	 *            攻撃をするEntityLivingBase.
+	 *
 	 * @return 攻撃力.
 	 */
 	float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
@@ -33,6 +34,7 @@ public interface ICleaverItem
 	 *            剥ぎ取りをされるEntityLivingBase.
 	 * @param attacker
 	 *            剥ぎ取りをするEntityLivingBase.
+	 *
 	 * @return 剥ぎ取りの判定.
 	 */
 	boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);

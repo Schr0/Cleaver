@@ -1,4 +1,4 @@
-package schr0.cleaver.packet;
+package schr0.cleaver.packet.particleposition;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.math.BlockPos;

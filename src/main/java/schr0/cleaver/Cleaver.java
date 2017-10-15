@@ -19,7 +19,7 @@ import schr0.cleaver.init.CleaverItems;
 import schr0.cleaver.init.CleaverPacket;
 import schr0.cleaver.init.CleaverRecipe;
 
-@Mod(modid = Cleaver.MOD_ID, name = Cleaver.MOD_NAME, version = Cleaver.MOD_VERSION, dependencies = Cleaver.MOD_DEPENDENCIES)
+@Mod(modid = Cleaver.MOD_ID, name = Cleaver.MOD_NAME, version = Cleaver.MOD_VERSION)
 public class Cleaver
 {
 
@@ -37,11 +37,6 @@ public class Cleaver
 	 * Modのバージョン.
 	 */
 	public static final String MOD_VERSION = "1.1.0";
-
-	/**
-	 * Forgeのバージョン.
-	 */
-	public static final String MOD_DEPENDENCIES = "required-after:forge@[1.12-14.21.1.2387,)";
 
 	/**
 	 * ResourceLocationのDomain.

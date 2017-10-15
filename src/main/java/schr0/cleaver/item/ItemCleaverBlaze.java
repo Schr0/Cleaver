@@ -1,6 +1,5 @@
 package schr0.cleaver.item;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -17,7 +16,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
@@ -27,8 +25,8 @@ import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPacket;
 import schr0.cleaver.init.CleaverParticles;
-import schr0.cleaver.packet.MessageParticleEntity;
-import schr0.cleaver.packet.MessageParticlePosition;
+import schr0.cleaver.packet.particleentity.MessageParticleEntity;
+import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 
 public class ItemCleaverBlaze extends ItemCleaver
 {
@@ -110,56 +108,26 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
-		if (!isSelected || !(entityIn instanceof EntityLivingBase) || worldIn.isRemote)
+		if (!(entityIn instanceof EntityLivingBase) || worldIn.isRemote)
 		{
 			return;
 		}
 
-		Random random = this.getRandom(entityIn);
 		EntityLivingBase owner = (EntityLivingBase) entityIn;
 
-		if (owner.isBurning())
+		if (isSelected || owner.getHeldItemOffhand().isItemEqual(stack))
 		{
-			owner.extinguish();
-		}
-
-		for (Potion potion : Potion.REGISTRY)
-		{
-			if (potion.isInstant())
+			if (isSelected)
 			{
-				continue;
-			}
-
-			if (potion.isBadEffect())
-			{
-				if (owner.isPotionActive(potion))
-				{
-					owner.removePotionEffect(potion);
-				}
-
-				continue;
+				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
 			}
 			else
 			{
-				if (owner.isPotionActive(potion))
-				{
-					PotionEffect potionEffect = owner.getActivePotionEffect(potion);
-
-					if (potionEffect.getDuration() < POTION_DURATION_LIMIT)
-					{
-						int duration = (potionEffect.getDuration() + (this.getHeatAmount(stack, owner) * POTION_DURATION));
-						duration = Math.min(duration, (60 * 20));
-						duration = Math.max(duration, (15 * 20));
-
-						owner.addPotionEffect(new PotionEffect(potion, (20 + duration), potionEffect.getAmplifier()));
-
-						stack.damageItem(1, owner);
-					}
-				}
+				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
 			}
-		}
 
-		CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+		}
 	}
 
 	@Override
@@ -171,7 +139,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		int chance = (this.getHeatAmount(stack, attacker) * 8);
+		int chance = (this.getHeatAmount(stack, attacker) * 4);
 		chance = Math.min(chance, 80);
 		chance = Math.max(chance, 10);
 
@@ -188,98 +156,10 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 		if (canCleaveTarget)
 		{
-			Random random = this.getRandom(attacker);
-			int heatAmount = this.getHeatAmount(stack, attacker);
-			ArrayList<Potion> activePotions = new ArrayList<Potion>();
-			ArrayList<Potion> nonActivePotions = new ArrayList<Potion>();
-
-			for (Potion potion : Potion.REGISTRY)
-			{
-				if (potion.isInstant())
-				{
-					continue;
-				}
-
-				if (potion.isBadEffect())
-				{
-					continue;
-				}
-				else
-				{
-					if (attacker.isPotionActive(potion))
-					{
-						activePotions.add(potion);
-					}
-					else
-					{
-						nonActivePotions.add(potion);
-					}
-				}
-			}
-
-			if (activePotions.size() < 5)
-			{
-				if (!nonActivePotions.isEmpty())
-				{
-					Potion potion = nonActivePotions.get(random.nextInt(nonActivePotions.size()));
-					int duration = (heatAmount * POTION_DURATION);
-
-					duration = Math.min(duration, (60 * 20));
-					duration = Math.max(duration, (15 * 20));
-
-					attacker.addPotionEffect(new PotionEffect(potion, (20 + duration)));
-				}
-			}
-			else
-			{
-				if (!activePotions.isEmpty())
-				{
-					boolean successIncrease = false;
-
-					do
-					{
-						Potion potion = activePotions.get(random.nextInt(activePotions.size()));
-						PotionEffect potionEffect = attacker.getActivePotionEffect(potion);
-						int amplifier = potionEffect.getAmplifier();
-
-						++amplifier;
-
-						if (amplifier < 3)
-						{
-							attacker.addPotionEffect(new PotionEffect(potion, potionEffect.getDuration(), amplifier));
-
-							successIncrease = true;
-						}
-						else
-						{
-							successIncrease = false;
-						}
-
-						int limitIncreasePotions = 0;
-
-						for (Potion activePotion : activePotions)
-						{
-							if (2 <= attacker.getActivePotionEffect(potion).getAmplifier())
-							{
-								++limitIncreasePotions;
-							}
-						}
-
-						if (activePotions.size() <= limitIncreasePotions)
-						{
-							successIncrease = true;
-						}
-					}
-					while (!successIncrease);
-				}
-			}
-
-			target.clearActivePotions();
-
-			target.setFire((5 * 20) + (heatAmount * 20));
+			ItemCleaverBlazeHelper.onCleaveGoodPotions(this.getHeatAmount(stack, attacker), stack, target, attacker);
 
 			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
-			target.playSound(SoundEvents.ITEM_FIRECHARGE_USE, 0.5F, 1.0F);
+			target.playSound(SoundEvents.ENTITY_BLAZE_SHOOT, 0.25F, 1.0F);
 
 			return true;
 		}
@@ -290,9 +170,12 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public boolean shouldDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner)
 	{
-		if (isSelected && damageSource.isFireDamage())
+		if (isSelected || owner.getHeldItemOffhand().isItemEqual(stack))
 		{
-			return false;
+			if (damageSource.isFireDamage())
+			{
+				return false;
+			}
 		}
 
 		return true;
