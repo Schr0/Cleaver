@@ -34,6 +34,9 @@ import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 public class ItemCleaverNormal extends ItemCleaver
 {
 
+	private static final int MIN_SHARPNESS_AMOUNT = 2;
+	private static final int MAX_SHARPNESS_AMOUNT = 8;
+
 	public ItemCleaverNormal()
 	{
 		super(CleaverMaterial.NORMAL);
@@ -158,8 +161,6 @@ public class ItemCleaverNormal extends ItemCleaver
 	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		int chance = (this.getSharpnessAmount(attackAmmount, stack, attacker) * 10);
-		chance = Math.min(chance, 80);
-		chance = Math.max(chance, 10);
 
 		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
@@ -182,11 +183,8 @@ public class ItemCleaverNormal extends ItemCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			int usedAmmount = sharpnessAmount;
-			usedAmmount = Math.min(usedAmmount, 8);
-			usedAmmount = Math.max(usedAmmount, 2);
-
-			ArrayList<ItemStack> equipments = getCleaveEquipments(random.nextInt(usedAmmount), stack, target, attacker);
+			int usedAmmount = random.nextInt(sharpnessAmount);
+			ArrayList<ItemStack> equipments = getCleaveEquipments(usedAmmount, stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -202,9 +200,6 @@ public class ItemCleaverNormal extends ItemCleaver
 			}
 
 			int rarityAmmount = (100 - (sharpnessAmount * 10));
-			rarityAmmount = Math.min(rarityAmmount, 70);
-			rarityAmmount = Math.max(rarityAmmount, 10);
-
 			EnumRarity rarity = getCleaveRarity(random.nextInt(rarityAmmount));
 			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(rarity, stack, target, attacker);
 
@@ -246,17 +241,18 @@ public class ItemCleaverNormal extends ItemCleaver
 
 	private int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)
 	{
-		int sharpnessAmount = Math.round(attackAmmount);
 		int lootingAmmount = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
-		lootingAmmount = Math.min(lootingAmmount, 3);
-		lootingAmmount = Math.max(lootingAmmount, 1);
 
 		if (attacker instanceof EntityPlayer)
 		{
 			lootingAmmount += (int) ((EntityPlayer) attacker).getLuck();
 		}
 
-		return (sharpnessAmount * lootingAmmount);
+		int sharpnessAmount = ((int) Math.round(attackAmmount) * lootingAmmount);
+		sharpnessAmount = Math.min(sharpnessAmount, MAX_SHARPNESS_AMOUNT);
+		sharpnessAmount = Math.max(sharpnessAmount, MIN_SHARPNESS_AMOUNT);
+
+		return sharpnessAmount;
 	}
 
 	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)

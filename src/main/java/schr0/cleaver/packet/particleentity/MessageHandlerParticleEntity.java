@@ -21,11 +21,12 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 	public IMessage onMessage(MessageParticleEntity message, MessageContext ctx)
 	{
 		World world = FMLClientHandler.instance().getClient().world;
-		Entity entity = message.getEntity(world);
-		Random random = world.rand;
 
-		if (entity != null)
+		if (world != null)
 		{
+			Random random = world.rand;
+			Entity entity = message.getEntity(world);
+
 			switch (message.getParticleType())
 			{
 				case CleaverParticles.ENTITY_NORMAL_DISARMAMENT :

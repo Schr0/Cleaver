@@ -13,11 +13,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -31,12 +35,82 @@ import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 public class ItemCleaverBlaze extends ItemCleaver
 {
 
+	private static final int MIN_HEAT_AMOUNT = 5;
+	private static final int MAX_HEAT_AMOUNT = 20;
+
 	private static final int POTION_DURATION = 100;
 	private static final int POTION_DURATION_LIMIT = (11 * 20);
+
+	private static final int MIN_CHAGE_COUNT = (1 * 20);
+	private static final int MAX_CHAGE_COUNT = (8 * 20);
+	private static final int INTERVAL_CHAGE_COUNT = (5 * 20);
+
+	private static final int MIN_CHAGE_AMOUNT = 2;
+	private static final int MAX_CHAGE_AMOUNT = 8;
 
 	public ItemCleaverBlaze()
 	{
 		super(CleaverMaterial.BLAZE);
+	}
+
+	@Override
+	public int getMaxItemUseDuration(ItemStack stack)
+	{
+		return 72000;
+	}
+
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack)
+	{
+		return EnumAction.BOW;
+	}
+
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+	{
+		ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+		playerIn.setActiveHand(handIn);
+
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+	}
+
+	@Override
+	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+	{
+		int timeCount = this.getMaxItemUseDuration(stack) - count;
+		World world = player.getEntityWorld();
+
+		if ((timeCount < MIN_CHAGE_COUNT) || world.isRemote)
+		{
+			return;
+		}
+
+		ItemCleaverBlazeHelper.onBlazeRestraint(this.getHeatAmount(stack, player), stack, player, this.getChageAmmount(timeCount));
+	}
+
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+	{
+		int timeCount = this.getMaxItemUseDuration(stack) - timeLeft;
+
+		if (timeCount < MIN_CHAGE_COUNT)
+		{
+			return;
+		}
+
+		ItemCleaverBlazeHelper.onBlazeAttack(this.getHeatAmount(stack, entityLiving), stack, entityLiving, this.getChageAmmount(timeCount));
+
+		if (entityLiving instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer) entityLiving;
+
+			player.getCooldownTracker().setCooldown(this, INTERVAL_CHAGE_COUNT);
+		}
+
+		entityLiving.swingArm(entityLiving.getActiveHand());
+
+		stack.damageItem(10, entityLiving);
 	}
 
 	@Override
@@ -119,7 +193,10 @@ public class ItemCleaverBlaze extends ItemCleaver
 		{
 			if (isSelected)
 			{
-				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
+				if (!owner.isHandActive())
+				{
+					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
+				}
 			}
 			else
 			{
@@ -140,8 +217,6 @@ public class ItemCleaverBlaze extends ItemCleaver
 	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		int chance = (this.getHeatAmount(stack, attacker) * 4);
-		chance = Math.min(chance, 80);
-		chance = Math.max(chance, 10);
 
 		return (this.getRandom(attacker).nextInt(100) < chance);
 	}
@@ -196,26 +271,37 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 	private int getHeatAmount(ItemStack stack, EntityLivingBase owner)
 	{
-		int heatAmount = 1;
+		int potionAmount = 1;
 
 		for (Potion potion : Potion.REGISTRY)
 		{
 			if (owner.isPotionActive(potion))
 			{
-				heatAmount += owner.getActivePotionEffect(potion).getAmplifier();
+				potionAmount += owner.getActivePotionEffect(potion).getAmplifier();
 			}
 		}
 
 		int lootingAmmount = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
-		lootingAmmount = Math.min(lootingAmmount, 3);
-		lootingAmmount = Math.max(lootingAmmount, 1);
 
 		if (owner instanceof EntityPlayer)
 		{
 			lootingAmmount += (int) ((EntityPlayer) owner).getLuck();
 		}
 
-		return (heatAmount * lootingAmmount);
+		int heatAmount = (potionAmount * lootingAmmount);
+		heatAmount = Math.min(heatAmount, MAX_HEAT_AMOUNT);
+		heatAmount = Math.max(heatAmount, MIN_HEAT_AMOUNT);
+
+		return heatAmount;
+	}
+
+	private int getChageAmmount(int timeCount)
+	{
+		int chageAmount = (timeCount / 20);
+		chageAmount = Math.min(chageAmount, MAX_CHAGE_AMOUNT);
+		chageAmount = Math.max(chageAmount, MIN_CHAGE_AMOUNT);
+
+		return chageAmount;
 	}
 
 }

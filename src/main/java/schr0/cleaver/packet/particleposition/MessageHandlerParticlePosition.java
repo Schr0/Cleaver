@@ -18,18 +18,22 @@ public class MessageHandlerParticlePosition implements IMessageHandler<MessagePa
 	public IMessage onMessage(MessageParticlePosition message, MessageContext ctx)
 	{
 		World world = FMLClientHandler.instance().getClient().world;
-		BlockPos blockPos = message.getPosition(world);
-		Random random = world.rand;
 
-		if (!blockPos.equals(BlockPos.ORIGIN))
+		if (world != null)
 		{
-			switch (message.getParticleType())
+			Random random = world.rand;
+			BlockPos blockPos = message.getPosition(world);
+
+			if (!blockPos.equals(BlockPos.ORIGIN))
 			{
-				case CleaverParticles.POSITION_BLAZE_SMELTING :
+				switch (message.getParticleType())
+				{
+					case CleaverParticles.POSITION_BLAZE_SMELTING :
 
-					particleBlazeSmelting(world, blockPos, random);
+						particleBlazeSmelting(world, blockPos, random);
 
-					break;
+						break;
+				}
 			}
 		}
 
