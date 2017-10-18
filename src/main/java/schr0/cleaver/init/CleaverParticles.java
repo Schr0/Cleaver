@@ -9,5 +9,6 @@ public class CleaverParticles
 	public static final int ENTITY_BLAZE_CLEAVE = 3;
 
 	public static final int POSITION_BLAZE_SMELTING = 0;
+	public static final int POSITION_BLAZE_AURA = 1;
 
 }

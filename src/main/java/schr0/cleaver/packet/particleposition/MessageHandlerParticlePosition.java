@@ -33,6 +33,13 @@ public class MessageHandlerParticlePosition implements IMessageHandler<MessagePa
 						particleBlazeSmelting(world, blockPos, random);
 
 						break;
+
+					case CleaverParticles.POSITION_BLAZE_AURA :
+
+						particleBlazeAura(world, blockPos, random);
+
+						break;
+
 				}
 			}
 		}
@@ -47,12 +54,24 @@ public class MessageHandlerParticlePosition implements IMessageHandler<MessagePa
 		for (int count = 0; count < 20; count++)
 		{
 			float randomPos = 0.5F;
-			double posXdrop = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-			double posYdrop = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-			double posZdrop = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+			double posX = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+			double posY = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+			double posZ = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
 
-			world.spawnParticle(EnumParticleTypes.FLAME, posXdrop, posYdrop, posZdrop, 0.0D, 0.0D, 0.0D, new int[0]);
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+			world.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, 0.0D, 0.0D, 0.0D, new int[0]);
 		}
+	}
+
+	private static void particleBlazeAura(World world, BlockPos pos, Random random)
+	{
+		float randomPos = 0.5F;
+		double posX = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+		double posY = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+		double posZ = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+
+		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, posX, posY, posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+		world.spawnParticle(EnumParticleTypes.FLAME, posX, posY, posZ, 0.0D, 0.0D, 0.0D, new int[0]);
 	}
 
 }

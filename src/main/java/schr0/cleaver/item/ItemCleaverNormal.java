@@ -34,8 +34,8 @@ import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 public class ItemCleaverNormal extends ItemCleaver
 {
 
-	private static final int MIN_SHARPNESS_AMOUNT = 2;
-	private static final int MAX_SHARPNESS_AMOUNT = 8;
+	private static final int SHARPNESS_AMOUNT_MIN = 2;
+	private static final int SHARPNESS_AMOUNT_MAX = 8;
 
 	public ItemCleaverNormal()
 	{
@@ -194,6 +194,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				}
 
 				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_DISARMAMENT));
+
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
 				return true;
@@ -211,6 +212,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				}
 
 				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_CLEAVE));
+
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
 
 				return true;
@@ -249,8 +251,8 @@ public class ItemCleaverNormal extends ItemCleaver
 		}
 
 		int sharpnessAmount = ((int) Math.round(attackAmmount) * lootingAmmount);
-		sharpnessAmount = Math.min(sharpnessAmount, MAX_SHARPNESS_AMOUNT);
-		sharpnessAmount = Math.max(sharpnessAmount, MIN_SHARPNESS_AMOUNT);
+		sharpnessAmount = Math.min(sharpnessAmount, SHARPNESS_AMOUNT_MAX);
+		sharpnessAmount = Math.max(sharpnessAmount, SHARPNESS_AMOUNT_MIN);
 
 		return sharpnessAmount;
 	}

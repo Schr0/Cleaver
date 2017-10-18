@@ -35,18 +35,18 @@ import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 public class ItemCleaverBlaze extends ItemCleaver
 {
 
-	private static final int MIN_HEAT_AMOUNT = 5;
-	private static final int MAX_HEAT_AMOUNT = 20;
+	private static final int HEAT_AMOUNT_MIN = 5;
+	private static final int HEAT_AMOUNT_MAX = 20;
 
 	private static final int POTION_DURATION = 100;
 	private static final int POTION_DURATION_LIMIT = (11 * 20);
 
-	private static final int MIN_CHAGE_COUNT = (1 * 20);
-	private static final int MAX_CHAGE_COUNT = (8 * 20);
-	private static final int INTERVAL_CHAGE_COUNT = (5 * 20);
+	private static final int CHAGE_COUNT_MIN = (1 * 20);
+	private static final int CHAGE_COUNT_MAX = (8 * 20);
+	private static final int CHAGE_COUNT_INTERVAL = (5 * 20);
 
-	private static final int MIN_CHAGE_AMOUNT = 2;
-	private static final int MAX_CHAGE_AMOUNT = 8;
+	private static final int CHAGE_AMOUNT_MIN = 2;
+	private static final int CHAGE_AMOUNT_MAX = 8;
 
 	public ItemCleaverBlaze()
 	{
@@ -68,6 +68,11 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
 	{
+		if (handIn == EnumHand.OFF_HAND)
+		{
+			return super.onItemRightClick(worldIn, playerIn, handIn);
+		}
+
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
 
 		playerIn.setActiveHand(handIn);
@@ -81,12 +86,12 @@ public class ItemCleaverBlaze extends ItemCleaver
 		int timeCount = this.getMaxItemUseDuration(stack) - count;
 		World world = player.getEntityWorld();
 
-		if ((timeCount < MIN_CHAGE_COUNT) || world.isRemote)
+		if ((timeCount < CHAGE_COUNT_MIN) || world.isRemote)
 		{
 			return;
 		}
 
-		ItemCleaverBlazeHelper.onBlazeRestraint(this.getHeatAmount(stack, player), stack, player, this.getChageAmmount(timeCount));
+		ItemCleaverBlazeHelper.onUpdateRestraint(this.getChageAmmount(timeCount), stack, player, timeCount);
 	}
 
 	@Override
@@ -94,18 +99,18 @@ public class ItemCleaverBlaze extends ItemCleaver
 	{
 		int timeCount = this.getMaxItemUseDuration(stack) - timeLeft;
 
-		if (timeCount < MIN_CHAGE_COUNT)
+		if (timeCount < CHAGE_COUNT_MIN)
 		{
 			return;
 		}
 
-		ItemCleaverBlazeHelper.onBlazeAttack(this.getHeatAmount(stack, entityLiving), stack, entityLiving, this.getChageAmmount(timeCount));
+		ItemCleaverBlazeHelper.attackBlazeExplosion(this.getHeatAmount(stack, entityLiving), this.getChageAmmount(timeCount), stack, entityLiving);
 
 		if (entityLiving instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entityLiving;
 
-			player.getCooldownTracker().setCooldown(this, INTERVAL_CHAGE_COUNT);
+			player.getCooldownTracker().setCooldown(this, CHAGE_COUNT_INTERVAL);
 		}
 
 		entityLiving.swingArm(entityLiving.getActiveHand());
@@ -195,12 +200,12 @@ public class ItemCleaverBlaze extends ItemCleaver
 			{
 				if (!owner.isHandActive())
 				{
-					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
+					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 				}
 			}
 			else
 			{
-				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), worldIn, stack, owner);
+				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 			}
 
 			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
@@ -231,9 +236,10 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 		if (canCleaveTarget)
 		{
-			ItemCleaverBlazeHelper.onCleaveGoodPotions(this.getHeatAmount(stack, attacker), stack, target, attacker);
+			ItemCleaverBlazeHelper.cleavePotions(this.getHeatAmount(stack, attacker), stack, target, attacker);
 
 			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
+
 			target.playSound(SoundEvents.ENTITY_BLAZE_SHOOT, 0.25F, 1.0F);
 
 			return true;
@@ -289,8 +295,8 @@ public class ItemCleaverBlaze extends ItemCleaver
 		}
 
 		int heatAmount = (potionAmount * lootingAmmount);
-		heatAmount = Math.min(heatAmount, MAX_HEAT_AMOUNT);
-		heatAmount = Math.max(heatAmount, MIN_HEAT_AMOUNT);
+		heatAmount = Math.min(heatAmount, HEAT_AMOUNT_MAX);
+		heatAmount = Math.max(heatAmount, HEAT_AMOUNT_MIN);
 
 		return heatAmount;
 	}
@@ -298,8 +304,8 @@ public class ItemCleaverBlaze extends ItemCleaver
 	private int getChageAmmount(int timeCount)
 	{
 		int chageAmount = (timeCount / 20);
-		chageAmount = Math.min(chageAmount, MAX_CHAGE_AMOUNT);
-		chageAmount = Math.max(chageAmount, MIN_CHAGE_AMOUNT);
+		chageAmount = Math.min(chageAmount, CHAGE_AMOUNT_MAX);
+		chageAmount = Math.max(chageAmount, CHAGE_AMOUNT_MIN);
 
 		return chageAmount;
 	}

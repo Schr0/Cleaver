@@ -74,6 +74,7 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 	private static void particleBlazeShield(World world, Entity entity, Random random)
 	{
+		world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
 		world.spawnParticle(EnumParticleTypes.FLAME, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
 	}
 
@@ -81,6 +82,7 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 	{
 		for (int count = 0; count < 20; count++)
 		{
+			world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
 			world.spawnParticle(EnumParticleTypes.FLAME, entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.posY + (double) (random.nextFloat() * entity.height), entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width, 0.0D, 0.0D, 0.0D, new int[0]);
 		}
 	}
