@@ -195,7 +195,7 @@ public class ItemCleaverBlazeHelper
 			world.createExplosion(attacker, aroundEntityLivingBase.posX, aroundEntityLivingBase.posY, aroundEntityLivingBase.posZ, 1.0F, false);
 		}
 
-		evaporationBlock(stack, attacker, chageAmount, chageAmount);
+		evaporationBlock(stack, attacker, chageAmount);
 
 		world.playEvent(1009, attacker.getPosition(), 0);
 	}
@@ -240,14 +240,12 @@ public class ItemCleaverBlazeHelper
 			}
 		}
 
-		if (evaporationBlock(stack, owner, 0, 1))
+		if (owner.ticksExisted % 20 == 0)
 		{
-			world.playEvent(1009, owner.getPosition(), 0);
-		}
-
-		if (owner.isWet() && (owner.ticksExisted % 20 == 0))
-		{
-			world.playEvent(1009, owner.getPosition(), 0);
+			if (evaporationBlock(stack, owner, 1) || owner.isWet())
+			{
+				world.playEvent(1009, owner.getPosition(), 0);
+			}
 		}
 	}
 
@@ -295,13 +293,13 @@ public class ItemCleaverBlazeHelper
 		return listEntityLivingBase;
 	}
 
-	private static boolean evaporationBlock(ItemStack stack, EntityLivingBase owner, int rangeXZ, int rangeY)
+	private static boolean evaporationBlock(ItemStack stack, EntityLivingBase owner, int rangeXYZ)
 	{
 		World world = owner.getEntityWorld();
 		BlockPos posOwner = owner.getPosition();
 		int evaporationCount = 0;
 
-		for (BlockPos posAround : BlockPos.getAllInBox(posOwner.add(-rangeXZ, -rangeY, -rangeXZ), posOwner.add(rangeXZ, rangeY, rangeXZ)))
+		for (BlockPos posAround : BlockPos.getAllInBox(posOwner.add(-rangeXYZ, -rangeXYZ, -rangeXYZ), posOwner.add(rangeXYZ, rangeXYZ, rangeXYZ)))
 		{
 			Block block = world.getBlockState(posAround).getBlock();
 
@@ -309,7 +307,8 @@ public class ItemCleaverBlazeHelper
 			{
 				if (block.equals(blockEvaporation))
 				{
-					world.setBlockState(posAround, Blocks.AIR.getDefaultState(), 2);
+					// world.setBlockState(posAround, Blocks.AIR.getDefaultState(), 2);
+					world.setBlockToAir(posAround);
 
 					CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticles.POSITION_BLAZE_AURA));
 
