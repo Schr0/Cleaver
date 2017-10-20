@@ -11,6 +11,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
@@ -26,17 +27,10 @@ import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 public class ItemCleaverBlazeHelper
 {
 
-	private static final int POTION_DURATION_MAX = (60 * 20);
+	private static final int POTION_DURATION = (5 * 20);
 	private static final int POTION_DURATION_MIN = (20 * 20);
-	private static final int POTION_DURATION = 100;
+	private static final int POTION_DURATION_MAX = (60 * 20);
 	private static final int POTION_DURATION_LIMIT = (11 * 20);
-
-	private static final Set<Block> EVAPORATION_BLOCKS = Sets.newHashSet(new Block[]
-	{
-			Blocks.WATER, Blocks.FLOWING_WATER,
-			Blocks.ICE, Blocks.FROSTED_ICE, Blocks.PACKED_ICE,
-			Blocks.SNOW, Blocks.SNOW_LAYER,
-	});
 
 	public static void cleavePotions(int heatAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
@@ -123,33 +117,33 @@ public class ItemCleaverBlazeHelper
 		target.clearActivePotions();
 	}
 
-	public static void onUpdateRestraint(int chageAmount, ItemStack stack, EntityLivingBase owner, int timeCount)
+	public static void onUpdateRestraint(int chageAmount, ItemStack stack, EntityLivingBase owner, int tickCount)
 	{
+		if (owner instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer) owner;
+
+			player.addExhaustion(0.1F);
+		}
+
 		for (EntityLivingBase aroundEntityLivingBase : getAroundEntityLivingBase(owner, chageAmount))
 		{
 			if (aroundEntityLivingBase.isEntityAlive())
 			{
-				int halfSec = (20 / 2);
-				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, halfSec, 10, false, false));
-				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, halfSec, 10, false, false));
-
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(aroundEntityLivingBase.getPosition(), CleaverParticles.POSITION_BLAZE_AURA));
+				int halfsec = (20 / 2);
+				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, halfsec, 10, false, false));
+				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, halfsec, 10, false, false));
+				aroundEntityLivingBase.setFire(halfsec);
 			}
 		}
 
-		World world = owner.getEntityWorld();
 		BlockPos posOwner = owner.getPosition();
 		List<BlockPos> posAuras = Lists.newArrayList();
 		Iterable<BlockPos> posArounds = BlockPos.getAllInBox(posOwner.add(-chageAmount, -chageAmount, -chageAmount), posOwner.add(chageAmount, chageAmount, chageAmount));
-		Iterable<BlockPos> posEraseArounds = BlockPos.getAllInBox(posOwner.add(-(chageAmount - 1), -(chageAmount - 1), -(chageAmount - 1)), posOwner.add((chageAmount - 1), (chageAmount - 1), (chageAmount - 1)));
+		Iterable<BlockPos> posEraseArounds = BlockPos.getAllInBox(posOwner.add(-(chageAmount - 1), -chageAmount, -(chageAmount - 1)), posOwner.add((chageAmount - 1), chageAmount, (chageAmount - 1)));
 
 		for (BlockPos posAura : posArounds)
 		{
-			if (posAura.equals(posOwner))
-			{
-				continue;
-			}
-
 			posAuras.add(posAura);
 		}
 
@@ -166,17 +160,12 @@ public class ItemCleaverBlazeHelper
 			}
 		}
 
-		for (BlockPos posAura : posAuras)
+		if (tickCount % 2 == 0)
 		{
-			if (timeCount % 2 == 0)
+			for (BlockPos posAura : posAuras)
 			{
 				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(posAura, CleaverParticles.POSITION_BLAZE_AURA));
 			}
-		}
-
-		if (timeCount % 20 == 0)
-		{
-			world.playEvent(1009, posOwner, 0);
 		}
 	}
 
@@ -195,9 +184,7 @@ public class ItemCleaverBlazeHelper
 			world.createExplosion(attacker, aroundEntityLivingBase.posX, aroundEntityLivingBase.posY, aroundEntityLivingBase.posZ, 1.0F, false);
 		}
 
-		evaporationBlock(stack, attacker, chageAmount);
-
-		world.playEvent(1009, attacker.getPosition(), 0);
+		world.playEvent(1018, attacker.getPosition(), 0);
 	}
 
 	public static void onUpdateBlazeShield(int heatAmount, ItemStack stack, EntityLivingBase owner)
@@ -298,16 +285,21 @@ public class ItemCleaverBlazeHelper
 		World world = owner.getEntityWorld();
 		BlockPos posOwner = owner.getPosition();
 		int evaporationCount = 0;
+		Set<Block> evaporationBlocks = Sets.newHashSet(new Block[]
+		{
+				Blocks.WATER, Blocks.FLOWING_WATER,
+				Blocks.ICE, Blocks.FROSTED_ICE, Blocks.PACKED_ICE,
+				Blocks.SNOW, Blocks.SNOW_LAYER,
+		});
 
 		for (BlockPos posAround : BlockPos.getAllInBox(posOwner.add(-rangeXYZ, -rangeXYZ, -rangeXYZ), posOwner.add(rangeXYZ, rangeXYZ, rangeXYZ)))
 		{
 			Block block = world.getBlockState(posAround).getBlock();
 
-			for (Block blockEvaporation : EVAPORATION_BLOCKS)
+			for (Block blockEvaporation : evaporationBlocks)
 			{
 				if (block.equals(blockEvaporation))
 				{
-					// world.setBlockState(posAround, Blocks.AIR.getDefaultState(), 2);
 					world.setBlockToAir(posAround);
 
 					CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticles.POSITION_BLAZE_AURA));

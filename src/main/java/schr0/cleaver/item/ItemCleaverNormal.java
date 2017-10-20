@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
@@ -184,7 +183,7 @@ public class ItemCleaverNormal extends ItemCleaver
 			}
 
 			int usedAmmount = random.nextInt(sharpnessAmount);
-			ArrayList<ItemStack> equipments = getCleaveEquipments(usedAmmount, stack, target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(usedAmmount, stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -200,9 +199,8 @@ public class ItemCleaverNormal extends ItemCleaver
 				return true;
 			}
 
-			int rarityAmmount = (100 - (sharpnessAmount * 10));
-			EnumRarity rarity = getCleaveRarity(random.nextInt(rarityAmmount));
-			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(rarity, stack, target, attacker);
+			int rarityAmmount = random.nextInt((100 - (sharpnessAmount * 10)));
+			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(getCleaveRarity(rarityAmmount), stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
@@ -266,34 +264,6 @@ public class ItemCleaverNormal extends ItemCleaver
 		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
 
 		entityItem.setDefaultPickupDelay();
-	}
-
-	private static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-	{
-		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
-
-		for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
-		{
-			ItemStack stackEquipment = target.getItemStackFromSlot(equipmentSlot);
-
-			if (!stackEquipment.isEmpty())
-			{
-				if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
-				{
-					int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
-
-					stackEquipment.setItemDamage(Math.max(stackAmount, 0));
-				}
-
-				equipments.add(stackEquipment);
-
-				target.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
-
-				return equipments;
-			}
-		}
-
-		return equipments;
 	}
 
 	private static EnumRarity getCleaveRarity(int rarityAmount)

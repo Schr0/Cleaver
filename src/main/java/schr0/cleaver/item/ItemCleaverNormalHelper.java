@@ -63,6 +63,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.PotionTypes;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
@@ -85,6 +86,34 @@ public class ItemCleaverNormalHelper
 	private static final int PERCENT = 100;
 	private static final int COMMON = 40;
 	private static final int RARE = 20;
+
+	public static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
+
+		for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
+		{
+			ItemStack stackEquipment = target.getItemStackFromSlot(equipmentSlot);
+
+			if (!stackEquipment.isEmpty())
+			{
+				if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
+				{
+					int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
+
+					stackEquipment.setItemDamage(Math.max(stackAmount, 0));
+				}
+
+				equipments.add(stackEquipment);
+
+				target.setItemStackToSlot(equipmentSlot, ItemStack.EMPTY);
+
+				return equipments;
+			}
+		}
+
+		return equipments;
+	}
 
 	public static ArrayList<ItemStack> getCleaveDrops(EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{

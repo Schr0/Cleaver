@@ -20,6 +20,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -73,49 +74,52 @@ public class ItemCleaverBlaze extends ItemCleaver
 			return super.onItemRightClick(worldIn, playerIn, handIn);
 		}
 
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
-
 		playerIn.setActiveHand(handIn);
 
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
 	}
 
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
 	{
-		int timeCount = this.getMaxItemUseDuration(stack) - count;
+		int tickCount = this.getTickCount(stack, count);
 		World world = player.getEntityWorld();
 
-		if ((timeCount < CHAGE_COUNT_MIN) || world.isRemote)
+		if ((tickCount < CHAGE_COUNT_MIN) || world.isRemote)
 		{
 			return;
 		}
 
-		ItemCleaverBlazeHelper.onUpdateRestraint(this.getChageAmmount(timeCount), stack, player, timeCount);
+		ItemCleaverBlazeHelper.onUpdateRestraint(this.getChageAmmount(tickCount), stack, player, tickCount);
+
+		if (tickCount % 20 == 0)
+		{
+			world.playEvent(1009, player.getPosition(), 0);
+		}
 	}
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
 	{
-		int timeCount = this.getMaxItemUseDuration(stack) - timeLeft;
+		int tickCount = this.getTickCount(stack, timeLeft);
 
-		if (timeCount < CHAGE_COUNT_MIN)
+		if ((tickCount < CHAGE_COUNT_MIN) || worldIn.isRemote)
 		{
 			return;
 		}
 
-		ItemCleaverBlazeHelper.attackBlazeExplosion(this.getHeatAmount(stack, entityLiving), this.getChageAmmount(timeCount), stack, entityLiving);
+		int chageAmmount = this.getChageAmmount(tickCount);
+
+		ItemCleaverBlazeHelper.attackBlazeExplosion(this.getHeatAmount(stack, entityLiving), chageAmmount, stack, entityLiving);
 
 		if (entityLiving instanceof EntityPlayer)
 		{
-			EntityPlayer player = (EntityPlayer) entityLiving;
-
-			player.getCooldownTracker().setCooldown(this, CHAGE_COUNT_INTERVAL);
+			((EntityPlayer) entityLiving).getCooldownTracker().setCooldown(this, CHAGE_COUNT_INTERVAL);
 		}
 
 		entityLiving.swingArm(entityLiving.getActiveHand());
 
-		stack.damageItem(10, entityLiving);
+		stack.damageItem(chageAmmount, entityLiving);
 	}
 
 	@Override
@@ -124,7 +128,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 		World world = player.getEntityWorld();
 		IBlockState state = world.getBlockState(pos);
 
-		if (world.isRemote || player.capabilities.isCreativeMode || !player.canHarvestBlock(state))
+		if (player.capabilities.isCreativeMode || !player.canHarvestBlock(state) || world.isRemote)
 		{
 			return false;
 		}
@@ -201,14 +205,16 @@ public class ItemCleaverBlaze extends ItemCleaver
 				if (!owner.isHandActive())
 				{
 					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
+
+					CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
 				}
 			}
 			else
 			{
 				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
-			}
 
-			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+			}
 		}
 	}
 
@@ -265,6 +271,13 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner)
 	{
+		if (damageSource instanceof EntityDamageSourceIndirect)
+		{
+			owner.getEntityWorld().playEvent(1020, owner.getPosition(), 0);
+
+			return (rawDamageAmmount / 2);
+		}
+
 		return rawDamageAmmount;
 	}
 
@@ -308,6 +321,11 @@ public class ItemCleaverBlaze extends ItemCleaver
 		chageAmount = Math.max(chageAmount, CHAGE_AMOUNT_MIN);
 
 		return chageAmount;
+	}
+
+	private int getTickCount(ItemStack stack, int timeLeft)
+	{
+		return (this.getMaxItemUseDuration(stack) - timeLeft);
 	}
 
 }
