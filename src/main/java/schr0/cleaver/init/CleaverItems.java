@@ -19,6 +19,7 @@ import schr0.cleaver.item.ItemCleaverBlaze;
 import schr0.cleaver.item.ItemCleaverNormal;
 import schr0.cleaver.item.ItemMaterialCleaverBlaze;
 import schr0.cleaver.item.ItemMaterialCleaverNormal;
+import schr0.cleaver.util.CleaverCreativeTabs;
 
 public class CleaverItems
 {

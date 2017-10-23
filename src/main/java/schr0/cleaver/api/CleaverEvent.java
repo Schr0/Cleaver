@@ -8,64 +8,68 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class CleaverEvent
+public class CleaverEvent extends Event
 {
 
-	@Cancelable
-	public static class CleaverNormalEvent extends Event
+	// ItemCleaverNormalのEvent.
+	public static class Normal extends CleaverEvent
 	{
-		private final ArrayList<ItemStack> drops;
-		private final EnumRarity rarity;
-		private final ItemStack stack;
-		private final EntityLivingBase target;
-		private final EntityLivingBase attacker;
-
-		/**
-		 * ItemCleaverNormalの剥ぎ取りEvent.
-		 *
-		 * @param drops
-		 *            剥ぎ取りされるArrayList<ItemStack>.
-		 * @param rarity
-		 *            剥ぎ取りレアリティ（COMMON < UNCOMMON < RARE < EPIC）
-		 * @param stack
-		 *            ICleaverItemのItemStack.
-		 * @param target
-		 *            剥ぎ取りをされるEntityLivingBase.
-		 * @param attacker
-		 *            剥ぎ取りをするEntityLivingBase.
-		 */
-		public CleaverNormalEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+		@Cancelable
+		public static class CleaveDrops extends Normal
 		{
-			this.drops = drops;
-			this.rarity = rarity;
-			this.stack = stack;
-			this.target = target;
-			this.attacker = attacker;;
-		}
+			private final ArrayList<ItemStack> drops;
+			private final EnumRarity rarity;
+			private final ItemStack stack;
+			private final EntityLivingBase target;
+			private final EntityLivingBase attacker;
 
-		public ArrayList<ItemStack> getDrops()
-		{
-			return this.drops;
-		}
+			/**
+			 * 剥ぎ取りEvent.
+			 *
+			 * @param drops
+			 *            剥ぎ取りされるArrayList<ItemStack>.
+			 * @param rarity
+			 *            剥ぎ取りレアリティ（COMMON < UNCOMMON < RARE < EPIC）
+			 * @param stack
+			 *            ICleaverItemのItemStack.
+			 * @param target
+			 *            剥ぎ取りをされるEntityLivingBase.
+			 * @param attacker
+			 *            剥ぎ取りをするEntityLivingBase.
+			 */
+			public CleaveDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+			{
+				this.drops = drops;
+				this.rarity = rarity;
+				this.stack = stack;
+				this.target = target;
+				this.attacker = attacker;;
+			}
 
-		public EnumRarity getRarity()
-		{
-			return this.rarity;
-		}
+			public ArrayList<ItemStack> getDrops()
+			{
+				return this.drops;
+			}
 
-		public ItemStack getStack()
-		{
-			return this.stack;
-		}
+			public EnumRarity getRarity()
+			{
+				return this.rarity;
+			}
 
-		public EntityLivingBase getTarget()
-		{
-			return this.target;
-		}
+			public ItemStack getStack()
+			{
+				return this.stack;
+			}
 
-		public EntityLivingBase getAttacker()
-		{
-			return this.attacker;
+			public EntityLivingBase getTarget()
+			{
+				return this.target;
+			}
+
+			public EntityLivingBase getAttacker()
+			{
+				return this.attacker;
+			}
 		}
 	}
 

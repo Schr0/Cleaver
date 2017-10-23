@@ -1,6 +1,7 @@
 package schr0.cleaver.init;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -11,11 +12,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -23,6 +26,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import schr0.cleaver.api.ICleaverItem;
+import schr0.cleaver.util.CleaverDamageSource;
 
 public class CleaverEvents
 {
@@ -100,9 +104,9 @@ public class CleaverEvents
 			return;
 		}
 
-		if (damageSource instanceof CleaverDamageSources)
+		if (damageSource instanceof CleaverDamageSource)
 		{
-			CleaverDamageSources cleaverDamageSource = (CleaverDamageSources) damageSource;
+			CleaverDamageSource cleaverDamageSource = (CleaverDamageSource) damageSource;
 			EntityLivingBase attacker = cleaverDamageSource.getAttacker();
 
 			event.setCanceled(true);
@@ -290,6 +294,34 @@ public class CleaverEvents
 		}
 	}
 
+	@SubscribeEvent
+	public void onAnvilCraftEvent(AnvilUpdateEvent event)
+	{
+		ItemStack leftCleaverNormal = event.getLeft();
+		ItemStack rightItem = event.getRight();
+
+		if (isInvalidAnvilCraft(leftCleaverNormal, rightItem))
+		{
+			return;
+		}
+
+		HashMap<Item, Item> anvilCraftRecipes = getAnvilCraftRecipes();
+
+		for (Item material : anvilCraftRecipes.keySet())
+		{
+			if (rightItem.getItem() == material)
+			{
+				ItemStack output = new ItemStack(anvilCraftRecipes.get(material));
+
+				output.deserializeNBT(leftCleaverNormal.serializeNBT());
+
+				event.setCost(5);
+				event.setMaterialCost(1);
+				event.setOutput(output);
+			}
+		}
+	}
+
 	// TODO /* ======================================== MOD START =====================================*/
 
 	private static boolean isInvalidAttackTarget(EntityLivingBase target, DamageSource damageSource)
@@ -352,9 +384,24 @@ public class CleaverEvents
 		return isInvalidDeathTarget(target, damageSource);
 	}
 
-	private static CleaverDamageSources getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
+	private static boolean isInvalidAnvilCraft(ItemStack left, ItemStack right)
 	{
-		CleaverDamageSources cleaverDamageSource = new CleaverDamageSources(attacker);
+		if (left.getItem() != CleaverItems.CLEAVER_NORMAL)
+		{
+			return true;
+		}
+
+		if (right.isEmpty())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		CleaverDamageSource cleaverDamageSource = new CleaverDamageSource(attacker);
 
 		if (target instanceof EntityDragon)
 		{
@@ -402,6 +449,15 @@ public class CleaverEvents
 		}
 
 		return cleaverDamageSource;
+	}
+
+	private static HashMap<Item, Item> getAnvilCraftRecipes()
+	{
+		HashMap<Item, Item> anvilCraftRecipes = new HashMap<Item, Item>();
+
+		anvilCraftRecipes.put(CleaverItems.MATERIAL_CLEAVER_BLAZE, CleaverItems.CLEAVER_BLAZE);
+
+		return anvilCraftRecipes;
 	}
 
 }

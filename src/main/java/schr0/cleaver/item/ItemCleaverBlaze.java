@@ -240,10 +240,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public boolean shouldAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		if (!attacker.getEntityWorld().isRemote)
-		{
-			stack.damageItem(1, attacker);
-		}
+		stack.damageItem(1, attacker);
 
 		if (canCleaveTarget)
 		{
@@ -262,7 +259,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 	@Override
 	public boolean shouldDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner)
 	{
-		if (isSelected || owner.getHeldItemOffhand().isItemEqual(stack))
+		if (isSelected)
 		{
 			if (damageSource.isFireDamage())
 			{
