@@ -21,8 +21,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import schr0.cleaver.init.CleaverPackets;
-import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleposition.MessageParticlePosition;
+import schr0.cleaver.util.CleaverParticle;
 
 public class ItemCleaverBlazeHelper
 {
@@ -133,7 +133,7 @@ public class ItemCleaverBlazeHelper
 				int halfsec = (20 / 2);
 				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, halfsec, 10, false, false));
 				aroundEntityLivingBase.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, halfsec, 10, false, false));
-				aroundEntityLivingBase.setFire(halfsec);
+				aroundEntityLivingBase.setFire(5);
 			}
 		}
 
@@ -164,7 +164,7 @@ public class ItemCleaverBlazeHelper
 		{
 			for (BlockPos posAura : posAuras)
 			{
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAura, CleaverParticles.POSITION_BLAZE_AURA));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAura, CleaverParticle.POSITION_BLAZE_AURA));
 			}
 		}
 	}
@@ -302,7 +302,7 @@ public class ItemCleaverBlazeHelper
 				{
 					world.setBlockToAir(posAround);
 
-					CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticles.POSITION_BLAZE_AURA));
+					CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticle.POSITION_BLAZE_AURA));
 
 					++evaporationCount;
 				}

@@ -305,7 +305,7 @@ public class CleaverEvents
 			return;
 		}
 
-		HashMap<Item, Item> anvilCraftRecipes = getAnvilCraftRecipes();
+		HashMap<Item, Item> anvilCraftRecipes = CleaverRecipes.ANVIL_CRAFT_RECIPES;
 
 		for (Item material : anvilCraftRecipes.keySet())
 		{
@@ -314,6 +314,11 @@ public class CleaverEvents
 				ItemStack output = new ItemStack(anvilCraftRecipes.get(material));
 
 				output.deserializeNBT(leftCleaverNormal.serializeNBT());
+
+				if (leftCleaverNormal.hasDisplayName())
+				{
+					output.setStackDisplayName(leftCleaverNormal.getDisplayName());
+				}
 
 				event.setCost(5);
 				event.setMaterialCost(1);
@@ -449,15 +454,6 @@ public class CleaverEvents
 		}
 
 		return cleaverDamageSource;
-	}
-
-	private static HashMap<Item, Item> getAnvilCraftRecipes()
-	{
-		HashMap<Item, Item> anvilCraftRecipes = new HashMap<Item, Item>();
-
-		anvilCraftRecipes.put(CleaverItems.MATERIAL_CLEAVER_BLAZE, CleaverItems.CLEAVER_BLAZE);
-
-		return anvilCraftRecipes;
 	}
 
 }

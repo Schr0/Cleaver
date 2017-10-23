@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import schr0.cleaver.init.CleaverParticles;
+import schr0.cleaver.util.CleaverParticle;
 
 @SideOnly(Side.CLIENT)
 public class MessageHandlerParticleEntity implements IMessageHandler<MessageParticleEntity, IMessage>
@@ -29,25 +29,25 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 			switch (message.getParticleType())
 			{
-				case CleaverParticles.ENTITY_NORMAL_DISARMAMENT :
+				case CleaverParticle.ENTITY_NORMAL_DISARMAMENT :
 
 					particleNormalDisarmament(world, entity, random);
 
 					break;
 
-				case CleaverParticles.ENTITY_NORMAL_CLEAVE :
+				case CleaverParticle.ENTITY_NORMAL_CLEAVE :
 
 					particleNormalCleave(world, entity, random);
 
 					break;
 
-				case CleaverParticles.ENTITY_BLAZE_SHIELD :
+				case CleaverParticle.ENTITY_BLAZE_SHIELD :
 
 					particleBlazeShield(world, entity, random);
 
 					break;
 
-				case CleaverParticles.ENTITY_BLAZE_CLEAVE :
+				case CleaverParticle.ENTITY_BLAZE_CLEAVE :
 
 					particleBlazeCleave(world, entity, random);
 

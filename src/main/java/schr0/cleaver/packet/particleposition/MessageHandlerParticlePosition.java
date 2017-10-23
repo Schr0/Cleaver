@@ -9,7 +9,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import schr0.cleaver.init.CleaverParticles;
+import schr0.cleaver.util.CleaverParticle;
 
 public class MessageHandlerParticlePosition implements IMessageHandler<MessageParticlePosition, IMessage>
 {
@@ -28,13 +28,13 @@ public class MessageHandlerParticlePosition implements IMessageHandler<MessagePa
 			{
 				switch (message.getParticleType())
 				{
-					case CleaverParticles.POSITION_BLAZE_SMELTING :
+					case CleaverParticle.POSITION_BLAZE_SMELTING :
 
 						particleBlazeSmelting(world, blockPos, random);
 
 						break;
 
-					case CleaverParticles.POSITION_BLAZE_AURA :
+					case CleaverParticle.POSITION_BLAZE_AURA :
 
 						particleBlazeAura(world, blockPos, random);
 

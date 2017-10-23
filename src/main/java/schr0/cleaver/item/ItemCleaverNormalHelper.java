@@ -79,6 +79,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import schr0.cleaver.api.CleaverEvent;
+import schr0.cleaver.init.CleaverItems;
 
 public class ItemCleaverNormalHelper
 {
@@ -1985,25 +1986,33 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
-		if (!drops.isEmpty() && isSmelting(stack, target))
+		if (!drops.isEmpty())
 		{
-			ArrayList<ItemStack> dropsSmelting = new ArrayList<ItemStack>();
-
-			for (ItemStack stackDrop : drops)
+			if (isSmelting(stack, target))
 			{
-				if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
+				ArrayList<ItemStack> dropsSmelting = new ArrayList<ItemStack>();
+
+				for (ItemStack stackDrop : drops)
 				{
-					dropsSmelting.add(stackDrop);
+					if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
+					{
+						dropsSmelting.add(stackDrop);
+					}
+					else
+					{
+						dropsSmelting.add(FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy());
+					}
 				}
-				else
-				{
-					dropsSmelting.add(FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy());
-				}
+
+				drops.clear();
+
+				drops.addAll(dropsSmelting);
 			}
+		}
 
-			drops.clear();
-
-			drops.addAll(dropsSmelting);
+		if (rarity == EnumRarity.EPIC)
+		{
+			addDropsMaterialCleaver(drops, rarity, stack, target, attacker);
 		}
 
 		if (target instanceof EntityAgeable)
@@ -2019,6 +2028,16 @@ public class ItemCleaverNormalHelper
 		if (MinecraftForge.EVENT_BUS.post(new CleaverEvent.Normal.CleaveDrops(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
+		}
+
+		return drops;
+	}
+
+	private static ArrayList<ItemStack> addDropsMaterialCleaver(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		if (target instanceof EntityBlaze)
+		{
+			drops.add(new ItemStack(CleaverItems.MATERIAL_CLEAVER_BLAZE));
 		}
 
 		return drops;

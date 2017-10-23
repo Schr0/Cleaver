@@ -11,7 +11,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class CleaverEvent extends Event
 {
 
-	// ItemCleaverNormalのEvent.
+	/**
+	 * ItemCleaverNormalのEvent.
+	 */
 	public static class Normal extends CleaverEvent
 	{
 		@Cancelable

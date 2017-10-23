@@ -36,8 +36,8 @@ public abstract class ItemCleaver extends Item implements ICleaverItem
 		this.enchantability = material.getEnchantability();
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean isFull3D()
 	{
 		return true;

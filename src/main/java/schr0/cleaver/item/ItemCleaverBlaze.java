@@ -32,9 +32,9 @@ import net.minecraft.world.World;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPackets;
-import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 import schr0.cleaver.packet.particleposition.MessageParticlePosition;
+import schr0.cleaver.util.CleaverParticle;
 
 public class ItemCleaverBlaze extends ItemCleaver
 {
@@ -110,7 +110,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 			{
 				itemstack.damageItem(1, player);
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(pos, CleaverParticles.POSITION_BLAZE_SMELTING));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(pos, CleaverParticle.POSITION_BLAZE_SMELTING));
 			}
 
 			player.addStat(StatList.getBlockStats(block));
@@ -209,14 +209,14 @@ public class ItemCleaverBlaze extends ItemCleaver
 				{
 					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 
-					CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+					CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticle.ENTITY_BLAZE_SHIELD));
 				}
 			}
 			else
 			{
 				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticle.ENTITY_BLAZE_SHIELD));
 			}
 		}
 	}
@@ -246,7 +246,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 		{
 			ItemCleaverBlazeHelper.cleavePotions(this.getHeatAmount(stack, attacker), stack, target, attacker);
 
-			CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
+			CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_BLAZE_CLEAVE));
 
 			target.playSound(SoundEvents.ENTITY_BLAZE_SHOOT, 0.25F, 1.0F);
 

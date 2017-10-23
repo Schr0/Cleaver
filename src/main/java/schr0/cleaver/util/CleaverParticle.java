@@ -1,6 +1,6 @@
-package schr0.cleaver.init;
+package schr0.cleaver.util;
 
-public class CleaverParticles
+public class CleaverParticle
 {
 
 	public static final int ENTITY_NORMAL_DISARMAMENT = 0;

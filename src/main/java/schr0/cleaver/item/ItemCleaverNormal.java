@@ -27,8 +27,8 @@ import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPackets;
-import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleentity.MessageParticleEntity;
+import schr0.cleaver.util.CleaverParticle;
 
 public class ItemCleaverNormal extends ItemCleaver
 {
@@ -191,7 +191,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackEquipment, target);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_DISARMAMENT));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_NORMAL_DISARMAMENT));
 
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
@@ -208,7 +208,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackDrop, target);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_CLEAVE));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_NORMAL_CLEAVE));
 
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
 
