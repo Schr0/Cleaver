@@ -4,14 +4,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import schr0.cleaver.Cleaver;
 
-public class CleaverDamageSource extends DamageSource
+public class CleaverDamageSources extends DamageSource
 {
 
 	public static final String DAMAGE_TYPE = Cleaver.MOD_ID + ".cleaver";
 
 	private EntityLivingBase attacker;
 
-	public CleaverDamageSource(EntityLivingBase attacker)
+	public CleaverDamageSources(EntityLivingBase attacker)
 	{
 		super(DAMAGE_TYPE);
 

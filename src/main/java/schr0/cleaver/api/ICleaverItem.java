@@ -1,6 +1,9 @@
 package schr0.cleaver.api;
 
+import java.util.List;
+
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
@@ -15,27 +18,27 @@ public interface ICleaverItem
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
-	 *            攻撃をされるEntityLivingBase.
+	 *            攻撃されるEntityLivingBase.
 	 * @param attacker
-	 *            攻撃をするEntityLivingBase.
+	 *            攻撃するEntityLivingBase.
 	 *
 	 * @return 攻撃力.
 	 */
 	float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
-	 * 剥ぎ取りの判定.
+	 * 「剥ぎ取り」の判定.
 	 *
 	 * @param attackAmmount
 	 *            攻撃力.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
-	 *            剥ぎ取りをされるEntityLivingBase.
+	 *            「剥ぎ取り」されるEntityLivingBase.
 	 * @param attacker
-	 *            剥ぎ取りをするEntityLivingBase.
+	 *            「剥ぎ取り」するEntityLivingBase.
 	 *
-	 * @return 剥ぎ取りの判定.
+	 * @return 「剥ぎ取り」の判定.
 	 */
 	boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
@@ -45,13 +48,13 @@ public interface ICleaverItem
 	 * @param attackAmmount
 	 *            攻撃力.
 	 * @param canCleaveTarget
-	 *            剥ぎ取りの判定.
+	 *            「剥ぎ取り」の判定.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
-	 *            攻撃をされるEntityLivingBase.
+	 *            攻撃されるEntityLivingBase.
 	 * @param attacker
-	 *            攻撃をするEntityLivingBase.
+	 *            攻撃するEntityLivingBase.
 	 *
 	 * @return 攻撃の判定.
 	 */
@@ -69,7 +72,7 @@ public interface ICleaverItem
 	 * @param slot
 	 *            所持しているスロットの番号.
 	 * @param isSelected
-	 *            手に持っているかの判定.
+	 *            メインハンドに持っているかの判定.
 	 * @param owner
 	 *            所持者のEntityLivingBase.
 	 *
@@ -89,12 +92,28 @@ public interface ICleaverItem
 	 * @param slot
 	 *            所持しているスロットの番号.
 	 * @param isSelected
-	 *            手に持っているかの判定.
+	 *            メインハンドに持っているかの判定.
 	 * @param owner
 	 *            所持者のEntityLivingBase.
 	 *
 	 * @return 所持者ダメージ値.
 	 */
 	float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
+
+	/**
+	 * 生物のドロップアイテム
+	 *
+	 * @param rawDrops
+	 *            元の生物ドロップアイテム.
+	 * @param stack
+	 *            ICleaverItemのItemStack.
+	 * @param target
+	 *            攻撃されるEntityLivingBase.
+	 * @param attacker
+	 *            攻撃するEntityLivingBase.
+	 *
+	 * @return 生物のドロップアイテム
+	 */
+	List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 }

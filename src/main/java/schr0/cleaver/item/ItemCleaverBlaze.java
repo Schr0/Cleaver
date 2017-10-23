@@ -1,6 +1,9 @@
 package schr0.cleaver.item;
 
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -28,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
-import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.init.CleaverPackets;
 import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 import schr0.cleaver.packet.particleposition.MessageParticlePosition;
@@ -52,6 +55,72 @@ public class ItemCleaverBlaze extends ItemCleaver
 	public ItemCleaverBlaze()
 	{
 		super(CleaverMaterial.BLAZE);
+	}
+
+	@Override
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
+	{
+		World world = player.getEntityWorld();
+		IBlockState state = world.getBlockState(pos);
+
+		if (player.capabilities.isCreativeMode || !player.canHarvestBlock(state) || world.isRemote)
+		{
+			return false;
+		}
+
+		Block block = state.getBlock();
+		NonNullList<ItemStack> drops = NonNullList.create();
+
+		block.getDrops(drops, world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
+
+		if (!drops.isEmpty())
+		{
+			Random random = this.getRandom(player);
+			boolean isSmelting = false;
+
+			for (ItemStack stackDrop : drops)
+			{
+				float randomPos = 0.5F;
+				double posXdrop = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+				double posYdrop = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+				double posZdrop = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+
+				if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
+				{
+					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackDrop);
+					entityItem.setDefaultPickupDelay();
+
+					world.spawnEntity(entityItem);
+				}
+				else
+				{
+					ItemStack stackResult = FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy();
+					int xpValue = EntityXPOrb.getXPSplit((int) FurnaceRecipes.instance().getSmeltingExperience(stackDrop));
+					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackResult);
+					entityItem.setDefaultPickupDelay();
+
+					world.spawnEntity(entityItem);
+					world.spawnEntity(new EntityXPOrb(world, posXdrop, posYdrop, posZdrop, xpValue));
+
+					isSmelting = true;
+				}
+			}
+
+			if (isSmelting)
+			{
+				itemstack.damageItem(1, player);
+
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(pos, CleaverParticles.POSITION_BLAZE_SMELTING));
+			}
+
+			player.addStat(StatList.getBlockStats(block));
+
+			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -112,80 +181,14 @@ public class ItemCleaverBlaze extends ItemCleaver
 
 		ItemCleaverBlazeHelper.attackBlazeExplosion(this.getHeatAmount(stack, entityLiving), chageAmmount, stack, entityLiving);
 
+		entityLiving.swingArm(entityLiving.getActiveHand());
+
+		stack.damageItem(chageAmmount, entityLiving);
+
 		if (entityLiving instanceof EntityPlayer)
 		{
 			((EntityPlayer) entityLiving).getCooldownTracker().setCooldown(this, CHAGE_COUNT_INTERVAL);
 		}
-
-		entityLiving.swingArm(entityLiving.getActiveHand());
-
-		stack.damageItem(chageAmmount, entityLiving);
-	}
-
-	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
-	{
-		World world = player.getEntityWorld();
-		IBlockState state = world.getBlockState(pos);
-
-		if (player.capabilities.isCreativeMode || !player.canHarvestBlock(state) || world.isRemote)
-		{
-			return false;
-		}
-
-		Block block = state.getBlock();
-		NonNullList<ItemStack> drops = NonNullList.create();
-
-		block.getDrops(drops, world, pos, state, EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, itemstack));
-
-		if (!drops.isEmpty())
-		{
-			Random random = this.getRandom(player);
-			boolean isSmelting = false;
-
-			for (ItemStack stackDrop : drops)
-			{
-				float randomPos = 0.5F;
-				double posXdrop = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-				double posYdrop = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-				double posZdrop = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-
-				if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
-				{
-					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackDrop);
-					entityItem.setDefaultPickupDelay();
-
-					world.spawnEntity(entityItem);
-				}
-				else
-				{
-					ItemStack stackResult = FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy();
-					int xpValue = EntityXPOrb.getXPSplit((int) FurnaceRecipes.instance().getSmeltingExperience(stackDrop));
-					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackResult);
-					entityItem.setDefaultPickupDelay();
-
-					world.spawnEntity(entityItem);
-					world.spawnEntity(new EntityXPOrb(world, posXdrop, posYdrop, posZdrop, xpValue));
-
-					isSmelting = true;
-				}
-			}
-
-			if (isSmelting)
-			{
-				itemstack.damageItem(1, player);
-
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(pos, CleaverParticles.POSITION_BLAZE_SMELTING));
-			}
-
-			player.addStat(StatList.getBlockStats(block));
-
-			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 11);
-
-			return true;
-		}
-
-		return false;
 	}
 
 	@Override
@@ -206,17 +209,19 @@ public class ItemCleaverBlaze extends ItemCleaver
 				{
 					ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 
-					CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+					CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
 				}
 			}
 			else
 			{
 				ItemCleaverBlazeHelper.onUpdateBlazeShield(this.getHeatAmount(stack, owner), stack, owner);
 
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(owner, CleaverParticles.ENTITY_BLAZE_SHIELD));
 			}
 		}
 	}
+
+	// TODO /* ======================================== MOD START =====================================*/
 
 	@Override
 	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
@@ -244,7 +249,7 @@ public class ItemCleaverBlaze extends ItemCleaver
 		{
 			ItemCleaverBlazeHelper.cleavePotions(this.getHeatAmount(stack, attacker), stack, target, attacker);
 
-			CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
+			CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_BLAZE_CLEAVE));
 
 			target.playSound(SoundEvents.ENTITY_BLAZE_SHOOT, 0.25F, 1.0F);
 
@@ -281,7 +286,31 @@ public class ItemCleaverBlaze extends ItemCleaver
 		return rawDamageAmmount;
 	}
 
-	// TODO /* ======================================== MOD START =====================================*/
+	@Override
+	public List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		List<EntityItem> drops = Lists.newArrayList();
+
+		for (EntityItem entityItem : rawDrops)
+		{
+			ItemStack stackDrop = entityItem.getItem();
+
+			if (FurnaceRecipes.instance().getSmeltingResult(stackDrop).isEmpty())
+			{
+				drops.add(entityItem);
+			}
+			else
+			{
+				ItemStack stackSmeltingResult = FurnaceRecipes.instance().getSmeltingResult(stackDrop).copy();
+
+				stackSmeltingResult.setCount(stackDrop.getCount());
+
+				drops.add(new EntityItem(attacker.getEntityWorld(), entityItem.posX, entityItem.posY, entityItem.posZ, stackSmeltingResult));
+			}
+		}
+
+		return drops;
+	}
 
 	private Random getRandom(Entity owner)
 	{

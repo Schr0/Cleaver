@@ -8,7 +8,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 import schr0.cleaver.Cleaver;
 
-public class CleaverRecipe
+public class CleaverRecipes
 {
 
 	public static final String KEY_RES = Cleaver.MOD_ID;

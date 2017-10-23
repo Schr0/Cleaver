@@ -78,7 +78,7 @@ import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
-import schr0.cleaver.api.CleaverNormalEvent;
+import schr0.cleaver.api.CleaverEvent;
 
 public class ItemCleaverNormalHelper
 {
@@ -2016,7 +2016,7 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new CleaverNormalEvent.CleaveEvent(drops, rarity, stack, target, attacker)))
+		if (MinecraftForge.EVENT_BUS.post(new CleaverEvent.CleaverNormalEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}

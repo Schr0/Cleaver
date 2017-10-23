@@ -8,11 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class CleaverNormalEvent
+public class CleaverEvent
 {
 
 	@Cancelable
-	public static class CleaveEvent extends Event
+	public static class CleaverNormalEvent extends Event
 	{
 		private final ArrayList<ItemStack> drops;
 		private final EnumRarity rarity;
@@ -34,7 +34,7 @@ public class CleaverNormalEvent
 		 * @param attacker
 		 *            剥ぎ取りをするEntityLivingBase.
 		 */
-		public CleaveEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+		public CleaverNormalEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 		{
 			this.drops = drops;
 			this.rarity = rarity;

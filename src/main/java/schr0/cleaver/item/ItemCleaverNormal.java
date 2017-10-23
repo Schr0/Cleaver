@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
-import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.init.CleaverPackets;
 import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 
@@ -150,6 +150,8 @@ public class ItemCleaverNormal extends ItemCleaver
 		return false;
 	}
 
+	// TODO /* ======================================== MOD START =====================================*/
+
 	@Override
 	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
@@ -192,7 +194,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackEquipment, target);
 				}
 
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_DISARMAMENT));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_DISARMAMENT));
 
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
@@ -209,7 +211,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackDrop, target);
 				}
 
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_CLEAVE));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.ENTITY_NORMAL_CLEAVE));
 
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
 
@@ -232,7 +234,11 @@ public class ItemCleaverNormal extends ItemCleaver
 		return rawDamageAmmount;
 	}
 
-	// TODO /* ======================================== MOD START =====================================*/
+	@Override
+	public List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		return rawDrops;
+	}
 
 	private Random getRandom(Entity owner)
 	{

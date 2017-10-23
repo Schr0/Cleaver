@@ -20,7 +20,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import schr0.cleaver.init.CleaverPacket;
+import schr0.cleaver.init.CleaverPackets;
 import schr0.cleaver.init.CleaverParticles;
 import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 
@@ -164,7 +164,7 @@ public class ItemCleaverBlazeHelper
 		{
 			for (BlockPos posAura : posAuras)
 			{
-				CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(posAura, CleaverParticles.POSITION_BLAZE_AURA));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAura, CleaverParticles.POSITION_BLAZE_AURA));
 			}
 		}
 	}
@@ -302,7 +302,7 @@ public class ItemCleaverBlazeHelper
 				{
 					world.setBlockToAir(posAround);
 
-					CleaverPacket.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticles.POSITION_BLAZE_AURA));
+					CleaverPackets.DISPATCHER.sendToAll(new MessageParticlePosition(posAround, CleaverParticles.POSITION_BLAZE_AURA));
 
 					++evaporationCount;
 				}

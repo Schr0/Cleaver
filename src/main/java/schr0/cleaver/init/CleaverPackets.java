@@ -10,7 +10,7 @@ import schr0.cleaver.packet.particleentity.MessageParticleEntity;
 import schr0.cleaver.packet.particleposition.MessageHandlerParticlePosition;
 import schr0.cleaver.packet.particleposition.MessageParticlePosition;
 
-public class CleaverPacket
+public class CleaverPackets
 {
 
 	public static final String CHANNEL_NAME = Cleaver.MOD_ID;

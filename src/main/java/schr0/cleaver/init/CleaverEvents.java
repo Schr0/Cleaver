@@ -3,8 +3,11 @@ package schr0.cleaver.init;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -15,12 +18,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import schr0.cleaver.api.ICleaverItem;
 
-public class CleaverEvent
+public class CleaverEvents
 {
 
 	public void registerEvents()
@@ -96,9 +100,9 @@ public class CleaverEvent
 			return;
 		}
 
-		if (damageSource instanceof CleaverDamageSource)
+		if (damageSource instanceof CleaverDamageSources)
 		{
-			CleaverDamageSource cleaverDamageSource = (CleaverDamageSource) damageSource;
+			CleaverDamageSources cleaverDamageSource = (CleaverDamageSources) damageSource;
 			EntityLivingBase attacker = cleaverDamageSource.getAttacker();
 
 			event.setCanceled(true);
@@ -258,6 +262,34 @@ public class CleaverEvent
 		}
 	}
 
+	@SubscribeEvent
+	public void onDropsTargetEvent(LivingDropsEvent event)
+	{
+		EntityLivingBase target = event.getEntityLiving();
+		DamageSource damageSource = event.getSource();
+
+		if (isInvalidDropsTarget(target, event.getSource()))
+		{
+			return;
+		}
+
+		if (damageSource.getTrueSource() instanceof EntityLivingBase)
+		{
+			EntityLivingBase attacker = (EntityLivingBase) damageSource.getTrueSource();
+			ItemStack stackMainHand = attacker.getHeldItemMainhand();
+
+			if (stackMainHand.getItem() instanceof ICleaverItem)
+			{
+				ICleaverItem cleaverItem = (ICleaverItem) stackMainHand.getItem();
+				List<EntityItem> drops = cleaverItem.getDropsTarget(Lists.newArrayList(event.getDrops()), stackMainHand, target, attacker);
+
+				event.getDrops().clear();
+
+				event.getDrops().addAll(drops);
+			}
+		}
+	}
+
 	// TODO /* ======================================== MOD START =====================================*/
 
 	private static boolean isInvalidAttackTarget(EntityLivingBase target, DamageSource damageSource)
@@ -315,9 +347,14 @@ public class CleaverEvent
 		return isInvalidAttackOwner(owner);
 	}
 
-	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
+	private static boolean isInvalidDropsTarget(EntityLivingBase target, DamageSource damageSource)
 	{
-		CleaverDamageSource cleaverDamageSource = new CleaverDamageSource(attacker);
+		return isInvalidDeathTarget(target, damageSource);
+	}
+
+	private static CleaverDamageSources getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
+	{
+		CleaverDamageSources cleaverDamageSource = new CleaverDamageSources(attacker);
 
 		if (target instanceof EntityDragon)
 		{
