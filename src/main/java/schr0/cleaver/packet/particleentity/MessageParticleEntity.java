@@ -1,4 +1,4 @@
-package schr0.cleaver.packet;
+package schr0.cleaver.packet.particleentity;
 
 import javax.annotation.Nullable;
 

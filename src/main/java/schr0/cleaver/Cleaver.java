@@ -14,12 +14,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
-import schr0.cleaver.init.CleaverEvent;
+import schr0.cleaver.init.CleaverEvents;
 import schr0.cleaver.init.CleaverItems;
-import schr0.cleaver.init.CleaverPacket;
-import schr0.cleaver.init.CleaverRecipe;
+import schr0.cleaver.init.CleaverPackets;
+import schr0.cleaver.init.CleaverRecipes;
 
-@Mod(modid = Cleaver.MOD_ID, name = Cleaver.MOD_NAME, version = Cleaver.MOD_VERSION, dependencies = Cleaver.MOD_DEPENDENCIES)
+@Mod(modid = Cleaver.MOD_ID, name = Cleaver.MOD_NAME, version = Cleaver.MOD_VERSION)
 public class Cleaver
 {
 
@@ -36,12 +36,7 @@ public class Cleaver
 	/**
 	 * Modのバージョン.
 	 */
-	public static final String MOD_VERSION = "1.0.2";
-
-	/**
-	 * Forgeのバージョン.
-	 */
-	public static final String MOD_DEPENDENCIES = "required-after:forge@[1.12-14.21.1.2387,)";
+	public static final String MOD_VERSION = "2.0.0";
 
 	/**
 	 * ResourceLocationのDomain.
@@ -85,11 +80,11 @@ public class Cleaver
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		(new CleaverEvent()).registerEvents();
+		(new CleaverEvents()).registerEvents();
 
 		if (event.getSide().isClient())
 		{
-			(new CleaverPacket()).registerClientMessages();
+			(new CleaverPackets()).registerClientMessages();
 		}
 	}
 
@@ -137,7 +132,7 @@ public class Cleaver
 	{
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
 
-		(new CleaverRecipe()).registerRecipes(registry);
+		(new CleaverRecipes()).registerRecipes(registry);
 	}
 
 }
