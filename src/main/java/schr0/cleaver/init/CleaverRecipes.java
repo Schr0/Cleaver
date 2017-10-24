@@ -25,7 +25,7 @@ public class CleaverRecipes
 		registry.register(getItemMaterialCleaverNormal());
 		registry.register(getItemCleaverNormal());
 
-		initAnvilCraftRecipes();
+		registerAnvilCraftRecipes();
 	}
 
 	// TODO /* ======================================== MOD START =====================================*/
@@ -57,7 +57,7 @@ public class CleaverRecipes
 		}).setRegistryName(RES_CLEAVER_NORMAL);
 	}
 
-	private static void initAnvilCraftRecipes()
+	private static void registerAnvilCraftRecipes()
 	{
 		ANVIL_CRAFT_RECIPES.put(CleaverItems.MATERIAL_CLEAVER_BLAZE, CleaverItems.CLEAVER_BLAZE);
 	}
