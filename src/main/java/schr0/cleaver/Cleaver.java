@@ -36,7 +36,7 @@ public class Cleaver
 	/**
 	 * Modのバージョン.
 	 */
-	public static final String MOD_VERSION = "2.0.0";
+	public static final String MOD_VERSION = "2.0.1";
 
 	/**
 	 * ResourceLocationのDomain.

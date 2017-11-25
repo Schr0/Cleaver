@@ -36,6 +36,12 @@ public class ItemCleaverNormal extends ItemCleaver
 	private static final int SHARPNESS_AMOUNT_MIN = 2;
 	private static final int SHARPNESS_AMOUNT_MAX = 8;
 
+	private static final int USED_AMOUNT_MIN = 2;
+	private static final int USED_AMOUNT_MAX = 10;
+
+	private static final int CHANCE_PERCENT = 100;
+	private static final int REALITY_PERCENT = 100;
+
 	public ItemCleaverNormal()
 	{
 		super(CleaverMaterial.NORMAL);
@@ -163,7 +169,7 @@ public class ItemCleaverNormal extends ItemCleaver
 	{
 		int chance = (this.getSharpnessAmount(attackAmmount, stack, attacker) * 10);
 
-		return (this.getRandom(attacker).nextInt(100) < chance);
+		return (this.getRandom(attacker).nextInt(CHANCE_PERCENT) < chance);
 	}
 
 	@Override
@@ -181,8 +187,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			int usedAmmount = random.nextInt(sharpnessAmount);
-			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(usedAmmount, stack, target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(getUsedAmmount(random, sharpnessAmount), stack, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -198,8 +203,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				return true;
 			}
 
-			int rarityAmmount = random.nextInt((100 - (sharpnessAmount * 10)));
-			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(getCleaveRarity(rarityAmmount), stack, target, attacker);
+			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(getCleaveRarity(random, sharpnessAmount), stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
@@ -242,6 +246,17 @@ public class ItemCleaverNormal extends ItemCleaver
 		return owner.getEntityWorld().rand;
 	}
 
+	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)
+	{
+		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
+		Random random = this.getRandom(target);
+		entityItem.motionY += random.nextFloat() * 0.05F;
+		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
+		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+
+		entityItem.setDefaultPickupDelay();
+	}
+
 	private int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)
 	{
 		int lootingAmmount = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
@@ -258,19 +273,20 @@ public class ItemCleaverNormal extends ItemCleaver
 		return sharpnessAmount;
 	}
 
-	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)
+	private static int getUsedAmmount(Random random, int sharpnessAmount)
 	{
-		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
-		Random random = this.getRandom(target);
-		entityItem.motionY += random.nextFloat() * 0.05F;
-		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
-		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
+		int usedAmmount = (sharpnessAmount + random.nextInt(sharpnessAmount));
 
-		entityItem.setDefaultPickupDelay();
+		usedAmmount = Math.min(usedAmmount, USED_AMOUNT_MAX);
+		usedAmmount = Math.max(usedAmmount, USED_AMOUNT_MIN);
+
+		return usedAmmount;
 	}
 
-	private static EnumRarity getCleaveRarity(int rarityAmount)
+	private static EnumRarity getCleaveRarity(Random random, int sharpnessAmount)
 	{
+		int rarityAmount = (REALITY_PERCENT - random.nextInt(sharpnessAmount * 10));
+
 		if (rarityAmount < 10)
 		{
 			return EnumRarity.EPIC;// 10

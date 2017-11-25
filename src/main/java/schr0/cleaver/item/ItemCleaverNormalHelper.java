@@ -84,9 +84,9 @@ import schr0.cleaver.init.CleaverItems;
 public class ItemCleaverNormalHelper
 {
 
-	private static final int PERCENT = 100;
-	private static final int COMMON = 40;
-	private static final int RARE = 20;
+	private static final int REALITY_PERCENT = 100;
+	private static final int REALITY_COMMON = 40;
+	private static final int REALITY_RARE = 20;
 
 	public static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
@@ -482,7 +482,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -495,7 +495,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
@@ -508,7 +508,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -521,7 +521,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
@@ -575,7 +575,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 				}
@@ -682,7 +682,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO, 10));
 
@@ -696,7 +696,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -730,7 +730,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -743,7 +743,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
@@ -756,7 +756,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -862,7 +862,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -875,7 +875,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1178,7 +1178,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -1191,7 +1191,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -1204,7 +1204,7 @@ public class ItemCleaverNormalHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
@@ -1217,7 +1217,7 @@ public class ItemCleaverNormalHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(PERCENT) < COMMON)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 				}
@@ -1274,7 +1274,7 @@ public class ItemCleaverNormalHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO));
 
@@ -1288,7 +1288,7 @@ public class ItemCleaverNormalHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(PERCENT) < RARE)
+				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
