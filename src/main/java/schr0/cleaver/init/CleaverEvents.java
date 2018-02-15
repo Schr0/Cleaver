@@ -1,7 +1,6 @@
 package schr0.cleaver.init;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -12,13 +11,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -294,39 +291,6 @@ public class CleaverEvents
 		}
 	}
 
-	@SubscribeEvent
-	public void onAnvilCraftEvent(AnvilUpdateEvent event)
-	{
-		ItemStack leftCleaverNormal = event.getLeft();
-		ItemStack rightItem = event.getRight();
-
-		if (isInvalidAnvilCraft(leftCleaverNormal, rightItem))
-		{
-			return;
-		}
-
-		HashMap<Item, Item> anvilCraftRecipes = CleaverRecipes.ANVIL_CRAFT_RECIPES;
-
-		for (Item material : anvilCraftRecipes.keySet())
-		{
-			if (rightItem.getItem() == material)
-			{
-				ItemStack output = new ItemStack(anvilCraftRecipes.get(material));
-
-				output.deserializeNBT(leftCleaverNormal.serializeNBT());
-
-				if (leftCleaverNormal.hasDisplayName())
-				{
-					output.setStackDisplayName(leftCleaverNormal.getDisplayName());
-				}
-
-				event.setCost(5);
-				event.setMaterialCost(1);
-				event.setOutput(output);
-			}
-		}
-	}
-
 	// TODO /* ======================================== MOD START =====================================*/
 
 	private static boolean isInvalidAttackTarget(EntityLivingBase target, DamageSource damageSource)
@@ -387,21 +351,6 @@ public class CleaverEvents
 	private static boolean isInvalidDropsTarget(EntityLivingBase target, DamageSource damageSource)
 	{
 		return isInvalidDeathTarget(target, damageSource);
-	}
-
-	private static boolean isInvalidAnvilCraft(ItemStack left, ItemStack right)
-	{
-		if (left.getItem() != CleaverItems.CLEAVER_NORMAL)
-		{
-			return true;
-		}
-
-		if (right.isEmpty())
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)

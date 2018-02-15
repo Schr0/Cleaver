@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
+import schr0.cleaver.api.CleaverAPI;
 import schr0.cleaver.init.CleaverEvents;
 import schr0.cleaver.init.CleaverItems;
 import schr0.cleaver.init.CleaverPackets;
@@ -23,10 +24,13 @@ import schr0.cleaver.init.CleaverRecipes;
 public class Cleaver
 {
 
+	@Mod.Instance(Cleaver.MOD_ID)
+	public static Cleaver instance;
+
 	/**
 	 * ModのID.
 	 */
-	public static final String MOD_ID = "schr0cleaver";
+	public static final String MOD_ID = CleaverAPI.MOD_ID;
 
 	/**
 	 * Modの名前.
@@ -36,15 +40,12 @@ public class Cleaver
 	/**
 	 * Modのバージョン.
 	 */
-	public static final String MOD_VERSION = "2.0.1";
+	public static final String MOD_VERSION = "3.0.0";
 
 	/**
 	 * ResourceLocationのDomain.
 	 */
 	public static final String MOD_RESOURCE_DOMAIN = MOD_ID + ":";
-
-	@Mod.Instance(Cleaver.MOD_ID)
-	public static Cleaver instance;
 
 	/**
 	 * 初期・設定イベント.
@@ -115,16 +116,6 @@ public class Cleaver
 	}
 
 	/**
-	 * Item / Blockモデルの登録.
-	 */
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void registerModels(ModelRegistryEvent event)
-	{
-		(new CleaverItems()).registerModels();
-	}
-
-	/**
 	 * Recipeの登録.
 	 */
 	@SubscribeEvent
@@ -133,6 +124,16 @@ public class Cleaver
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
 
 		(new CleaverRecipes()).registerRecipes(registry);
+	}
+
+	/**
+	 * Item / Blockモデルの登録.
+	 */
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void registerModels(ModelRegistryEvent event)
+	{
+		(new CleaverItems()).registerModels();
 	}
 
 }

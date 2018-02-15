@@ -1,9 +1,6 @@
 package schr0.cleaver.init;
 
-import java.util.HashMap;
-
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -15,33 +12,16 @@ public class CleaverRecipes
 {
 
 	public static final String KEY_RES = Cleaver.MOD_ID;
-	public static final ResourceLocation RES_MATERIAL_CLEAVER_NORMAL = new ResourceLocation(KEY_RES, "material_cleaver_normal");
-	public static final ResourceLocation RES_CLEAVER_NORMAL = new ResourceLocation(KEY_RES, "cleaver_normal");
-
-	public static final HashMap<Item, Item> ANVIL_CRAFT_RECIPES = new HashMap<Item, Item>();
+	public static final ResourceLocation RES_CLEAVER_NORMAL = new ResourceLocation(KEY_RES, CleaverItems.NAME_CLEAVER_NORMAL);
+	public static final ResourceLocation RES_MATERIAL_CLEAVER_NORMAL = new ResourceLocation(KEY_RES, CleaverItems.NAME_MATERIAL_CLEAVER_NORMAL);
 
 	public void registerRecipes(IForgeRegistry<IRecipe> registry)
 	{
-		registry.register(getItemMaterialCleaverNormal());
 		registry.register(getItemCleaverNormal());
-
-		registerAnvilCraftRecipes();
+		registry.register(getItemMaterialCleaverNormal());
 	}
 
 	// TODO /* ======================================== MOD START =====================================*/
-
-	private static IRecipe getItemMaterialCleaverNormal()
-	{
-		return new ShapedOreRecipe(RES_MATERIAL_CLEAVER_NORMAL, new ItemStack(CleaverItems.MATERIAL_CLEAVER_NORMAL), new Object[]
-		{
-				" XX",
-				"XX ",
-				"   ",
-
-				'X', new ItemStack(Items.IRON_INGOT),
-
-		}).setRegistryName(RES_MATERIAL_CLEAVER_NORMAL);
-	}
 
 	private static IRecipe getItemCleaverNormal()
 	{
@@ -57,9 +37,17 @@ public class CleaverRecipes
 		}).setRegistryName(RES_CLEAVER_NORMAL);
 	}
 
-	private static void registerAnvilCraftRecipes()
+	private static IRecipe getItemMaterialCleaverNormal()
 	{
-		ANVIL_CRAFT_RECIPES.put(CleaverItems.MATERIAL_CLEAVER_BLAZE, CleaverItems.CLEAVER_BLAZE);
+		return new ShapedOreRecipe(RES_MATERIAL_CLEAVER_NORMAL, new ItemStack(CleaverItems.MATERIAL_CLEAVER_NORMAL), new Object[]
+		{
+				" XX",
+				"XX ",
+				"   ",
+
+				'X', new ItemStack(Items.IRON_INGOT),
+
+		}).setRegistryName(RES_MATERIAL_CLEAVER_NORMAL);
 	}
 
 }

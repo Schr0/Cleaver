@@ -101,7 +101,7 @@ public interface ICleaverItem
 	float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
 
 	/**
-	 * 生物のドロップアイテム
+	 * 生物のドロップアイテム.
 	 *
 	 * @param rawDrops
 	 *            元の生物ドロップアイテム.

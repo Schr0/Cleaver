@@ -27,7 +27,7 @@ import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.CleaverMaterial;
 import schr0.cleaver.api.ItemCleaver;
 import schr0.cleaver.init.CleaverPackets;
-import schr0.cleaver.packet.particleentity.MessageParticleEntity;
+import schr0.cleaver.packet.MessageParticleEntity;
 import schr0.cleaver.util.CleaverParticle;
 
 public class ItemCleaverNormal extends ItemCleaver
@@ -187,7 +187,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(getUsedAmmount(random, sharpnessAmount), stack, target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(getUsedAmmount(random, sharpnessAmount), target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -241,17 +241,17 @@ public class ItemCleaverNormal extends ItemCleaver
 		return rawDrops;
 	}
 
-	private Random getRandom(Entity owner)
+	private Random getRandom(Entity entity)
 	{
-		return owner.getEntityWorld().rand;
+		return entity.getEntityWorld().rand;
 	}
 
 	private void onEntityDropItem(ItemStack stack, EntityLivingBase target)
 	{
-		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
 		Random random = this.getRandom(target);
-		entityItem.motionY += random.nextFloat() * 0.05F;
+		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
 		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
+		entityItem.motionY += random.nextFloat() * 0.05F;
 		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
 
 		entityItem.setDefaultPickupDelay();
@@ -276,7 +276,6 @@ public class ItemCleaverNormal extends ItemCleaver
 	private static int getUsedAmmount(Random random, int sharpnessAmount)
 	{
 		int usedAmmount = (sharpnessAmount + random.nextInt(sharpnessAmount));
-
 		usedAmmount = Math.min(usedAmmount, USED_AMOUNT_MAX);
 		usedAmmount = Math.max(usedAmmount, USED_AMOUNT_MIN);
 
@@ -285,7 +284,7 @@ public class ItemCleaverNormal extends ItemCleaver
 
 	private static EnumRarity getCleaveRarity(Random random, int sharpnessAmount)
 	{
-		int rarityAmount = (REALITY_PERCENT - random.nextInt(sharpnessAmount * 10));
+		int rarityAmount = random.nextInt(REALITY_PERCENT - random.nextInt(sharpnessAmount * 10));
 
 		if (rarityAmount < 10)
 		{

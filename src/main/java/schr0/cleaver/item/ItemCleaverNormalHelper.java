@@ -78,8 +78,8 @@ import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
-import schr0.cleaver.api.CleaverEvent;
-import schr0.cleaver.init.CleaverItems;
+import net.minecraftforge.fml.common.FMLLog;
+import schr0.cleaver.api.ItemCleaverNormalEvent;
 
 public class ItemCleaverNormalHelper
 {
@@ -88,7 +88,7 @@ public class ItemCleaverNormalHelper
 	private static final int REALITY_COMMON = 40;
 	private static final int REALITY_RARE = 20;
 
-	public static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
@@ -1962,14 +1962,14 @@ public class ItemCleaverNormalHelper
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static Random getRandom(Entity attacker)
+	private static Random getRandom(Entity entity)
 	{
-		return attacker.getEntityWorld().rand;
+		return entity.getEntityWorld().rand;
 	}
 
 	private static boolean isSmelting(ItemStack stack, EntityLivingBase target)
 	{
-		return (target.isBurning() || (0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)));
+		return ((0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)) || target.isBurning());
 	}
 
 	private static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
@@ -2010,11 +2010,6 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
-		if (rarity == EnumRarity.EPIC)
-		{
-			addDropsMaterialCleaver(drops, rarity, stack, target, attacker);
-		}
-
 		if (target instanceof EntityAgeable)
 		{
 			EntityAgeable entityAgeable = (EntityAgeable) target;
@@ -2025,20 +2020,13 @@ public class ItemCleaverNormalHelper
 			}
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new CleaverEvent.Normal.CleaveDrops(drops, rarity, stack, target, attacker)))
+		if (MinecraftForge.EVENT_BUS.post(new ItemCleaverNormalEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}
 
-		return drops;
-	}
-
-	private static ArrayList<ItemStack> addDropsMaterialCleaver(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-	{
-		if (target instanceof EntityBlaze)
-		{
-			drops.add(new ItemStack(CleaverItems.MATERIAL_CLEAVER_BLAZE));
-		}
+		// TODO
+		FMLLog.info("Reality : %s", rarity.name());
 
 		return drops;
 	}

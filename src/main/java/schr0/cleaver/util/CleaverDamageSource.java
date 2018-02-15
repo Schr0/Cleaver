@@ -6,6 +6,7 @@ import schr0.cleaver.Cleaver;
 
 public class CleaverDamageSource extends DamageSource
 {
+
 	private static final String DAMAGE_TYPE = Cleaver.MOD_ID;
 
 	private EntityLivingBase attacker;

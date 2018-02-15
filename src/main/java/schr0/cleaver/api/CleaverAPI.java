@@ -1,15 +1,22 @@
 package schr0.cleaver.api;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 
 public class CleaverAPI
 {
 
 	/**
-	 * CleaverMaterialの登録.
+	 * 「Cleaver」のModID.
+	 */
+	public static final String MOD_ID = "schr0cleaver";
+
+	/**
+	 * 「CleaverMaterial」の登録.
 	 *
 	 * @param name
-	 *            内部名称.
+	 *            名称.
 	 * @param maxUses
 	 *            耐久度.
 	 * @param damageVsEntity
@@ -28,6 +35,42 @@ public class CleaverAPI
 		};
 
 		return EnumHelper.addEnum(CleaverMaterial.class, name, paramTypes, maxUses, damageVsEntity, enchantability);
+	}
+
+	/**
+	 * 「ItemCleaverNormal」の判定.
+	 *
+	 * @param stak
+	 *            判定するItemStack.
+	 *
+	 * @return 「ItemCleaverNormal」の判定.
+	 */
+	public static boolean isItemCleaverNormal(ItemStack stak)
+	{
+		if (stak.isEmpty())
+		{
+			return false;
+		}
+
+		return stak.getItem().getRegistryName().equals(new ResourceLocation(MOD_ID, "cleaver_normal"));
+	}
+
+	/**
+	 * 「ItemMaterialCleaverNormal」の判定.
+	 *
+	 * @param stak
+	 *            判定するItemStack.
+	 *
+	 * @return 「ItemMaterialCleaverNormal」の判定.
+	 */
+	public static boolean isItemMaterialCleaverNormal(ItemStack stak)
+	{
+		if (stak.isEmpty())
+		{
+			return false;
+		}
+
+		return stak.getItem().getRegistryName().equals(new ResourceLocation(MOD_ID, "material_cleaver_normal"));
 	}
 
 }
