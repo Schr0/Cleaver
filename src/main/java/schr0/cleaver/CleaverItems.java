@@ -1,4 +1,4 @@
-package schr0.cleaver.init;
+package schr0.cleaver;
 
 import java.util.ArrayList;
 
@@ -6,45 +6,45 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
-import schr0.cleaver.Cleaver;
-import schr0.cleaver.item.ItemCleaverNormal;
-import schr0.cleaver.item.ItemMaterialCleaverNormal;
-import schr0.cleaver.util.CleaverCreativeTabs;
 
 public class CleaverItems
 {
 
-	public static final Item CLEAVER_NORMAL;
-	public static final Item MATERIAL_CLEAVER_NORMAL;
+	public static final Item CLEAVER;
+	public static final Item MATERIAL_CLEAVER;
 
-	public static final String NAME_CLEAVER_NORMAL = "cleaver_normal";
-	public static final String NAME_MATERIAL_CLEAVER_NORMAL = "material_cleaver_normal";
+	public static final String NAME_CLEAVER = "cleaver";
+	public static final String NAME_MATERIAL_CLEAVER = "material_cleaver";
+
+	public static final Item.ToolMaterial TOOLMATERIAL_CLEAVER = EnumHelper.addToolMaterial("CLEAVER", 2, 500, 6.0F, 0.0F, 14).setRepairItem(new ItemStack(Items.IRON_INGOT));
 
 	static
 	{
-		CLEAVER_NORMAL = new ItemCleaverNormal().setUnlocalizedName(NAME_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
-		MATERIAL_CLEAVER_NORMAL = new ItemMaterialCleaverNormal().setUnlocalizedName(NAME_MATERIAL_CLEAVER_NORMAL).setCreativeTab(CleaverCreativeTabs.ITEM);
+		CLEAVER = new ItemCleaver().setUnlocalizedName(NAME_CLEAVER).setCreativeTab(CleaverCreativeTabs.ITEM);
+		MATERIAL_CLEAVER = new ItemMaterialCleaver().setUnlocalizedName(NAME_MATERIAL_CLEAVER).setCreativeTab(CleaverCreativeTabs.ITEM);
 	}
 
 	public void registerItems(IForgeRegistry<Item> registry)
 	{
-		registerItem(registry, CLEAVER_NORMAL, NAME_CLEAVER_NORMAL);
-		registerItem(registry, MATERIAL_CLEAVER_NORMAL, NAME_MATERIAL_CLEAVER_NORMAL);
+		registerItem(registry, CLEAVER, NAME_CLEAVER);
+		registerItem(registry, MATERIAL_CLEAVER, NAME_MATERIAL_CLEAVER);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void registerModels()
 	{
-		registerModel(CLEAVER_NORMAL);
-		registerModel(MATERIAL_CLEAVER_NORMAL);
+		registerModel(CLEAVER);
+		registerModel(MATERIAL_CLEAVER);
 	}
 
 	// TODO /* ======================================== MOD START =====================================*/

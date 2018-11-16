@@ -8,11 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class ItemCleaverNormalEvent extends Event
+public class ItemCleaverEvent extends Event
 {
 
 	@Cancelable
-	public static class CleaveDropsEvent extends ItemCleaverNormalEvent
+	public static class CleaveDropsEvent extends ItemCleaverEvent
 	{
 		private final ArrayList<ItemStack> drops;
 		private final EnumRarity rarity;

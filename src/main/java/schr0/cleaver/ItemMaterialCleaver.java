@@ -1,4 +1,4 @@
-package schr0.cleaver.item;
+package schr0.cleaver;
 
 import java.util.List;
 
@@ -12,12 +12,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import schr0.cleaver.util.CleaverLang;
 
-public class ItemMaterialCleaverNormal extends Item
+public class ItemMaterialCleaver extends Item
 {
 
-	public ItemMaterialCleaverNormal()
+	public ItemMaterialCleaver()
 	{
 		this.setMaxStackSize(16);
 	}
@@ -26,7 +25,12 @@ public class ItemMaterialCleaverNormal extends Item
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
 	{
-		tooltip.add(TextFormatting.ITALIC + new TextComponentTranslation(CleaverLang.ITEM_MATERIAL_CLEAVER_NORMAL_TIPS, new Object[0]).getFormattedText());
+		TextComponentTranslation info = new TextComponentTranslation("item.material_cleaver.tooltip", new Object[0]);
+
+		info.getStyle().setColor(TextFormatting.BLUE);
+		info.getStyle().setItalic(true);
+
+		tooltip.add(info.getFormattedText());
 	}
 
 }

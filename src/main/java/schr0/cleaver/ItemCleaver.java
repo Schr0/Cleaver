@@ -1,36 +1,37 @@
-package schr0.cleaver.item;
+package schr0.cleaver;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
-import schr0.cleaver.api.CleaverMaterial;
-import schr0.cleaver.api.ItemCleaver;
-import schr0.cleaver.init.CleaverPackets;
-import schr0.cleaver.packet.MessageParticleEntity;
-import schr0.cleaver.util.CleaverParticle;
+import schr0.cleaver.api.ICleaverItem;
 
-public class ItemCleaverNormal extends ItemCleaver
+public class ItemCleaver extends ItemSword implements ICleaverItem
 {
 
 	private static final int SHARPNESS_AMOUNT_MIN = 2;
@@ -42,38 +43,33 @@ public class ItemCleaverNormal extends ItemCleaver
 	private static final int CHANCE_PERCENT = 100;
 	private static final int REALITY_PERCENT = 100;
 
-	public ItemCleaverNormal()
+	private float attackDamage;
+
+	public ItemCleaver()
 	{
-		super(CleaverMaterial.NORMAL);
+		super(CleaverItems.TOOLMATERIAL_CLEAVER);
+
+		this.attackDamage = CleaverItems.TOOLMATERIAL_CLEAVER.getAttackDamage();
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state)
+	public float getAttackDamage()
 	{
-		if (state.getMaterial() == Material.LEAVES)
-		{
-			return 15.0F;
-		}
-
-		if (state.getBlock() == Blocks.WOOL)
-		{
-			return 5.0F;
-		}
-
-		return super.getStrVsBlock(stack, state);
+		return this.attackDamage;
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState blockIn)
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
 	{
-		Block block = blockIn.getBlock();
+		Multimap<String, AttributeModifier> multimap = HashMultimap.<String, AttributeModifier> create();
 
-		if ((block == Blocks.REDSTONE_WIRE) || (block == Blocks.TRIPWIRE))
+		if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
 		{
-			return true;
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.attackDamage, 0));
+			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", 0.0D, 0));
 		}
 
-		return super.canHarvestBlock(blockIn);
+		return multimap;
 	}
 
 	@Override
@@ -187,7 +183,7 @@ public class ItemCleaverNormal extends ItemCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			ArrayList<ItemStack> equipments = ItemCleaverNormalHelper.getCleaveEquipments(getUsedAmmount(random, sharpnessAmount), target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverHelper.getCleaveEquipments(getUsedAmmount(random, sharpnessAmount), target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -196,14 +192,14 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackEquipment, target);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_NORMAL_DISARMAMENT));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_DISARMAMENT));
 
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
 				return true;
 			}
 
-			ArrayList<ItemStack> drops = ItemCleaverNormalHelper.getCleaveDrops(getCleaveRarity(random, sharpnessAmount), stack, target, attacker);
+			ArrayList<ItemStack> drops = ItemCleaverHelper.getCleaveDrops(getCleaveRarity(random, sharpnessAmount), stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
@@ -212,7 +208,7 @@ public class ItemCleaverNormal extends ItemCleaver
 					this.onEntityDropItem(stackDrop, target);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_NORMAL_CLEAVE));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.ENTITY_CLEAVE));
 
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
 

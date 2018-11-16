@@ -1,7 +1,7 @@
 // ======================================== CREATIVETABS ===================================== //
-itemGroup.schr0cleaver.item=Cleaver Items
+itemGroup.schr0cleaver.item=Cleaver : Items
 
 // ======================================== ITEM ===================================== //
-item.cleaver_normal.name=Cleaver
-item.material_cleaver_normal.name=Cleaver Blade
-item.material_cleaver_normal.tips=<Craft> [Cleaver Blade] + [Stick] -> [Cleaver]
+item.cleaver.name=Cleaver
+item.material_cleaver.name=Cleaver Blade
+item.material_cleaver.tooltip=<Craft> [Cleaver Blade] + [Stick] -> [Cleaver]

@@ -1,0 +1,54 @@
+{
+    "parent": "minecraft:recipes/root",
+    "criteria": {
+        "iron_ingot": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                            {
+                                "item": "minecraft:iron_ingot"
+                            }
+                ]
+            }
+        },
+        "stick": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                            {
+                                "item": "minecraft:stick"
+                            }
+                ]
+            }
+        },
+        "material_cleaver": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                            {
+                                "item": "schr0cleaver:material_cleaver"
+                            }
+                ]
+            }
+        },
+        "cleaver": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                            {
+                                "item": "schr0cleaver:cleaver"
+                            }
+                ]
+            }
+        }
+     },
+    "requirements": [
+        ["iron_ingot", "stick", "material_cleaver", "cleaver"]
+    ],
+    "rewards": {
+        "recipes": [
+            "schr0cleaver:recipe_cleaver",
+            "schr0cleaver:recipe_material_cleaver"
+        ]
+    }
+}

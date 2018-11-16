@@ -1,0 +1,21 @@
+{
+    "type": "forge:ore_shaped",
+    "pattern": [
+        " X ",
+        "Y  ",
+        "   "
+    ],
+    "key": {
+        "X": {
+            "type": "forge:ore_dict",
+            "ore": "schr0cleaver:material_cleaver"
+        },
+        "Y": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        }
+    },
+    "result": {
+        "item": "schr0cleaver:cleaver"
+    }
+}

@@ -1,4 +1,4 @@
-package schr0.cleaver.packet;
+package schr0.cleaver;
 
 import java.util.Random;
 
@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import schr0.cleaver.util.CleaverParticle;
 
 @SideOnly(Side.CLIENT)
 public class MessageHandlerParticleEntity implements IMessageHandler<MessageParticleEntity, IMessage>
@@ -29,13 +28,13 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 			switch (message.getParticleType())
 			{
-				case CleaverParticle.ENTITY_NORMAL_DISARMAMENT :
+				case CleaverParticle.ENTITY_DISARMAMENT :
 
 					particleNormalDisarmament(world, entity, random);
 
 					break;
 
-				case CleaverParticle.ENTITY_NORMAL_CLEAVE :
+				case CleaverParticle.ENTITY_CLEAVE :
 
 					particleNormalCleave(world, entity, random);
 

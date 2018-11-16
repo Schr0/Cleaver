@@ -1,4 +1,4 @@
-package schr0.cleaver.init;
+package schr0.cleaver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import schr0.cleaver.api.ICleaverItem;
-import schr0.cleaver.util.CleaverDamageSource;
 
 public class CleaverEvents
 {
