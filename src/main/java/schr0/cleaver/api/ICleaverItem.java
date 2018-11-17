@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 
 public interface ICleaverItem
 {
@@ -58,53 +57,11 @@ public interface ICleaverItem
 	 *
 	 * @return 攻撃の判定.
 	 */
-	boolean shouldAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	boolean onAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
-	 * 所持者ダメージの判定.
+	 * ターゲット死亡時の判定.
 	 *
-	 * @param rawDamageAmmount
-	 *            元の所持者ダメージ値.
-	 * @param damageSource
-	 *            所持者が受けたDamageSource.
-	 * @param stack
-	 *            ICleaverItemのItemStack.
-	 * @param slot
-	 *            所持しているスロットの番号.
-	 * @param isSelected
-	 *            メインハンドに持っているかの判定.
-	 * @param owner
-	 *            所持者のEntityLivingBase.
-	 *
-	 * @return 所持者のダメージ判定.
-	 */
-	boolean shouldDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
-
-	/**
-	 * 所持者ダメージの処理.
-	 *
-	 * @param rawDamageAmmount
-	 *            元の所持者ダメージ値.
-	 * @param damageSource
-	 *            所持者が受けたDamageSource.
-	 * @param stack
-	 *            ICleaverItemのItemStack.
-	 * @param slot
-	 *            所持しているスロットの番号.
-	 * @param isSelected
-	 *            メインハンドに持っているかの判定.
-	 * @param owner
-	 *            所持者のEntityLivingBase.
-	 *
-	 * @return 所持者ダメージ値.
-	 */
-	float onDamageOwner(float rawDamageAmmount, DamageSource damageSource, ItemStack stack, int slot, boolean isSelected, EntityLivingBase owner);
-
-	/**
-	 * 生物のドロップアイテム.
-	 *
-	 * @param rawDrops
-	 *            元の生物ドロップアイテム.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
 	 * @param target
@@ -112,7 +69,23 @@ public interface ICleaverItem
 	 * @param attacker
 	 *            攻撃するEntityLivingBase.
 	 *
-	 * @return 生物のドロップアイテム
+	 * @return ターゲット死亡時の判定.
+	 */
+	boolean onDeathTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+
+	/**
+	 * ターゲット死亡時のドロップアイテム.
+	 *
+	 * @param rawDrops
+	 *            元のドロップアイテム.
+	 * @param stack
+	 *            ICleaverItemのItemStack.
+	 * @param target
+	 *            攻撃されるEntityLivingBase.
+	 * @param attacker
+	 *            攻撃するEntityLivingBase.
+	 *
+	 * @return ターゲット死亡時のドロップアイテム.
 	 */
 	List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 

@@ -1,4 +1,4 @@
-package schr0.cleaver;
+package schr0.cleaver.api;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -79,16 +79,35 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLLog;
-import schr0.cleaver.api.ItemCleaverEvent;
 
 public class ItemCleaverHelper
 {
 
-	private static final int REALITY_PERCENT = 100;
-	private static final int REALITY_COMMON = 40;
-	private static final int REALITY_RARE = 20;
+	private static final int USED_AMOUNT_MIN = 2;
+	private static final int USED_AMOUNT_MAX = 10;
 
-	public static ArrayList<ItemStack> getCleaveEquipments(int usedAmount, EntityLivingBase target, EntityLivingBase attacker)
+	private static final int CHANCE_PERCENT = 100;
+	private static final int CHANCE_COMMON = 40;
+	private static final int CHANCE_RARE = 20;
+
+	private static final int RARITY_PERCENT = 100;
+	private static final int RARITY_EPIC = 10;
+	private static final int RARITY_RARE = 30;
+	private static final int RARITY_UNCOMMON = 60;
+
+	/**
+	 * 「装備解除」のドロップアイテム.
+	 *
+	 * @param sharpnessAmount
+	 *            切れ味値.
+	 * @param target
+	 *            「装備解除」されるEntityLivingBase.
+	 * @param attacker
+	 *            「装備解除」するEntityLivingBase.
+	 *
+	 * @return 「装備解除」のドロップアイテム.
+	 */
+	public static ArrayList<ItemStack> getCleaveEquipments(int sharpnessAmount, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
@@ -100,6 +119,7 @@ public class ItemCleaverHelper
 			{
 				if (stackEquipment.isItemStackDamageable() && !stackEquipment.getItem().isDamaged(stackEquipment))
 				{
+					int usedAmount = getUsedAmmount(getRandom(target), sharpnessAmount);
 					int stackAmount = (stackEquipment.getMaxDamage() - (stackEquipment.getMaxDamage() / usedAmount));
 
 					stackEquipment.setItemDamage(Math.max(stackAmount, 0));
@@ -116,7 +136,21 @@ public class ItemCleaverHelper
 		return equipments;
 	}
 
-	public static ArrayList<ItemStack> getCleaveDrops(EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	/**
+	 * 「剥ぎ取り」のドロップアイテム.
+	 *
+	 * @param sharpnessAmount
+	 *            切れ味値.
+	 * @param stack
+	 *            「ItemCleaver」のItemStack.
+	 * @param target
+	 *            「剥ぎ取り」されるEntityLivingBase.
+	 * @param attacker
+	 *            「剥ぎ取り」するEntityLivingBase.
+	 *
+	 * @return 「剥ぎ取り」のドロップアイテム.
+	 */
+	public static ArrayList<ItemStack> getCleaveDrops(int sharpnessAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		World world = target.getEntityWorld();
 
@@ -126,6 +160,7 @@ public class ItemCleaverHelper
 		}
 
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+		EnumRarity rarity = getCleaveRarity(getRandom(target), sharpnessAmount);
 		ResourceLocation targetKey = EntityList.getKey(target);
 
 		// TODO /* ======================================== BOSS =====================================*/
@@ -482,7 +517,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -495,7 +530,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
@@ -508,7 +543,7 @@ public class ItemCleaverHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -521,7 +556,7 @@ public class ItemCleaverHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
@@ -575,7 +610,7 @@ public class ItemCleaverHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 				}
@@ -682,7 +717,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO, 10));
 
@@ -696,7 +731,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -730,7 +765,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -743,7 +778,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
@@ -756,7 +791,7 @@ public class ItemCleaverHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
@@ -862,7 +897,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -875,7 +910,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1178,7 +1213,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -1191,7 +1226,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -1204,7 +1239,7 @@ public class ItemCleaverHelper
 
 			case RARE :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
@@ -1217,7 +1252,7 @@ public class ItemCleaverHelper
 
 			case EPIC :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_COMMON)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
 				{
 					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 				}
@@ -1274,7 +1309,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO));
 
@@ -1288,7 +1323,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom(attacker).nextInt(REALITY_PERCENT) < REALITY_RARE)
+				if (getRandom(attacker).nextInt(CHANCE_PERCENT) < CHANCE_RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1972,6 +2007,37 @@ public class ItemCleaverHelper
 		return ((0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)) || target.isBurning());
 	}
 
+	private static int getUsedAmmount(Random random, int sharpnessAmount)
+	{
+		int usedAmmount = (sharpnessAmount + random.nextInt(sharpnessAmount));
+		usedAmmount = Math.min(usedAmmount, USED_AMOUNT_MAX);
+		usedAmmount = Math.max(usedAmmount, USED_AMOUNT_MIN);
+
+		return usedAmmount;
+	}
+
+	private static EnumRarity getCleaveRarity(Random random, int sharpnessAmount)
+	{
+		int rarityAmount = random.nextInt(RARITY_PERCENT - random.nextInt(sharpnessAmount * 10));
+
+		if (rarityAmount < RARITY_EPIC)
+		{
+			return EnumRarity.EPIC;
+		}
+
+		if (rarityAmount < RARITY_RARE)
+		{
+			return EnumRarity.RARE;
+		}
+
+		if (rarityAmount < RARITY_UNCOMMON)
+		{
+			return EnumRarity.UNCOMMON;
+		}
+
+		return EnumRarity.COMMON;
+	}
+
 	private static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (target instanceof IShearable)
@@ -2020,7 +2086,7 @@ public class ItemCleaverHelper
 			}
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new ItemCleaverEvent.CleaveDropsEvent(drops, rarity, stack, target, attacker)))
+		if (MinecraftForge.EVENT_BUS.post(new CleaverAPI.ItemCleaverDropsEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}

@@ -1,6 +1,5 @@
 package schr0.cleaver;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -10,16 +9,13 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import schr0.cleaver.api.ICleaverItem;
@@ -67,7 +63,7 @@ public class CleaverEvents
 
 				event.setCanceled(true);
 
-				if (cleaverItem.shouldAttackTarget(attackAmmount, cleaverItem.canCleaveTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
+				if (cleaverItem.onAttackTarget(attackAmmount, cleaverItem.canCleaveTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
 				{
 					target.hurtResistantTime = 0;
 
@@ -120,144 +116,6 @@ public class CleaverEvents
 			else
 			{
 				target.onDeath(DamageSource.causeMobDamage(attacker));
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onAttackOwnerEvent(LivingAttackEvent event)
-	{
-		EntityLivingBase owner = event.getEntityLiving();
-		DamageSource damageSource = event.getSource();
-		float damageAmmount = event.getAmount();
-
-		if (isInvalidAttackOwner(owner))
-		{
-			return;
-		}
-
-		ItemStack stack = ItemStack.EMPTY;
-		int slot = 0;
-		boolean isSelected = false;
-
-		if (owner instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer) owner;
-			List<NonNullList<ItemStack>> allPlayerInventories = Arrays.<NonNullList<ItemStack>> asList(player.inventory.mainInventory, player.inventory.armorInventory, player.inventory.offHandInventory);
-
-			for (NonNullList<ItemStack> nonNullList : allPlayerInventories)
-			{
-				for (int sizeNonNullList = 0; sizeNonNullList < nonNullList.size(); sizeNonNullList++)
-				{
-					ItemStack stackInventory = (ItemStack) nonNullList.get(sizeNonNullList);
-
-					if (stackInventory.getItem() instanceof ICleaverItem)
-					{
-						ICleaverItem cleaverItem = (ICleaverItem) stackInventory.getItem();
-						stack = stackInventory;
-						slot = sizeNonNullList;
-						isSelected = (player.inventory.currentItem == slot);
-
-						if (cleaverItem.shouldDamageOwner(damageAmmount, damageSource, stack, slot, isSelected, player))
-						{
-							continue;
-						}
-						else
-						{
-							event.setCanceled(true);
-
-							return;
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
-			{
-				ItemStack stackEquipment = owner.getItemStackFromSlot(equipmentSlot);
-
-				if (stackEquipment.getItem() instanceof ICleaverItem)
-				{
-					ICleaverItem cleaverItem = (ICleaverItem) stackEquipment.getItem();
-					stack = stackEquipment;
-					slot = equipmentSlot.getSlotIndex();
-					isSelected = (slot == EntityEquipmentSlot.MAINHAND.getSlotIndex()) || (slot == EntityEquipmentSlot.OFFHAND.getSlotIndex());
-
-					if (cleaverItem.shouldDamageOwner(damageAmmount, damageSource, stack, slot, isSelected, owner))
-					{
-						continue;
-					}
-					else
-					{
-						event.setCanceled(true);
-
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onHurtOwnerEvent(LivingHurtEvent event)
-	{
-		EntityLivingBase owner = event.getEntityLiving();
-		DamageSource damageSource = event.getSource();
-		float damageAmmount = event.getAmount();
-
-		if (isInvalidHurtOwner(owner))
-		{
-			return;
-		}
-
-		ItemStack stack = ItemStack.EMPTY;
-		int slot = 0;
-		boolean isSelected = false;
-
-		if (owner instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer) owner;
-			List<NonNullList<ItemStack>> allPlayerInventories = Arrays.<NonNullList<ItemStack>> asList(player.inventory.mainInventory, player.inventory.armorInventory, player.inventory.offHandInventory);
-
-			for (NonNullList<ItemStack> nonNullList : allPlayerInventories)
-			{
-				for (int sizeNonNullList = 0; sizeNonNullList < nonNullList.size(); sizeNonNullList++)
-				{
-					ItemStack stackInventory = (ItemStack) nonNullList.get(sizeNonNullList);
-
-					if (stackInventory.getItem() instanceof ICleaverItem)
-					{
-						ICleaverItem cleaverItem = (ICleaverItem) stackInventory.getItem();
-						stack = stackInventory;
-						slot = sizeNonNullList;
-						isSelected = (sizeNonNullList == player.inventory.currentItem);
-
-						event.setAmount(cleaverItem.onDamageOwner(damageAmmount, damageSource, stack, slot, isSelected, owner));
-
-						return;
-					}
-				}
-			}
-		}
-		else
-		{
-			for (EntityEquipmentSlot equipmentSlot : EntityEquipmentSlot.values())
-			{
-				ItemStack stackEquipment = owner.getItemStackFromSlot(equipmentSlot);
-
-				if (stackEquipment.getItem() instanceof ICleaverItem)
-				{
-					ICleaverItem cleaverItem = (ICleaverItem) stackEquipment.getItem();
-					stack = stackEquipment;
-					slot = equipmentSlot.getSlotIndex();
-					isSelected = (slot == EntityEquipmentSlot.MAINHAND.getSlotIndex()) || (slot == EntityEquipmentSlot.OFFHAND.getSlotIndex());
-
-					event.setAmount(cleaverItem.onDamageOwner(damageAmmount, damageSource, stack, slot, isSelected, owner));
-
-					return;
-				}
 			}
 		}
 	}

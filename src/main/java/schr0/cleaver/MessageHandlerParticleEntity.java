@@ -28,15 +28,15 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 			switch (message.getParticleType())
 			{
-				case CleaverParticle.ENTITY_DISARMAMENT :
+				case CleaverParticle.TARGET_DROPS :
 
-					particleNormalDisarmament(world, entity, random);
+					particleTargetDrops(world, entity, random);
 
 					break;
 
-				case CleaverParticle.ENTITY_CLEAVE :
+				case CleaverParticle.TARGET_DISARMAMENT :
 
-					particleNormalCleave(world, entity, random);
+					particleTargetDisarmament(world, entity, random);
 
 					break;
 			}
@@ -47,7 +47,16 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static void particleNormalDisarmament(World world, Entity entity, Random random)
+	private static void particleTargetDrops(World world, Entity entity, Random random)
+	{
+		double posX = entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
+		double posY = entity.posY + (double) (random.nextFloat() * entity.height);
+		double posZ = entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
+
+		world.spawnParticle(EnumParticleTypes.SWEEP_ATTACK, posX, posY, posZ, 0, 0, 0, new int[0]);
+	}
+
+	private static void particleTargetDisarmament(World world, Entity entity, Random random)
 	{
 		double posX = entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
 		double posY = entity.posY + (double) (random.nextFloat() * entity.height);
@@ -55,15 +64,6 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 		double size = 0.85D;
 
 		world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, posX, posY, posZ, size, 0, 0, new int[0]);
-	}
-
-	private static void particleNormalCleave(World world, Entity entity, Random random)
-	{
-		double posX = entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
-		double posY = entity.posY + (double) (random.nextFloat() * entity.height);
-		double posZ = entity.posZ + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
-
-		world.spawnParticle(EnumParticleTypes.SWEEP_ATTACK, posX, posY, posZ, 0, 0, 0, new int[0]);
 	}
 
 }
