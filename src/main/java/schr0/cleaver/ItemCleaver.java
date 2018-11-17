@@ -103,7 +103,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 				for (ItemStack stack : drops)
 				{
-					this.onEntityDropItem(entity, stack);
+					this.onTargetDropItems(entity, stack);
 				}
 
 				itemstack.damageItem(1, entity);
@@ -150,7 +150,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 			{
 				for (ItemStack stackEquipment : equipments)
 				{
-					this.onEntityDropItem(target, stackEquipment);
+					this.onTargetDropItems(target, stackEquipment);
 				}
 
 				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.TARGET_DISARMAMENT));
@@ -166,7 +166,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 			{
 				for (ItemStack stackDrop : drops)
 				{
-					this.onEntityDropItem(target, stackDrop);
+					this.onTargetDropItems(target, stackDrop);
 				}
 
 				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.TARGET_DROPS));
@@ -210,7 +210,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 		return sharpnessAmount;
 	}
 
-	private void onEntityDropItem(EntityLivingBase target, ItemStack stack)
+	private void onTargetDropItems(EntityLivingBase target, ItemStack stack)
 	{
 		Random random = this.getRandom(target);
 		EntityItem entityItem = target.entityDropItem(stack, 1.0F);

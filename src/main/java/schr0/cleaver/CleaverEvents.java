@@ -58,7 +58,6 @@ public class CleaverEvents
 				else
 				{
 					attackAmmount = cleaverItem.getAttackAmmount(event.getAmount(), stackMainHand, target, attacker);
-
 				}
 
 				event.setCanceled(true);
@@ -107,7 +106,7 @@ public class CleaverEvents
 			{
 				EntityPlayer player = (EntityPlayer) attacker;
 
-				// TODO Reflection : forge1.12-14.21.1.2387
+				// TODO Reflection : forge-1.12.2-14.23.5.2768
 				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer", "field_70717_bb");
 				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit", "field_70718_bc");
 
@@ -183,26 +182,6 @@ public class CleaverEvents
 		}
 
 		return false;
-	}
-
-	private static boolean isInvalidAttackOwner(EntityLivingBase owner)
-	{
-		if (owner.getEntityWorld().isRemote)
-		{
-			return true;
-		}
-
-		if ((owner == null) || (owner != null && (owner.isDead || owner.getHealth() <= 0)))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	private static boolean isInvalidHurtOwner(EntityLivingBase owner)
-	{
-		return isInvalidAttackOwner(owner);
 	}
 
 	private static boolean isInvalidDropsTarget(EntityLivingBase target, DamageSource damageSource)
