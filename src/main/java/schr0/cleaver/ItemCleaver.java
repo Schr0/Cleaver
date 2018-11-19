@@ -58,10 +58,10 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 				for (ItemStack stackDrop : drops)
 				{
-					float randomPos = 0.5F;
-					double posXdrop = (double) pos.getX() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-					double posYdrop = (double) pos.getY() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
-					double posZdrop = (double) pos.getZ() + ((random.nextFloat() * randomPos) + (double) (1.0F - randomPos) * 0.5D);
+					float posRandom = 0.5F;
+					double posXdrop = (double) pos.getX() + ((random.nextFloat() * posRandom) + (double) (1.0F - posRandom) * 0.5D);
+					double posYdrop = (double) pos.getY() + ((random.nextFloat() * posRandom) + (double) (1.0F - posRandom) * 0.5D);
+					double posZdrop = (double) pos.getZ() + ((random.nextFloat() * posRandom) + (double) (1.0F - posRandom) * 0.5D);
 					EntityItem entityItem = new EntityItem(world, posXdrop, posYdrop, posZdrop, stackDrop);
 
 					entityItem.setDefaultPickupDelay();
@@ -124,9 +124,9 @@ public class ItemCleaver extends ItemSimpleCleaver
 	@Override
 	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		int chance = (this.getSharpnessAmount(attackAmmount, stack, attacker) * 10);
+		int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack, attacker);
 
-		return (this.getRandom(attacker).nextInt(CHANCE_PERCENT) < chance);
+		return (this.getRandom(attacker).nextInt(CHANCE_PERCENT) < (sharpnessAmount * 10));
 	}
 
 	@Override
@@ -204,6 +204,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 		}
 
 		int sharpnessAmount = ((int) Math.round(attackAmmount) * lootingAmmount);
+
 		sharpnessAmount = Math.min(sharpnessAmount, SHARPNESS_AMOUNT_MAX);
 		sharpnessAmount = Math.max(sharpnessAmount, SHARPNESS_AMOUNT_MIN);
 

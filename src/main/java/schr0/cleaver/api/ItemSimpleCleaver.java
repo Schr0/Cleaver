@@ -17,6 +17,8 @@ import net.minecraft.item.ItemSword;
 public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverItem
 {
 
+	private static final float ATTACK_SPEED_MIN = -3.5F;
+	private static final float ATTACK_SPEED_MAX = 0.0F;
 	private float attackDamage;
 	private float attackSpeed;
 
@@ -28,6 +30,17 @@ public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverIte
 		this.attackSpeed = 0.0F;
 	}
 
+	public ItemSimpleCleaver(Item.ToolMaterial material, float attackSpeed)
+	{
+		super(material);
+
+		this.attackDamage = material.getAttackDamage();
+
+		attackSpeed = Math.min(attackSpeed, ATTACK_SPEED_MAX);
+		attackSpeed = Math.max(attackSpeed, ATTACK_SPEED_MIN);
+		this.attackSpeed = attackSpeed;
+	}
+
 	@Override
 	public float getAttackDamage()
 	{
@@ -35,11 +48,11 @@ public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverIte
 	}
 
 	@Override
-	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
 		Multimap<String, AttributeModifier> multimap = HashMultimap.<String, AttributeModifier> create();
 
-		if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
+		if (slot == EntityEquipmentSlot.MAINHAND)
 		{
 			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double) this.attackDamage, 0));
 			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) this.attackSpeed, 0));
@@ -76,6 +89,11 @@ public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverIte
 	public List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return rawDrops;
+	}
+
+	public float getAttackSpeed()
+	{
+		return this.attackSpeed;
 	}
 
 }
