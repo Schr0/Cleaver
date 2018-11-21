@@ -196,17 +196,20 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 	public int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)
 	{
-		int lootingAmmount = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
+		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
 
 		if (attacker instanceof EntityPlayer)
 		{
-			lootingAmmount += (int) ((EntityPlayer) attacker).getLuck();
+			lootingLevel += (int) ((EntityPlayer) attacker).getLuck();
 		}
 
-		int sharpnessAmount = ((int) Math.round(attackAmmount) * lootingAmmount);
+		int sharpnessAmount = (Math.round(attackAmmount) * lootingLevel);
 
 		sharpnessAmount = Math.min(sharpnessAmount, SHARPNESS_AMOUNT_MAX);
 		sharpnessAmount = Math.max(sharpnessAmount, SHARPNESS_AMOUNT_MIN);
+
+		// TODO
+		// FMLLog.info("sharpnessAmount : %d", sharpnessAmount);
 
 		return sharpnessAmount;
 	}

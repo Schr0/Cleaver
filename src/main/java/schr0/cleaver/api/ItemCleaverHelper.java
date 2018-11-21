@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -78,13 +79,10 @@ import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLLog;
 
 public class ItemCleaverHelper
 {
-	private static final int CHANCE_PERCENT = 100;
-	private static final int CHANCE_COMMON = 50;
-	private static final int CHANCE_RARE = 25;
-
 	private static final int RARITY_PERCENT = 100;
 	private static final int RARITY_EPIC = 10;
 	private static final int RARITY_RARE = 30;
@@ -152,7 +150,7 @@ public class ItemCleaverHelper
 		}
 
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-		EnumRarity rarity = getCleaveRarity(sharpnessAmount);
+		EnumRarity rarity = getDropRarity(sharpnessAmount);
 		ResourceLocation targetKey = EntityList.getKey(target);
 
 		// TODO /* ======================================== BOSS =====================================*/
@@ -428,6 +426,8 @@ public class ItemCleaverHelper
 	// EntityBlaze
 	public static ArrayList<ItemStack> getDropsBlaze(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityBlaze target, EntityLivingBase attacker)
 	{
+		target.setOnFire(false);
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -438,7 +438,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.BLAZE_POWDER));
+				drops.add(new ItemStack(Items.BLAZE_POWDER, 2));
 
 				break;
 
@@ -455,8 +455,6 @@ public class ItemCleaverHelper
 
 				break;
 		}
-
-		target.setOnFire(false);
 
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
@@ -470,6 +468,8 @@ public class ItemCleaverHelper
 	// EntityCreeper
 	public static ArrayList<ItemStack> getDropsCreeper(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityCreeper target, EntityLivingBase attacker)
 	{
+		target.setCreeperState(-1);
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -480,24 +480,22 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
+				drops.add(new ItemStack(Items.GUNPOWDER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
+				drops.add(new ItemStack(Items.GUNPOWDER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
+				drops.add(new ItemStack(Items.GUNPOWDER, 4));
 
 				break;
 		}
-
-		target.setCreeperState(-1);
 
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
@@ -509,52 +507,52 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
-					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
+					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS, 2));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.PRISMARINE_SHARD));
+					drops.add(new ItemStack(Items.PRISMARINE_SHARD, 2));
 				}
 
 				break;
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.COD.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.COD.getMetadata()));
 				}
 
 				break;
 
 			case RARE :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.PUFFERFISH.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.PUFFERFISH.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
 
 				break;
 
 			case EPIC :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.RARE)
 				{
 					drops.add(new ItemStack(Blocks.SPONGE, 1, 1));
 				}
 				else
 				{
-					drops.add(new ItemStack(Blocks.SEA_LANTERN));
+					drops.add(new ItemStack(Blocks.SEA_LANTERN, 2));
 				}
 
 				break;
@@ -566,6 +564,20 @@ public class ItemCleaverHelper
 	// EntityEnderman
 	public static ArrayList<ItemStack> getDropsEnderman(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityEnderman target, EntityLivingBase attacker)
 	{
+		IBlockState state = target.getHeldBlockState();
+
+		if (state != null)
+		{
+			Item block = Item.getItemFromBlock(state.getBlock());
+			int meta = block.getHasSubtypes() ? state.getBlock().getMetaFromState(state) : 0;
+
+			drops.add(new ItemStack(block, 1, meta));
+
+			target.setHeldBlockState((IBlockState) null);
+
+			return getDrops(drops, rarity, stack, target, attacker);
+		}
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -583,47 +595,28 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.ENDER_EYE));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.ENDER_PEARL));
-				}
+				drops.add(new ItemStack(Items.CHORUS_FRUIT));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.CHORUS_FRUIT));
+				drops.add(new ItemStack(Blocks.CHORUS_PLANT));
 
 				break;
 
 			case EPIC :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
-				{
-					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
-				}
-				else
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Blocks.END_STONE));
 				}
+				else
+				{
+					drops.add(new ItemStack(Blocks.CHORUS_FLOWER));
+				}
 
 				break;
-		}
-
-		IBlockState state = target.getHeldBlockState();
-
-		if (state != null)
-		{
-			Item block = Item.getItemFromBlock(state.getBlock());
-			int meta = block.getHasSubtypes() ? state.getBlock().getMetaFromState(state) : 0;
-
-			drops.add(new ItemStack(block, 1, meta));
-
-			target.setHeldBlockState((IBlockState) null);
 		}
 
 		return getDrops(drops, rarity, stack, target, attacker);
@@ -648,13 +641,13 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				drops.add(new ItemStack(Items.EMERALD, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				drops.add(new ItemStack(Items.EMERALD, 3));
 
 				break;
 
@@ -675,13 +668,13 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
+				drops.add(new ItemStack(Items.GUNPOWDER, 2));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
+				drops.add(new ItemStack(Items.GUNPOWDER, 3));
 
 				break;
 
@@ -709,10 +702,9 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO, 10));
-
 				}
 				else
 				{
@@ -723,7 +715,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -757,7 +749,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.PRISMARINE_CRYSTALS));
 				}
@@ -770,7 +762,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 				}
@@ -783,13 +775,13 @@ public class ItemCleaverHelper
 
 			case RARE :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.PUFFERFISH.getMetadata()));
 				}
 				else
 				{
-					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.PUFFERFISH.getMetadata()));
+					drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.CLOWNFISH.getMetadata()));
 				}
 
 				break;
@@ -829,19 +821,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Blocks.RED_FLOWER));
+				drops.add(new ItemStack(Items.IRON_NUGGET));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.IRON_NUGGET));
+				drops.add(new ItemStack(Items.IRON_INGOT));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.IRON_INGOT));
+				drops.add(new ItemStack(Items.IRON_INGOT, 4));
 
 				break;
 		}
@@ -852,6 +844,11 @@ public class ItemCleaverHelper
 	// EntityMagmaCube
 	public static ArrayList<ItemStack> getDropsMagmaCube(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMagmaCube target, EntityLivingBase attacker)
 	{
+		if (target.isSmallSlime())
+		{
+			return getDrops(drops, rarity, stack, target, attacker);
+		}
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -862,19 +859,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM));
+				drops.add(new ItemStack(Items.MAGMA_CREAM, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM));
+				drops.add(new ItemStack(Items.MAGMA_CREAM, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.MAGMA_CREAM));
+				drops.add(new ItemStack(Items.MAGMA_CREAM, 4));
 
 				break;
 		}
@@ -889,7 +886,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.BAKED_POTATO));
 				}
@@ -902,7 +899,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -942,19 +939,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
+				drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
+				drops.add(new ItemStack(Items.FISH, 3, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
+				drops.add(new ItemStack(Items.FISH, 4, ItemFishFood.FishType.SALMON.getMetadata()));
 
 				break;
 		}
@@ -999,7 +996,6 @@ public class ItemCleaverHelper
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 				drops.add(new ItemStack(Items.BONE));
 				drops.add(new ItemStack(Items.ARROW));
 
@@ -1012,6 +1008,11 @@ public class ItemCleaverHelper
 	// EntitySlime
 	public static ArrayList<ItemStack> getDropsSlime(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySlime target, EntityLivingBase attacker)
 	{
+		if (target.isSmallSlime())
+		{
+			return getDrops(drops, rarity, stack, target, attacker);
+		}
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -1022,19 +1023,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.SLIME_BALL));
+				drops.add(new ItemStack(Items.SLIME_BALL, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.SLIME_BALL));
+				drops.add(new ItemStack(Items.SLIME_BALL, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.SLIME_BALL));
+				drops.add(new ItemStack(Items.SLIME_BALL, 4));
 
 				break;
 		}
@@ -1055,19 +1056,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.SNOWBALL));
+				drops.add(new ItemStack(Items.SNOWBALL, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.SNOWBALL));
+				drops.add(new ItemStack(Items.SNOWBALL, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.SNOWBALL));
+				drops.add(new ItemStack(Items.SNOWBALL, 4));
 
 				break;
 		}
@@ -1088,27 +1089,25 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.STRING));
+				if (isSmelting(stack, target))
+				{
+					drops.add(new ItemStack(Items.FERMENTED_SPIDER_EYE));
+				}
+				else
+				{
+					drops.add(new ItemStack(Items.SPIDER_EYE));
+				}
 
 				break;
 
 			case RARE :
 
-				if (isSmelting(stack, target))
-				{
-					drops.add(new ItemStack(Items.FERMENTED_SPIDER_EYE));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.SPIDER_EYE));
-				}
+				drops.add(new ItemStack(Blocks.WEB));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.STRING));
-
 				if (isSmelting(stack, target))
 				{
 					drops.add(new ItemStack(Items.FERMENTED_SPIDER_EYE));
@@ -1117,6 +1116,8 @@ public class ItemCleaverHelper
 				{
 					drops.add(new ItemStack(Items.SPIDER_EYE));
 				}
+
+				drops.add(new ItemStack(Blocks.WEB));
 
 				break;
 		}
@@ -1149,7 +1150,6 @@ public class ItemCleaverHelper
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
 				drops.add(new ItemStack(Items.BONE));
 				drops.add(new ItemStack(Items.TIPPED_ARROW, PotionType.REGISTRY.getIDForObject(PotionTypes.SLOWNESS)));
 
@@ -1178,19 +1178,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				drops.add(new ItemStack(Items.EMERALD, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				drops.add(new ItemStack(Items.EMERALD, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				drops.add(new ItemStack(Items.EMERALD, 4));
 
 				break;
 		}
@@ -1205,7 +1205,7 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -1218,22 +1218,16 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
-					drops.add(new ItemStack(Items.GLASS_BOTTLE));
-				}
-				else
-				{
-					drops.add(new ItemStack(Items.STICK));
-				}
-
-				break;
-
-			case RARE :
-
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
-				{
-					drops.add(new ItemStack(Items.SPIDER_EYE));
+					if (isSmelting(stack, target))
+					{
+						drops.add(new ItemStack(Items.FERMENTED_SPIDER_EYE));
+					}
+					else
+					{
+						drops.add(new ItemStack(Items.SPIDER_EYE));
+					}
 				}
 				else
 				{
@@ -1242,16 +1236,22 @@ public class ItemCleaverHelper
 
 				break;
 
-			case EPIC :
+			case RARE :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_COMMON)
-				{
-					drops.add(new ItemStack(Items.GLOWSTONE_DUST));
-				}
-				else
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.REDSTONE));
 				}
+				else
+				{
+					drops.add(new ItemStack(Items.GUNPOWDER));
+				}
+
+				break;
+
+			case EPIC :
+
+				drops.add(new ItemStack(Items.GLOWSTONE_DUST));
 
 				break;
 		}
@@ -1272,21 +1272,20 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.COAL));
+				drops.add(new ItemStack(Items.BONE));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.BONE));
+				drops.add(new ItemStack(Items.COAL));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
-				drops.add(new ItemStack(Items.COAL));
 				drops.add(new ItemStack(Items.BONE));
+				drops.add(new ItemStack(Items.COAL));
 
 				break;
 		}
@@ -1301,10 +1300,9 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.POTATO));
-
 				}
 				else
 				{
@@ -1315,7 +1313,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				if (getRandom().nextInt(CHANCE_PERCENT) < CHANCE_RARE)
+				if (getDropRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO));
 				}
@@ -1369,7 +1367,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.CHICKEN));
+				drops.add(new ItemStack(Items.CHICKEN, 2));
 
 				break;
 
@@ -1382,7 +1380,6 @@ public class ItemCleaverHelper
 			case EPIC :
 
 				drops.add(new ItemStack(Items.CHICKEN));
-
 				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
@@ -1404,7 +1401,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.BEEF));
+				drops.add(new ItemStack(Items.BEEF, 2));
 
 				break;
 
@@ -1417,7 +1414,6 @@ public class ItemCleaverHelper
 			case EPIC :
 
 				drops.add(new ItemStack(Items.BEEF));
-
 				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
@@ -1439,19 +1435,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 4));
 
 				break;
 		}
@@ -1472,19 +1468,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 4));
 
 				break;
 		}
@@ -1505,19 +1501,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 4));
 
 				break;
 		}
@@ -1528,35 +1524,6 @@ public class ItemCleaverHelper
 	// EntityMooshroom
 	public static ArrayList<ItemStack> getDropsMooshroom(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMooshroom target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
-
-				drops.add(new ItemStack(Items.BEEF));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.BEEF));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.BEEF));
-
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-		}
-
 		World world = target.getEntityWorld();
 		EntityCow entitycow = new EntityCow(world);
 		entitycow.setLocationAndAngles(target.posX, target.posY, target.posZ, target.rotationYaw, target.rotationPitch);
@@ -1571,6 +1538,11 @@ public class ItemCleaverHelper
 		target.setDead();
 
 		world.spawnEntity(entitycow);
+
+		for (int amount = 0; amount < 5; ++amount)
+		{
+			world.spawnEntity(new EntityItem(world, target.posX, target.posY + (double) target.height, target.posZ, new ItemStack(Blocks.RED_MUSHROOM)));
+		}
 
 		return getDrops(drops, rarity, stack, target, attacker);
 	}
@@ -1588,19 +1560,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 4));
 
 				break;
 		}
@@ -1621,25 +1593,25 @@ public class ItemCleaverHelper
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.FEATHER, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.FEATHER, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.FEATHER, 4));
 
 				break;
 		}
@@ -1650,6 +1622,13 @@ public class ItemCleaverHelper
 	// EntityPig
 	public static ArrayList<ItemStack> getDropsPig(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityPig target, EntityLivingBase attacker)
 	{
+		if (target.getSaddled())
+		{
+			drops.add(new ItemStack(Items.SADDLE));
+
+			target.setSaddled(false);
+		}
+
 		switch (rarity)
 		{
 			case COMMON :
@@ -1660,28 +1639,21 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.PORKCHOP));
+				drops.add(new ItemStack(Items.PORKCHOP, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.PORKCHOP));
+				drops.add(new ItemStack(Items.PORKCHOP, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.PORKCHOP));
+				drops.add(new ItemStack(Items.PORKCHOP, 4));
 
 				break;
-		}
-
-		if (target.getSaddled())
-		{
-			drops.add(new ItemStack(Items.SADDLE));
-
-			target.setSaddled(false);
 		}
 
 		return getDrops(drops, rarity, stack, target, attacker);
@@ -1700,7 +1672,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.RABBIT));
+				drops.add(new ItemStack(Items.RABBIT, 2));
 
 				break;
 
@@ -1713,7 +1685,6 @@ public class ItemCleaverHelper
 			case EPIC :
 
 				drops.add(new ItemStack(Items.RABBIT));
-
 				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
 				break;
@@ -1744,11 +1715,11 @@ public class ItemCleaverHelper
 
 				if (target.getSheared())
 				{
-					drops.add(new ItemStack(Items.MUTTON));
+					drops.add(new ItemStack(Items.MUTTON, 2));
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 2, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1757,11 +1728,11 @@ public class ItemCleaverHelper
 
 				if (target.getSheared())
 				{
-					drops.add(new ItemStack(Items.MUTTON));
+					drops.add(new ItemStack(Items.MUTTON, 3));
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 3, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1770,11 +1741,11 @@ public class ItemCleaverHelper
 
 				if (target.getSheared())
 				{
-					drops.add(new ItemStack(Items.MUTTON));
+					drops.add(new ItemStack(Items.MUTTON, 4));
 				}
 				else
 				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
+					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 4, target.getFleeceColor().getMetadata()));
 				}
 
 				break;
@@ -1796,7 +1767,7 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.WHITE.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 2, EnumDyeColor.WHITE.getDyeDamage()));
 
 				break;
 
@@ -1830,19 +1801,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 2, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 3, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
+				drops.add(new ItemStack(Items.DYE, 4, EnumDyeColor.BLACK.getDyeDamage()));
 
 				break;
 		}
@@ -1853,96 +1824,56 @@ public class ItemCleaverHelper
 	// EntityVillager
 	public static ArrayList<ItemStack> getDropsVillager(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityVillager target, EntityLivingBase attacker)
 	{
+		int listSize;
+
 		switch (rarity)
 		{
-			case COMMON :
-
-				if (attacker instanceof EntityPlayer)
-				{
-					EntityPlayer player = (EntityPlayer) attacker;
-					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
-
-					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
-					{
-						for (int count = 0; count < 1; count++)
-						{
-							int merchantSize = getRandom().nextInt(merchantrecipelist.size());
-							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
-							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
-
-							if (stackMerchant != null)
-							{
-								stackMerchant.setCount(1);
-
-								drops.add(stackMerchant);
-							}
-						}
-					}
-				}
-
-				break;
-
 			case UNCOMMON :
 
-				if (attacker instanceof EntityPlayer)
-				{
-					EntityPlayer player = (EntityPlayer) attacker;
-					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
-
-					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
-					{
-						for (int count = 0; count < 2; count++)
-						{
-							int merchantSize = getRandom().nextInt(merchantrecipelist.size());
-							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
-							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
-
-							if (stackMerchant != null)
-							{
-								stackMerchant.setCount(1);
-
-								drops.add(stackMerchant);
-							}
-						}
-					}
-				}
+				listSize = 2;
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.EMERALD));
+				listSize = 3;
 
 				break;
 
 			case EPIC :
 
-				if (attacker instanceof EntityPlayer)
-				{
-					EntityPlayer player = (EntityPlayer) attacker;
-					MerchantRecipeList merchantrecipelist = ((EntityVillager) target).getRecipes(player);
-
-					if (merchantrecipelist != null && !merchantrecipelist.isEmpty())
-					{
-						for (int count = 0; count < 3; count++)
-						{
-							int merchantSize = getRandom().nextInt(merchantrecipelist.size());
-							MerchantRecipe merchantrecipe = (MerchantRecipe) merchantrecipelist.get(merchantSize);
-							ItemStack stackMerchant = merchantrecipe.getItemToSell().copy();
-
-							if (stackMerchant != null)
-							{
-								stackMerchant.setCount(1);
-
-								drops.add(stackMerchant);
-							}
-						}
-					}
-				}
-
-				drops.add(new ItemStack(Items.EMERALD));
+				listSize = 4;
 
 				break;
+
+			default :
+
+				listSize = 1;
+		}
+
+		if (attacker instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer) attacker;
+			MerchantRecipeList merchantRecipeList = ((EntityVillager) target).getRecipes(player);
+
+			if (merchantRecipeList != null && !merchantRecipeList.isEmpty())
+			{
+				for (int size = 0; size < listSize; size++)
+				{
+					int merchantRecipeListSize = merchantRecipeList.size();
+					MerchantRecipe merchantRecipe = merchantRecipeList.get(getRandom().nextInt(merchantRecipeListSize));
+					ItemStack stackMerchantCopy = merchantRecipe.getItemToSell().copy();
+
+					if (!merchantRecipe.isRecipeDisabled() && stackMerchantCopy != null)
+					{
+						merchantRecipe.incrementToolUses();
+
+						stackMerchantCopy.setCount(1);
+
+						drops.add(stackMerchantCopy);
+					}
+				}
+			}
 		}
 
 		return getDrops(drops, rarity, stack, target, attacker);
@@ -1967,19 +1898,19 @@ public class ItemCleaverHelper
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH, 2));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH, 3));
 
 				break;
 
 			case EPIC :
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH));
+				drops.add(new ItemStack(Items.ROTTEN_FLESH, 4));
 
 				break;
 		}
@@ -1997,32 +1928,45 @@ public class ItemCleaverHelper
 	private static int getUsedItemDamage(ItemStack stackUsed, int sharpnessAmount)
 	{
 		Random random = getRandom();
-		int itemDamage = (stackUsed.getMaxDamage() - random.nextInt(stackUsed.getMaxDamage() / sharpnessAmount));
+		int usedDamage = (stackUsed.getMaxDamage() / sharpnessAmount);
+		int itemDamage = (stackUsed.getMaxDamage() - usedDamage);
 
-		return Math.max(itemDamage, 0);
+		itemDamage = Math.max(itemDamage, usedDamage);
+
+		return random.nextInt(usedDamage);
 	}
 
-	private static EnumRarity getCleaveRarity(int sharpnessAmount)
+	private static EnumRarity getDropRarity(int sharpnessAmount)
 	{
 		Random random = getRandom();
-		int rarityAmount = random.nextInt(RARITY_PERCENT - random.nextInt(sharpnessAmount * 10));;
+		int rarityAmount = random.nextInt(RARITY_PERCENT);
 
-		if (rarityAmount < RARITY_EPIC)// 10%
+		if (0 < sharpnessAmount)
 		{
-			return EnumRarity.EPIC;
+			rarityAmount = (rarityAmount - random.nextInt(sharpnessAmount * 10));
 		}
 
-		if (rarityAmount < RARITY_RARE)// 20%
+		if (rarityAmount < RARITY_EPIC)
 		{
-			return EnumRarity.RARE;
+			return EnumRarity.EPIC;// 10%
 		}
 
-		if (rarityAmount < RARITY_UNCOMMON)// 30%
+		if (rarityAmount < RARITY_RARE)
 		{
-			return EnumRarity.UNCOMMON;
+			return EnumRarity.RARE;// 20%
+		}
+
+		if (rarityAmount < RARITY_UNCOMMON)
+		{
+			return EnumRarity.UNCOMMON;// 30%
 		}
 
 		return EnumRarity.COMMON;// 40%
+	}
+
+	private static EnumRarity getDropRarity()
+	{
+		return getDropRarity(0);
 	}
 
 	private static boolean isSmelting(ItemStack stack, EntityLivingBase target)
@@ -2084,7 +2028,7 @@ public class ItemCleaverHelper
 		}
 
 		// TODO
-		// FMLLog.info("Reality : %s", rarity.name());
+		FMLLog.info("REALITY : %s", rarity.name());
 
 		return drops;
 	}
