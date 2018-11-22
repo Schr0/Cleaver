@@ -18,7 +18,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import schr0.cleaver.api.ICleaverItem;
+import schr0.cleaver.api.item.ICleaverItem;
 
 public class CleaverEvents
 {

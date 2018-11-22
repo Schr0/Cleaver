@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import schr0.cleaver.api.ItemCleaverHelper;
-import schr0.cleaver.api.ItemSimpleCleaver;
+import schr0.cleaver.api.item.ItemSimpleCleaver;
 
 public class ItemCleaver extends ItemSimpleCleaver
 {
@@ -144,7 +144,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			ArrayList<ItemStack> equipments = ItemCleaverHelper.getCleaveEquipments(sharpnessAmount, target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverHelper.getTargetEquipments(sharpnessAmount, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
@@ -160,7 +160,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 				return true;
 			}
 
-			ArrayList<ItemStack> drops = ItemCleaverHelper.getCleaveDrops(sharpnessAmount, stack, target, attacker);
+			ArrayList<ItemStack> drops = ItemCleaverHelper.getTargetDrops(sharpnessAmount, stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
@@ -196,6 +196,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 	public int getSharpnessAmount(float attackAmmount, ItemStack stack, EntityLivingBase attacker)
 	{
+		attackAmmount = Math.max(attackAmmount, 1.0F);
 		int lootingLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.LOOTING, stack);
 
 		if (attacker instanceof EntityPlayer)
@@ -212,6 +213,11 @@ public class ItemCleaver extends ItemSimpleCleaver
 		// FMLLog.info("sharpnessAmount : %d", sharpnessAmount);
 
 		return sharpnessAmount;
+	}
+
+	public int getSharpnessAmount(ItemStack stack, EntityLivingBase attacker)
+	{
+		return getSharpnessAmount(1.0F, stack, attacker);
 	}
 
 	private void onTargetDropItems(EntityLivingBase target, ItemStack stack)
