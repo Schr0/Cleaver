@@ -1,4 +1,4 @@
-package schr0.cleaver.api;
+package schr0.cleaver.api.itemcleaver;
 
 import java.util.ArrayList;
 
@@ -7,13 +7,11 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class TargetDropsPassive
+public class ChopDropsPassive
 {
 
 	/* TODO ======================================== OVERWORLD ===================================== /
@@ -26,7 +24,7 @@ public class TargetDropsPassive
 	// EntityBat
 	public static ArrayList<ItemStack> getBat(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityBat target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityChicken
@@ -42,13 +40,13 @@ public class TargetDropsPassive
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.CHICKEN, 2));
+				drops.add(new ItemStack(Items.FEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.FEATHER));
+				drops.add(new ItemStack(Items.FEATHER, 2));
 
 				break;
 
@@ -60,7 +58,7 @@ public class TargetDropsPassive
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityRabbit
@@ -76,13 +74,13 @@ public class TargetDropsPassive
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.RABBIT, 2));
+				drops.add(new ItemStack(Items.RABBIT_HIDE));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.RABBIT_HIDE));
+				drops.add(new ItemStack(Items.RABBIT_HIDE, 2));
 
 				break;
 
@@ -94,68 +92,15 @@ public class TargetDropsPassive
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntitySheep
 	public static ArrayList<ItemStack> getSheep(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySheep target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.MUTTON));
 
-				if (target.getSheared())
-				{
-					drops.add(new ItemStack(Items.MUTTON));
-				}
-				else
-				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, target.getFleeceColor().getMetadata()));
-				}
-
-				break;
-
-			case UNCOMMON :
-
-				if (target.getSheared())
-				{
-					drops.add(new ItemStack(Items.MUTTON, 2));
-				}
-				else
-				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 2, target.getFleeceColor().getMetadata()));
-				}
-
-				break;
-
-			case RARE :
-
-				if (target.getSheared())
-				{
-					drops.add(new ItemStack(Items.MUTTON, 3));
-				}
-				else
-				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 3, target.getFleeceColor().getMetadata()));
-				}
-
-				break;
-
-			case EPIC :
-
-				if (target.getSheared())
-				{
-					drops.add(new ItemStack(Items.MUTTON, 4));
-				}
-				else
-				{
-					drops.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 4, target.getFleeceColor().getMetadata()));
-				}
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 }

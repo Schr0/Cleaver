@@ -1,4 +1,4 @@
-package schr0.cleaver.api;
+package schr0.cleaver.api.itemcleaver;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishFood;
 import net.minecraft.item.ItemStack;
 
-public class TargetDropsMonster
+public class ChopDropsMonster
 {
 
 	/* TODO ======================================== OVERWORLD ===================================== /
@@ -39,34 +39,9 @@ public class TargetDropsMonster
 	{
 		target.setCreeperState(-1);
 
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.GUNPOWDER));
 
-				drops.add(new ItemStack(Items.GUNPOWDER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.GUNPOWDER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.GUNPOWDER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.GUNPOWDER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityEnderman
@@ -83,7 +58,7 @@ public class TargetDropsMonster
 
 			target.setHeldBlockState((IBlockState) null);
 
-			return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+			return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 		}
 
 		switch (rarity)
@@ -115,7 +90,7 @@ public class TargetDropsMonster
 
 			case EPIC :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.UNCOMMON)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Blocks.END_STONE));
 				}
@@ -127,13 +102,13 @@ public class TargetDropsMonster
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityEndermite
 	public static ArrayList<ItemStack> getEndermite(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityEndermite target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityGiantZombie
@@ -143,7 +118,7 @@ public class TargetDropsMonster
 		{
 			case COMMON :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.RARE)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.RARE)
 				{
 					drops.add(new ItemStack(Items.POTATO, 10));
 				}
@@ -156,7 +131,7 @@ public class TargetDropsMonster
 
 			case UNCOMMON :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.RARE)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.RARE)
 				{
 					drops.add(new ItemStack(Items.POISONOUS_POTATO, 10));
 				}
@@ -180,46 +155,21 @@ public class TargetDropsMonster
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityPolarBear
 	public static ArrayList<ItemStack> getPolarBear(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityPolarBear target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
 
-				drops.add(new ItemStack(Items.FISH, 1, ItemFishFood.FishType.SALMON.getMetadata()));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.FISH, 2, ItemFishFood.FishType.SALMON.getMetadata()));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.FISH, 3, ItemFishFood.FishType.SALMON.getMetadata()));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.FISH, 4, ItemFishFood.FishType.SALMON.getMetadata()));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntitySilverfish
 	public static ArrayList<ItemStack> getSilverfish(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySilverfish target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityWitch
@@ -229,7 +179,7 @@ public class TargetDropsMonster
 		{
 			case COMMON :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.UNCOMMON)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.GLASS_BOTTLE));
 				}
@@ -242,7 +192,7 @@ public class TargetDropsMonster
 
 			case UNCOMMON :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.UNCOMMON)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.UNCOMMON)
 				{
 					if (ItemCleaverHelper.isSmelting(stack, target))
 					{
@@ -262,7 +212,7 @@ public class TargetDropsMonster
 
 			case RARE :
 
-				if (ItemCleaverHelper.getDropRarity() == EnumRarity.UNCOMMON)
+				if (ItemCleaverHelper.getChopDropsRarity() == EnumRarity.UNCOMMON)
 				{
 					drops.add(new ItemStack(Items.REDSTONE));
 				}
@@ -280,7 +230,7 @@ public class TargetDropsMonster
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== NETHER ===================================== /
@@ -321,7 +271,7 @@ public class TargetDropsMonster
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityGhast
@@ -331,13 +281,13 @@ public class TargetDropsMonster
 		{
 			case COMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 2));
+				drops.add(new ItemStack(Items.GUNPOWDER));
 
 				break;
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.GUNPOWDER, 3));
+				drops.add(new ItemStack(Items.GUNPOWDER, 2));
 
 				break;
 
@@ -355,7 +305,7 @@ public class TargetDropsMonster
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== END ===================================== /
@@ -365,7 +315,7 @@ public class TargetDropsMonster
 	// EntityShulker
 	public static ArrayList<ItemStack> getShulker(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityShulker target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 }

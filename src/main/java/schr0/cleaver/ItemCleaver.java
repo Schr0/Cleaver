@@ -20,8 +20,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
-import schr0.cleaver.api.ItemCleaverHelper;
 import schr0.cleaver.api.item.ItemSimpleCleaver;
+import schr0.cleaver.api.itemcleaver.ItemCleaverHelper;
 
 public class ItemCleaver extends ItemSimpleCleaver
 {
@@ -103,7 +103,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 				for (ItemStack stack : drops)
 				{
-					this.onTargetDropItems(entity, stack);
+					this.onDropItems(entity, stack);
 				}
 
 				itemstack.damageItem(1, entity);
@@ -116,13 +116,7 @@ public class ItemCleaver extends ItemSimpleCleaver
 	}
 
 	@Override
-	public float getAttackAmmount(float rawAttackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-	{
-		return rawAttackAmmount;
-	}
-
-	@Override
-	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean canChopTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack, attacker);
 
@@ -130,11 +124,11 @@ public class ItemCleaver extends ItemSimpleCleaver
 	}
 
 	@Override
-	public boolean onAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean onAttackTarget(float attackAmmount, boolean canChopTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		stack.damageItem(1, attacker);
 
-		if (canCleaveTarget)
+		if (canChopTarget)
 		{
 			Random random = this.getRandom(attacker);
 			int sharpnessAmount = this.getSharpnessAmount(attackAmmount, stack, attacker);
@@ -144,32 +138,32 @@ public class ItemCleaver extends ItemSimpleCleaver
 				((EntityLiving) target).setCanPickUpLoot(false);
 			}
 
-			ArrayList<ItemStack> equipments = ItemCleaverHelper.getTargetEquipments(sharpnessAmount, target, attacker);
+			ArrayList<ItemStack> equipments = ItemCleaverHelper.getDisarmamentEquipments(sharpnessAmount, target, attacker);
 
 			if (!equipments.isEmpty())
 			{
-				for (ItemStack stackEquipment : equipments)
+				for (ItemStack stackEq : equipments)
 				{
-					this.onTargetDropItems(target, stackEquipment);
+					this.onDropItems(target, stackEq);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.TARGET_DISARMAMENT));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.TARGET_DISARMAMENT));
 
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
 				return true;
 			}
 
-			ArrayList<ItemStack> drops = ItemCleaverHelper.getTargetDrops(sharpnessAmount, stack, target, attacker);
+			ArrayList<ItemStack> drops = ItemCleaverHelper.getChopDrops(sharpnessAmount, stack, target, attacker);
 
 			if (!drops.isEmpty())
 			{
 				for (ItemStack stackDrop : drops)
 				{
-					this.onTargetDropItems(target, stackDrop);
+					this.onDropItems(target, stackDrop);
 				}
 
-				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticle.TARGET_DROPS));
+				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.TARGET_CHOP));
 
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
 
@@ -178,18 +172,6 @@ public class ItemCleaver extends ItemSimpleCleaver
 		}
 
 		return true;
-	}
-
-	@Override
-	public boolean onDeathTarget(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-	{
-		return true;
-	}
-
-	@Override
-	public List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
-	{
-		return rawDrops;
 	}
 
 	// TODO /* ======================================== MOD START =====================================*/
@@ -220,10 +202,10 @@ public class ItemCleaver extends ItemSimpleCleaver
 		return getSharpnessAmount(1.0F, stack, attacker);
 	}
 
-	private void onTargetDropItems(EntityLivingBase target, ItemStack stack)
+	private void onDropItems(EntityLivingBase target, ItemStack stack)
 	{
-		Random random = this.getRandom(target);
 		EntityItem entityItem = target.entityDropItem(stack, 1.0F);
+		Random random = this.getRandom(target);
 		entityItem.motionX += (random.nextFloat() - random.nextFloat()) * 0.1F;
 		entityItem.motionY += random.nextFloat() * 0.05F;
 		entityItem.motionZ += (random.nextFloat() - random.nextFloat()) * 0.1F;

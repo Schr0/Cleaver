@@ -39,14 +39,14 @@ public interface ICleaverItem
 	 *
 	 * @return 「剥ぎ取り」の判定.
 	 */
-	boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	boolean canChopTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
 	 * 攻撃の判定.
 	 *
 	 * @param attackAmmount
 	 *            攻撃力.
-	 * @param canCleaveTarget
+	 * @param canChopTarget
 	 *            「剥ぎ取り」の判定.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
@@ -57,7 +57,7 @@ public interface ICleaverItem
 	 *
 	 * @return 攻撃の判定.
 	 */
-	boolean onAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	boolean onAttackTarget(float attackAmmount, boolean canChopTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 	/**
 	 * ターゲット死亡時の判定.
@@ -76,7 +76,7 @@ public interface ICleaverItem
 	/**
 	 * ターゲット死亡時のドロップアイテム.
 	 *
-	 * @param rawDrops
+	 * @param rawDeathDrops
 	 *            元のドロップアイテム.
 	 * @param stack
 	 *            ICleaverItemのItemStack.
@@ -87,6 +87,6 @@ public interface ICleaverItem
 	 *
 	 * @return ターゲット死亡時のドロップアイテム.
 	 */
-	List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
+	List<EntityItem> getDeathTargetDrops(List<EntityItem> rawDeathDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker);
 
 }

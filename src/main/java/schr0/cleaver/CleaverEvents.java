@@ -62,7 +62,7 @@ public class CleaverEvents
 
 				event.setCanceled(true);
 
-				if (cleaverItem.onAttackTarget(attackAmmount, cleaverItem.canCleaveTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
+				if (cleaverItem.onAttackTarget(attackAmmount, cleaverItem.canChopTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
 				{
 					target.hurtResistantTime = 0;
 
@@ -138,7 +138,7 @@ public class CleaverEvents
 			if (stackMainHand.getItem() instanceof ICleaverItem)
 			{
 				ICleaverItem cleaverItem = (ICleaverItem) stackMainHand.getItem();
-				List<EntityItem> drops = cleaverItem.getDropsTarget(Lists.newArrayList(event.getDrops()), stackMainHand, target, attacker);
+				List<EntityItem> drops = cleaverItem.getDeathTargetDrops(Lists.newArrayList(event.getDrops()), stackMainHand, target, attacker);
 
 				event.getDrops().clear();
 

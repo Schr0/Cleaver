@@ -28,15 +28,15 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 			switch (message.getParticleType())
 			{
-				case CleaverParticle.TARGET_DROPS :
+				case CleaverParticles.TARGET_CHOP :
 
-					particleTargetDrops(world, entity, random);
+					particleChop(world, entity, random);
 
 					break;
 
-				case CleaverParticle.TARGET_DISARMAMENT :
+				case CleaverParticles.TARGET_DISARMAMENT :
 
-					particleTargetDisarmament(world, entity, random);
+					particleDisarmament(world, entity, random);
 
 					break;
 			}
@@ -47,7 +47,7 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static void particleTargetDrops(World world, Entity entity, Random random)
+	private static void particleChop(World world, Entity entity, Random random)
 	{
 		double posX = entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
 		double posY = entity.posY + (double) (random.nextFloat() * entity.height);
@@ -56,7 +56,7 @@ public class MessageHandlerParticleEntity implements IMessageHandler<MessagePart
 		world.spawnParticle(EnumParticleTypes.SWEEP_ATTACK, posX, posY, posZ, 0, 0, 0, new int[0]);
 	}
 
-	private static void particleTargetDisarmament(World world, Entity entity, Random random)
+	private static void particleDisarmament(World world, Entity entity, Random random)
 	{
 		double posX = entity.posX + (double) (random.nextFloat() * entity.width * 2.0F) - (double) entity.width;
 		double posY = entity.posY + (double) (random.nextFloat() * entity.height);

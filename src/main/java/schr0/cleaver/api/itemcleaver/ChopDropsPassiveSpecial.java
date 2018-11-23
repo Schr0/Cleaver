@@ -1,4 +1,4 @@
-package schr0.cleaver.api;
+package schr0.cleaver.api.itemcleaver;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
-public class TargetDropsPassiveSpecial
+public class ChopDropsPassiveSpecial
 {
 
 	/* TODO ======================================== COW ===================================== /
@@ -49,13 +49,13 @@ public class TargetDropsPassiveSpecial
 
 			case UNCOMMON :
 
-				drops.add(new ItemStack(Items.BEEF, 2));
+				drops.add(new ItemStack(Items.LEATHER));
 
 				break;
 
 			case RARE :
 
-				drops.add(new ItemStack(Items.LEATHER));
+				drops.add(new ItemStack(Items.LEATHER, 2));
 
 				break;
 
@@ -67,7 +67,7 @@ public class TargetDropsPassiveSpecial
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityMooshroom
@@ -93,7 +93,7 @@ public class TargetDropsPassiveSpecial
 
 		world.spawnEntity(entityCow);
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== HORSE ===================================== /
@@ -107,100 +107,25 @@ public class TargetDropsPassiveSpecial
 	// EntityHorse
 	public static ArrayList<ItemStack> getHorse(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityHorse target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.LEATHER));
 
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.LEATHER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.LEATHER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.LEATHER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityDonkey
 	public static ArrayList<ItemStack> getDonkey(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityDonkey target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.LEATHER));
 
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.LEATHER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.LEATHER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.LEATHER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityMule
 	public static ArrayList<ItemStack> getMule(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityMule target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.LEATHER));
 
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.LEATHER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.LEATHER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.LEATHER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntitySkeletonHorse
@@ -234,40 +159,15 @@ public class TargetDropsPassiveSpecial
 				break;
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityZombieHorse
 	public static ArrayList<ItemStack> getZombieHorse(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityZombieHorse target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.ROTTEN_FLESH));
 
-				drops.add(new ItemStack(Items.ROTTEN_FLESH));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.ROTTEN_FLESH, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== RIDER ===================================== /
@@ -285,67 +185,17 @@ public class TargetDropsPassiveSpecial
 			target.setSaddled(false);
 		}
 
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.PORKCHOP));
 
-				drops.add(new ItemStack(Items.PORKCHOP));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.PORKCHOP, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.PORKCHOP, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.PORKCHOP, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityLlama
 	public static ArrayList<ItemStack> getLlama(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLlama target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.LEATHER));
 
-				drops.add(new ItemStack(Items.LEATHER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.LEATHER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.LEATHER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.LEATHER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== TAMEABLE ===================================== /
@@ -357,46 +207,21 @@ public class TargetDropsPassiveSpecial
 	// EntityOcelot
 	public static ArrayList<ItemStack> getOcelot(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityOcelot target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityParrot
 	public static ArrayList<ItemStack> getParrot(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityParrot target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.FEATHER));
 
-				drops.add(new ItemStack(Items.FEATHER));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.FEATHER, 2));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.FEATHER, 3));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.FEATHER, 4));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	// EntityWolf
 	public static ArrayList<ItemStack> getWolf(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityWolf target, EntityLivingBase attacker)
 	{
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== WATER ===================================== /
@@ -406,34 +231,9 @@ public class TargetDropsPassiveSpecial
 	// EntitySquid
 	public static ArrayList<ItemStack> getSquid(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntitySquid target, EntityLivingBase attacker)
 	{
-		switch (rarity)
-		{
-			case COMMON :
+		drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
 
-				drops.add(new ItemStack(Items.DYE, 1, EnumDyeColor.BLACK.getDyeDamage()));
-
-				break;
-
-			case UNCOMMON :
-
-				drops.add(new ItemStack(Items.DYE, 2, EnumDyeColor.BLACK.getDyeDamage()));
-
-				break;
-
-			case RARE :
-
-				drops.add(new ItemStack(Items.DYE, 3, EnumDyeColor.BLACK.getDyeDamage()));
-
-				break;
-
-			case EPIC :
-
-				drops.add(new ItemStack(Items.DYE, 4, EnumDyeColor.BLACK.getDyeDamage()));
-
-				break;
-		}
-
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 	/* TODO ======================================== VILLAGER ===================================== /
@@ -496,7 +296,7 @@ public class TargetDropsPassiveSpecial
 			}
 		}
 
-		return ItemCleaverHelper.getDrops(drops, rarity, stack, target, attacker);
+		return ItemCleaverHelper.initializeChopDrops(drops, rarity, stack, target, attacker);
 	}
 
 }

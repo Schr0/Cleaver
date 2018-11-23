@@ -1,4 +1,4 @@
-package schr0.cleaver.api;
+package schr0.cleaver.api.itemcleaver;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -88,7 +88,7 @@ public class ItemCleaverHelper
 	 *
 	 * @return 「装備解除」のドロップアイテム.
 	 */
-	public static ArrayList<ItemStack> getTargetEquipments(int sharpnessAmount, EntityLivingBase target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getDisarmamentEquipments(int sharpnessAmount, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		ArrayList<ItemStack> equipments = new ArrayList<ItemStack>();
 
@@ -128,7 +128,7 @@ public class ItemCleaverHelper
 	 *
 	 * @return 「剥ぎ取り」のドロップアイテム.
 	 */
-	public static ArrayList<ItemStack> getTargetDrops(int sharpnessAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public static ArrayList<ItemStack> getChopDrops(int sharpnessAmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		World world = target.getEntityWorld();
 
@@ -138,7 +138,7 @@ public class ItemCleaverHelper
 		}
 
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-		EnumRarity rarity = getDropRarity(sharpnessAmount);
+		EnumRarity rarity = getChopDropsRarity(sharpnessAmount);
 		ResourceLocation targetKey = EntityList.getKey(target);
 
 		/* TODO ======================================== OVERWORLD ===================================== /
@@ -153,37 +153,37 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityCreeper.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getCreeper(drops, rarity, stack, (EntityCreeper) target, attacker);
+			return ChopDropsMonster.getCreeper(drops, rarity, stack, (EntityCreeper) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityEnderman.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getEnderman(drops, rarity, stack, (EntityEnderman) target, attacker);
+			return ChopDropsMonster.getEnderman(drops, rarity, stack, (EntityEnderman) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityEndermite.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getEndermite(drops, rarity, stack, (EntityEndermite) target, attacker);
+			return ChopDropsMonster.getEndermite(drops, rarity, stack, (EntityEndermite) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityGiantZombie.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getGiantZombie(drops, rarity, stack, (EntityGiantZombie) target, attacker);
+			return ChopDropsMonster.getGiantZombie(drops, rarity, stack, (EntityGiantZombie) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPolarBear.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getPolarBear(drops, rarity, stack, (EntityPolarBear) target, attacker);
+			return ChopDropsMonster.getPolarBear(drops, rarity, stack, (EntityPolarBear) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySilverfish.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
+			return ChopDropsMonster.getSilverfish(drops, rarity, stack, (EntitySilverfish) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWitch.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getWitch(drops, rarity, stack, (EntityWitch) target, attacker);
+			return ChopDropsMonster.getWitch(drops, rarity, stack, (EntityWitch) target, attacker);
 		}
 
 		/* TODO ======================================== NETHER ===================================== /
@@ -193,12 +193,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityBlaze.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getBlaze(drops, rarity, stack, (EntityBlaze) target, attacker);
+			return ChopDropsMonster.getBlaze(drops, rarity, stack, (EntityBlaze) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityGhast.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getGhast(drops, rarity, stack, (EntityGhast) target, attacker);
+			return ChopDropsMonster.getGhast(drops, rarity, stack, (EntityGhast) target, attacker);
 		}
 
 		/* TODO ======================================== END ===================================== /
@@ -207,7 +207,7 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityShulker.class).equals(targetKey))
 		{
-			return TargetDropsMonster.getShulker(drops, rarity, stack, (EntityShulker) target, attacker);
+			return ChopDropsMonster.getShulker(drops, rarity, stack, (EntityShulker) target, attacker);
 		}
 
 		/* TODO ======================================== BOSS ===================================== /
@@ -217,12 +217,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityDragon.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getDragon(drops, rarity, stack, (EntityDragon) target, attacker);
+			return ChopDropsMonsterSpecial.getDragon(drops, rarity, stack, (EntityDragon) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWither.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getWither(drops, rarity, stack, (EntityWither) target, attacker);
+			return ChopDropsMonsterSpecial.getWither(drops, rarity, stack, (EntityWither) target, attacker);
 		}
 
 		/* TODO ======================================== ZOMBIE ===================================== /
@@ -234,22 +234,22 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityZombie.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getZombie(drops, rarity, stack, (EntityZombie) target, attacker);
+			return ChopDropsMonsterSpecial.getZombie(drops, rarity, stack, (EntityZombie) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityZombieVillager.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getZombieVillager(drops, rarity, stack, (EntityZombieVillager) target, attacker);
+			return ChopDropsMonsterSpecial.getZombieVillager(drops, rarity, stack, (EntityZombieVillager) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityHusk.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getHusk(drops, rarity, stack, (EntityHusk) target, attacker);
+			return ChopDropsMonsterSpecial.getHusk(drops, rarity, stack, (EntityHusk) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPigZombie.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getPigZombie(drops, rarity, stack, (EntityPigZombie) target, attacker);
+			return ChopDropsMonsterSpecial.getPigZombie(drops, rarity, stack, (EntityPigZombie) target, attacker);
 		}
 
 		/* TODO ======================================== SKELETON ===================================== /
@@ -260,17 +260,17 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntitySkeleton.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getSkeleton(drops, rarity, stack, (EntitySkeleton) target, attacker);
+			return ChopDropsMonsterSpecial.getSkeleton(drops, rarity, stack, (EntitySkeleton) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityStray.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getStray(drops, rarity, stack, (EntityStray) target, attacker);
+			return ChopDropsMonsterSpecial.getStray(drops, rarity, stack, (EntityStray) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWitherSkeleton.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getWitherSkeleton(drops, rarity, stack, (EntityWitherSkeleton) target, attacker);
+			return ChopDropsMonsterSpecial.getWitherSkeleton(drops, rarity, stack, (EntityWitherSkeleton) target, attacker);
 		}
 
 		/* TODO ======================================== SPIDER ===================================== /
@@ -280,12 +280,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntitySpider.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getSpider(drops, rarity, stack, (EntitySpider) target, attacker);
+			return ChopDropsMonsterSpecial.getSpider(drops, rarity, stack, (EntitySpider) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityCaveSpider.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getCaveSpider(drops, rarity, stack, (EntityCaveSpider) target, attacker);
+			return ChopDropsMonsterSpecial.getCaveSpider(drops, rarity, stack, (EntityCaveSpider) target, attacker);
 		}
 
 		/* TODO ======================================== SLIME ===================================== /
@@ -295,12 +295,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntitySlime.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getSlime(drops, rarity, stack, (EntitySlime) target, attacker);
+			return ChopDropsMonsterSpecial.getSlime(drops, rarity, stack, (EntitySlime) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMagmaCube.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getMagmaCube(drops, rarity, stack, (EntityMagmaCube) target, attacker);
+			return ChopDropsMonsterSpecial.getMagmaCube(drops, rarity, stack, (EntityMagmaCube) target, attacker);
 		}
 
 		/* TODO ======================================== GOLEM ===================================== /
@@ -310,12 +310,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntitySnowman.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getSnowman(drops, rarity, stack, (EntitySnowman) target, attacker);
+			return ChopDropsMonsterSpecial.getSnowman(drops, rarity, stack, (EntitySnowman) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityIronGolem.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getIronGolem(drops, rarity, stack, (EntityIronGolem) target, attacker);
+			return ChopDropsMonsterSpecial.getIronGolem(drops, rarity, stack, (EntityIronGolem) target, attacker);
 		}
 
 		/* TODO ======================================== ILLAGER ===================================== /
@@ -327,22 +327,22 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityEvoker.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getEvoker(drops, rarity, stack, (EntityEvoker) target, attacker);
+			return ChopDropsMonsterSpecial.getEvoker(drops, rarity, stack, (EntityEvoker) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityVindicator.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getVindicator(drops, rarity, stack, (EntityVindicator) target, attacker);
+			return ChopDropsMonsterSpecial.getVindicator(drops, rarity, stack, (EntityVindicator) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityVex.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getVex(drops, rarity, stack, (EntityVex) target, attacker);
+			return ChopDropsMonsterSpecial.getVex(drops, rarity, stack, (EntityVex) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityIllusionIllager.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getIllusionIllager(drops, rarity, stack, (EntityIllusionIllager) target, attacker);
+			return ChopDropsMonsterSpecial.getIllusionIllager(drops, rarity, stack, (EntityIllusionIllager) target, attacker);
 		}
 
 		/* TODO ======================================== GUARDIAN ===================================== /
@@ -352,12 +352,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityGuardian.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getGuardian(drops, rarity, stack, (EntityGuardian) target, attacker);
+			return ChopDropsMonsterSpecial.getGuardian(drops, rarity, stack, (EntityGuardian) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityElderGuardian.class).equals(targetKey))
 		{
-			return TargetDropsMonsterSpecial.getElderGuardian(drops, rarity, stack, (EntityElderGuardian) target, attacker);
+			return ChopDropsMonsterSpecial.getElderGuardian(drops, rarity, stack, (EntityElderGuardian) target, attacker);
 		}
 
 		/* TODO ======================================== OVERWORLD ===================================== /
@@ -369,22 +369,22 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityBat.class).equals(targetKey))
 		{
-			return TargetDropsPassive.getBat(drops, rarity, stack, (EntityBat) target, attacker);
+			return ChopDropsPassive.getBat(drops, rarity, stack, (EntityBat) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityChicken.class).equals(targetKey))
 		{
-			return TargetDropsPassive.getChicken(drops, rarity, stack, (EntityChicken) target, attacker);
+			return ChopDropsPassive.getChicken(drops, rarity, stack, (EntityChicken) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityRabbit.class).equals(targetKey))
 		{
-			return TargetDropsPassive.getRabbit(drops, rarity, stack, (EntityRabbit) target, attacker);
+			return ChopDropsPassive.getRabbit(drops, rarity, stack, (EntityRabbit) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySheep.class).equals(targetKey))
 		{
-			return TargetDropsPassive.getSheep(drops, rarity, stack, (EntitySheep) target, attacker);
+			return ChopDropsPassive.getSheep(drops, rarity, stack, (EntitySheep) target, attacker);
 		}
 
 		/* TODO ======================================== COW ===================================== /
@@ -394,12 +394,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityCow.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getCow(drops, rarity, stack, (EntityCow) target, attacker);
+			return ChopDropsPassiveSpecial.getCow(drops, rarity, stack, (EntityCow) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMooshroom.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getMooshroom(drops, rarity, stack, (EntityMooshroom) target, attacker);
+			return ChopDropsPassiveSpecial.getMooshroom(drops, rarity, stack, (EntityMooshroom) target, attacker);
 		}
 
 		/* TODO ======================================== HORSE ===================================== /
@@ -412,27 +412,27 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityHorse.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getHorse(drops, rarity, stack, (EntityHorse) target, attacker);
+			return ChopDropsPassiveSpecial.getHorse(drops, rarity, stack, (EntityHorse) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityDonkey.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getDonkey(drops, rarity, stack, (EntityDonkey) target, attacker);
+			return ChopDropsPassiveSpecial.getDonkey(drops, rarity, stack, (EntityDonkey) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityMule.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getMule(drops, rarity, stack, (EntityMule) target, attacker);
+			return ChopDropsPassiveSpecial.getMule(drops, rarity, stack, (EntityMule) target, attacker);
 		}
 
 		if (EntityList.getKey(EntitySkeletonHorse.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getSkeletonHorse(drops, rarity, stack, (EntitySkeletonHorse) target, attacker);
+			return ChopDropsPassiveSpecial.getSkeletonHorse(drops, rarity, stack, (EntitySkeletonHorse) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityZombieHorse.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getZombieHorse(drops, rarity, stack, (EntityZombieHorse) target, attacker);
+			return ChopDropsPassiveSpecial.getZombieHorse(drops, rarity, stack, (EntityZombieHorse) target, attacker);
 		}
 
 		/* TODO ======================================== RIDER ===================================== /
@@ -442,12 +442,12 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityLlama.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getLlama(drops, rarity, stack, (EntityLlama) target, attacker);
+			return ChopDropsPassiveSpecial.getLlama(drops, rarity, stack, (EntityLlama) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityPig.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getPig(drops, rarity, stack, (EntityPig) target, attacker);
+			return ChopDropsPassiveSpecial.getPig(drops, rarity, stack, (EntityPig) target, attacker);
 		}
 
 		/* TODO ======================================== TAMEABLE ===================================== /
@@ -458,17 +458,17 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityOcelot.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getOcelot(drops, rarity, stack, (EntityOcelot) target, attacker);
+			return ChopDropsPassiveSpecial.getOcelot(drops, rarity, stack, (EntityOcelot) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityParrot.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getParrot(drops, rarity, stack, (EntityParrot) target, attacker);
+			return ChopDropsPassiveSpecial.getParrot(drops, rarity, stack, (EntityParrot) target, attacker);
 		}
 
 		if (EntityList.getKey(EntityWolf.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getWolf(drops, rarity, stack, (EntityWolf) target, attacker);
+			return ChopDropsPassiveSpecial.getWolf(drops, rarity, stack, (EntityWolf) target, attacker);
 		}
 
 		/* TODO ======================================== WATER ===================================== /
@@ -477,7 +477,7 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntitySquid.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getSquid(drops, rarity, stack, (EntitySquid) target, attacker);
+			return ChopDropsPassiveSpecial.getSquid(drops, rarity, stack, (EntitySquid) target, attacker);
 		}
 
 		/* TODO ======================================== VILLAGER ===================================== /
@@ -486,7 +486,7 @@ public class ItemCleaverHelper
 
 		if (EntityList.getKey(EntityVillager.class).equals(targetKey))
 		{
-			return TargetDropsPassiveSpecial.getVillager(drops, rarity, stack, (EntityVillager) target, attacker);
+			return ChopDropsPassiveSpecial.getVillager(drops, rarity, stack, (EntityVillager) target, attacker);
 		}
 
 		return drops;
@@ -508,7 +508,7 @@ public class ItemCleaverHelper
 		return random.nextInt(usedDamage);
 	}
 
-	protected static EnumRarity getDropRarity(int sharpnessAmount)
+	protected static EnumRarity getChopDropsRarity(int sharpnessAmount)
 	{
 		Random random = getRandom();
 		int rarityAmount = random.nextInt(RARITY_PERCENT);
@@ -536,9 +536,9 @@ public class ItemCleaverHelper
 		return EnumRarity.COMMON;// 40%
 	}
 
-	protected static EnumRarity getDropRarity()
+	protected static EnumRarity getChopDropsRarity()
 	{
-		return getDropRarity(0);
+		return getChopDropsRarity(0);
 	}
 
 	protected static boolean isSmelting(ItemStack stack, EntityLivingBase target)
@@ -546,7 +546,7 @@ public class ItemCleaverHelper
 		return ((0 < EnchantmentHelper.getEnchantmentLevel(Enchantments.FIRE_ASPECT, stack)) || target.isBurning());
 	}
 
-	protected static ArrayList<ItemStack> getDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	protected static ArrayList<ItemStack> initializeChopDrops(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if (target instanceof IShearable)
 		{
@@ -594,7 +594,7 @@ public class ItemCleaverHelper
 			}
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new TargetDropsEvent(drops, rarity, stack, target, attacker)))
+		if (MinecraftForge.EVENT_BUS.post(new ChopDropsEvent(drops, rarity, stack, target, attacker)))
 		{
 			drops.clear();
 		}

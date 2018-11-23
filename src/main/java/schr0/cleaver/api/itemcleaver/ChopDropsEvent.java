@@ -1,4 +1,4 @@
-package schr0.cleaver.api;
+package schr0.cleaver.api.itemcleaver;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  *            「剥ぎ取り」するEntityLivingBase.
  */
 @Cancelable
-public class TargetDropsEvent extends Event
+public class ChopDropsEvent extends Event
 {
 	private final ArrayList<ItemStack> drops;
 	private final EnumRarity rarity;
@@ -31,7 +31,7 @@ public class TargetDropsEvent extends Event
 	private final EntityLivingBase target;
 	private final EntityLivingBase attacker;
 
-	public TargetDropsEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public ChopDropsEvent(ArrayList<ItemStack> drops, EnumRarity rarity, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		this.drops = drops;
 		this.rarity = rarity;

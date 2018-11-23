@@ -68,13 +68,13 @@ public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverIte
 	}
 
 	@Override
-	public boolean canCleaveTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean canChopTarget(float attackAmmount, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onAttackTarget(float attackAmmount, boolean canCleaveTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public boolean onAttackTarget(float attackAmmount, boolean canChopTarget, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		return true;
 	}
@@ -86,9 +86,9 @@ public abstract class ItemSimpleCleaver extends ItemSword implements ICleaverIte
 	}
 
 	@Override
-	public List<EntityItem> getDropsTarget(List<EntityItem> rawDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
+	public List<EntityItem> getDeathTargetDrops(List<EntityItem> rawDeathDrops, ItemStack stack, EntityLivingBase target, EntityLivingBase attacker)
 	{
-		return rawDrops;
+		return rawDeathDrops;
 	}
 
 	public float getAttackSpeed()
