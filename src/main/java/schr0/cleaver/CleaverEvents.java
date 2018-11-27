@@ -1,18 +1,26 @@
 package schr0.cleaver;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -29,12 +37,12 @@ public class CleaverEvents
 	}
 
 	@SubscribeEvent
-	public void onAttackTargetEvent(LivingAttackEvent event)
+	public void onLivingAttackEvent(LivingAttackEvent event)
 	{
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (isInvalidAttackTarget(target, damageSource))
+		if (isInvalidLivingAttackEvent(target, damageSource))
 		{
 			return;
 		}
@@ -64,10 +72,6 @@ public class CleaverEvents
 
 				if (cleaverItem.onAttackTarget(attackAmmount, cleaverItem.canChopTarget(attackAmmount, stackMainHand, target, attacker), stackMainHand, target, attacker))
 				{
-					target.hurtResistantTime = 0;
-
-					target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
-
 					if (attacker instanceof EntityPlayer)
 					{
 						EntityPlayer player = (EntityPlayer) attacker;
@@ -79,18 +83,22 @@ public class CleaverEvents
 
 						player.resetCooldown();
 					}
+
+					target.hurtResistantTime = 0;
+
+					target.attackEntityFrom(getCleaverDamageSource(damageSource, target, attacker), attackAmmount);
 				}
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public void onDeathTargetEvent(LivingDeathEvent event)
+	public void onLivingDeathEvent(LivingDeathEvent event)
 	{
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (isInvalidDeathTarget(target, damageSource))
+		if (isInvalidLivingDeathEvent(target, damageSource))
 		{
 			return;
 		}
@@ -120,12 +128,12 @@ public class CleaverEvents
 	}
 
 	@SubscribeEvent
-	public void onDropsTargetEvent(LivingDropsEvent event)
+	public void onLivingDropsEvent(LivingDropsEvent event)
 	{
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (isInvalidDropsTarget(target, event.getSource()))
+		if (isInvalidLivingDropsEvent(target, event.getSource()))
 		{
 			return;
 		}
@@ -147,16 +155,53 @@ public class CleaverEvents
 		}
 	}
 
+	@SubscribeEvent
+	public void onEntityJoinWorldEvent(EntityJoinWorldEvent event)
+	{
+		Entity entity = event.getEntity();
+
+		if (isInvalidEntityJoinWorldEvent(entity))
+		{
+			return;
+		}
+
+		if (EntityList.getKey(EntityZombie.class).equals(EntityList.getKey(entity)))
+		{
+			EntityZombie zombie = (EntityZombie) entity;
+			ItemStack stackMainHand = zombie.getHeldItemMainhand();
+
+			if (stackMainHand.isEmpty() && canZombieHeldItemCleaver(zombie))
+			{
+				zombie.setHeldItem(EnumHand.MAIN_HAND, getZombieCleaver(zombie));
+			}
+		}
+	}
+
 	// TODO /* ======================================== MOD START =====================================*/
 
-	private static boolean isInvalidAttackTarget(EntityLivingBase target, DamageSource damageSource)
+	private static boolean isInvalidEntityJoinWorldEvent(Entity target)
 	{
-		if (target.getEntityWorld().isRemote)
+		if (target.getEntityWorld().isRemote || (target == null))
 		{
 			return true;
 		}
 
-		if ((target == null) || (target != null && (target.isDead || target.getHealth() <= 0)))
+		if (target != null && target.isDead)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private static boolean isInvalidLivingAttackEvent(EntityLivingBase target, DamageSource damageSource)
+	{
+		if (target.getEntityWorld().isRemote || (target == null) || (damageSource == null))
+		{
+			return true;
+		}
+
+		if ((target != null) && (target.isDead || target.getHealth() <= 0))
 		{
 			return true;
 		}
@@ -169,9 +214,9 @@ public class CleaverEvents
 		return false;
 	}
 
-	private static boolean isInvalidDeathTarget(EntityLivingBase target, DamageSource damageSource)
+	private static boolean isInvalidLivingDeathEvent(EntityLivingBase target, DamageSource damageSource)
 	{
-		if (target.getEntityWorld().isRemote)
+		if (target.getEntityWorld().isRemote || (target == null) || (damageSource == null))
 		{
 			return true;
 		}
@@ -184,9 +229,9 @@ public class CleaverEvents
 		return false;
 	}
 
-	private static boolean isInvalidDropsTarget(EntityLivingBase target, DamageSource damageSource)
+	private static boolean isInvalidLivingDropsEvent(EntityLivingBase target, DamageSource damageSource)
 	{
-		return isInvalidDeathTarget(target, damageSource);
+		return isInvalidLivingDeathEvent(target, damageSource);
 	}
 
 	private static CleaverDamageSource getCleaverDamageSource(DamageSource damageSource, EntityLivingBase target, EntityLivingBase attacker)
@@ -239,6 +284,59 @@ public class CleaverEvents
 		}
 
 		return cleaverDamageSource;
+	}
+
+	private static boolean canZombieHeldItemCleaver(EntityZombie zombie)
+	{
+		World world = zombie.getEntityWorld();
+		float chance;
+
+		switch (world.getDifficulty())
+		{
+			case EASY :
+
+				chance = 0.03F;
+
+				break;
+
+			case NORMAL :
+
+				chance = 0.04F;
+
+				break;
+
+			case HARD :
+
+				chance = 0.05F;
+
+				break;
+
+			default :
+
+				chance = 0.02F;
+
+				break;
+		}
+
+		// return true;
+		return (world.rand.nextFloat() < chance);
+	}
+
+	private static ItemStack getZombieCleaver(EntityZombie zombie)
+	{
+		ItemStack stack = new ItemStack(CleaverItems.CLEAVER);
+		World world = zombie.getEntityWorld();
+		Random random = world.rand;
+		float additionalDifficulty = world.getDifficultyForLocation(zombie.getPosition()).getClampedAdditionalDifficulty();
+
+		if (random.nextFloat() < (0.25F * additionalDifficulty))
+		{
+			int level = (int) (5.0F + additionalDifficulty * (float) random.nextInt(18));
+
+			EnchantmentHelper.addRandomEnchantment(random, stack, level, false);
+		}
+
+		return stack;
 	}
 
 }

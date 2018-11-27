@@ -98,7 +98,7 @@ public class ItemCleaverHelper
 
 			if (!stackEq.isEmpty())
 			{
-				if (stackEq.isItemStackDamageable() && !stackEq.getItem().isDamaged(stackEq))
+				if (stackEq.isItemDamaged())
 				{
 					stackEq.setItemDamage(getUsedItemDamage(stackEq, sharpnessAmount));
 				}
