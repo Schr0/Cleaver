@@ -1,0 +1,47 @@
+{
+    "display": {
+        "icon": {
+            "item": "schr0cleaver:cleaver"
+        },
+        "title": {
+            "translate": "advancements.schr0cleaver.title"
+        },
+        "description": {
+            "translate": "advancements.schr0cleaver.description"
+        },
+            "background": "minecraft:textures/blocks/iron_block.png"
+    },
+    "criteria": {
+        "crafting1": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+                "recipe": "schr0cleaver:recipe_cleaver"
+            }
+        },
+        "crafting2": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+                "recipe": "schr0cleaver:recipe_material_cleaver"
+            }
+        },
+        "get1": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [ {
+                    "item": "schr0cleaver:cleaver"
+                } ]
+            }
+        },
+        "get2": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [ {
+                    "item": "schr0cleaver:material_cleaver"
+                } ]
+            }
+        }
+    },
+    "requirements": [
+        ["crafting1", "crafting2", "get1", "get2"]
+    ]
+}

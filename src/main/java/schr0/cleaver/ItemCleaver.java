@@ -151,6 +151,11 @@ public class ItemCleaver extends ItemSimpleCleaver
 
 				target.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
 
+				if (attacker instanceof EntityPlayer)
+				{
+					CleaverAdvancements.completeDisarmament((EntityPlayer) attacker);
+				}
+
 				return true;
 			}
 
@@ -166,6 +171,11 @@ public class ItemCleaver extends ItemSimpleCleaver
 				CleaverPackets.DISPATCHER.sendToAll(new MessageParticleEntity(target, CleaverParticles.TARGET_CHOP));
 
 				target.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+
+				if (attacker instanceof EntityPlayer)
+				{
+					CleaverAdvancements.completeChop((EntityPlayer) attacker);
+				}
 
 				return true;
 			}

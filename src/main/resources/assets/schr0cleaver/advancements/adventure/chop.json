@@ -1,0 +1,19 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:porkchop"
+        },
+        "title": {
+            "translate": "advancements.schr0cleaver.chop.title"
+        },
+        "description": {
+            "translate": "advancements.schr0cleaver.chop.description"
+        }
+    },
+    "parent": "schr0cleaver:root",
+    "criteria": {
+        "mod_trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

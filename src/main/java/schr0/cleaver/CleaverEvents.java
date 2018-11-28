@@ -56,7 +56,6 @@ public class CleaverEvents
 			{
 				ICleaverItem cleaverItem = (ICleaverItem) stackMainHand.getItem();
 				boolean isCriticalAttack = (0.0F < attacker.fallDistance) && !attacker.onGround && !attacker.isOnLadder() && !attacker.isInWater() && !attacker.isPotionActive(MobEffects.BLINDNESS) && !attacker.isRiding();
-
 				float attackAmmount;
 
 				if (isCriticalAttack)
@@ -114,9 +113,16 @@ public class CleaverEvents
 			{
 				EntityPlayer player = (EntityPlayer) attacker;
 
-				// TODO Reflection : forge-1.12.2-14.23.5.2768
-				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer", "field_70717_bb");
-				ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit", "field_70718_bc");
+				try
+				{
+					// TODO Reflection : forge-1.12.2-14.23.5.2768
+					ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, player, "attackingPlayer", "field_70717_bb");
+					ObfuscationReflectionHelper.setPrivateValue(EntityLivingBase.class, target, 100, "recentlyHit", "field_70718_bc");
+				}
+				catch (IllegalArgumentException e)
+				{
+					CleaverDebug.infoBugMessage(player, this.getClass());
+				}
 
 				target.onDeath(DamageSource.causePlayerDamage(player));
 			}
@@ -133,7 +139,7 @@ public class CleaverEvents
 		EntityLivingBase target = event.getEntityLiving();
 		DamageSource damageSource = event.getSource();
 
-		if (isInvalidLivingDropsEvent(target, event.getSource()))
+		if (isInvalidLivingDropsEvent(target, damageSource))
 		{
 			return;
 		}
@@ -146,11 +152,11 @@ public class CleaverEvents
 			if (stackMainHand.getItem() instanceof ICleaverItem)
 			{
 				ICleaverItem cleaverItem = (ICleaverItem) stackMainHand.getItem();
-				List<EntityItem> drops = cleaverItem.getDeathTargetDrops(Lists.newArrayList(event.getDrops()), stackMainHand, target, attacker);
+				List<EntityItem> dropsSrc = Lists.newArrayList(event.getDrops());
+				List<EntityItem> dropsDst = cleaverItem.getDeathTargetDrops(dropsSrc, stackMainHand, target, attacker);
 
 				event.getDrops().clear();
-
-				event.getDrops().addAll(drops);
+				event.getDrops().addAll(dropsDst);
 			}
 		}
 	}
@@ -186,7 +192,7 @@ public class CleaverEvents
 			return true;
 		}
 
-		if (target != null && target.isDead)
+		if (target.isDead)
 		{
 			return true;
 		}
@@ -201,7 +207,7 @@ public class CleaverEvents
 			return true;
 		}
 
-		if ((target != null) && (target.isDead || target.getHealth() <= 0))
+		if (target.isDead || (target.getHealth() <= 0))
 		{
 			return true;
 		}
@@ -318,7 +324,6 @@ public class CleaverEvents
 				break;
 		}
 
-		// return true;
 		return (world.rand.nextFloat() < chance);
 	}
 

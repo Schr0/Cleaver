@@ -5,3 +5,13 @@ itemGroup.schr0cleaver.item=Cleaver : Items
 item.cleaver.name=Cleaver
 item.material_cleaver.name=Cleaver Blade
 item.material_cleaver.tooltip=<Craft> [Cleaver Blade] + [Stick] -> [Cleaver]
+
+// ======================================== ADVANCEMENTS ===================================== //
+advancements.schr0cleaver.title=Cleaver
+advancements.schr0cleaver.description=Let's get it.
+
+advancements.schr0cleaver.chop.title=Chop !!!
+advancements.schr0cleaver.chop.description=Let's chop the Mob.
+
+advancements.schr0cleaver.disarmament.title=Disarmament !!!
+advancements.schr0cleaver.disarmament.description=Let's disarmament the Mob.
