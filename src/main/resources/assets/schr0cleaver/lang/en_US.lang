@@ -1,10 +1,17 @@
 // ======================================== CREATIVETABS ===================================== //
-itemGroup.schr0cleaver.item=Cleaver Items
+itemGroup.schr0cleaver.item=Cleaver : Items
 
 // ======================================== ITEM ===================================== //
-item.material_cleaver_normal.name=Cleaver Blade
-item.material_cleaver_normal.tips=<Craft> [Cleaver Blade] + [Stick] -> [Cleaver]
-item.cleaver_normal.name=Cleaver
-item.material_cleaver_blaze.name=Blaze Heart
-item.material_cleaver_blaze.tips=<Anvil> [Cleaver] + [Blaze Heart] -> [Blaze Cleaver]
-item.cleaver_blaze.name=Blaze Cleaver
+item.cleaver.name=Cleaver
+item.material_cleaver.name=Cleaver Blade
+item.material_cleaver.tooltip=<Craft> [Cleaver Blade] + [Stick] -> [Cleaver]
+
+// ======================================== ADVANCEMENTS ===================================== //
+advancements.schr0cleaver.title=Cleaver
+advancements.schr0cleaver.description=Let's get it.
+
+advancements.schr0cleaver.chop.title=Chop !!!
+advancements.schr0cleaver.chop.description=Let's chop the Mob.
+
+advancements.schr0cleaver.disarmament.title=Disarmament !!!
+advancements.schr0cleaver.disarmament.description=Let's disarmament the Mob.

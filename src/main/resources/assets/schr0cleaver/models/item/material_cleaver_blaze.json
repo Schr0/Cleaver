@@ -1,7 +1,0 @@
-{
-	"parent": "item/generated",
-	"textures":
-	{
-		"layer0": "schr0cleaver:items/material_cleaver_blaze"
-	}
-}

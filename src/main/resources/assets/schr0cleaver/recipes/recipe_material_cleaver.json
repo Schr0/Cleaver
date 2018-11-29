@@ -1,0 +1,17 @@
+{
+    "type": "forge:ore_shaped",
+    "pattern": [
+        " XX",
+        "XX ",
+        "   "
+    ],
+    "key": {
+        "X": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        }
+    },
+    "result": {
+        "item": "schr0cleaver:material_cleaver"
+    }
+}

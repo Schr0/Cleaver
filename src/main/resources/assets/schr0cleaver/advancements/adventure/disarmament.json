@@ -1,0 +1,19 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:iron_sword"
+        },
+        "title": {
+            "translate": "advancements.schr0cleaver.disarmament.title"
+        },
+        "description": {
+            "translate": "advancements.schr0cleaver.disarmament.description"
+        }
+    },
+    "parent": "schr0cleaver:root",
+    "criteria": {
+        "mod_trigger": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}
