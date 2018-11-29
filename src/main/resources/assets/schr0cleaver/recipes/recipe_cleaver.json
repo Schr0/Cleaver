@@ -7,8 +7,7 @@
     ],
     "key": {
         "X": {
-            "type": "forge:ore_dict",
-            "ore": "schr0cleaver:material_cleaver"
+            "item": "schr0cleaver:material_cleaver"
         },
         "Y": {
             "type": "forge:ore_dict",

@@ -1,7 +1,7 @@
 {
     "display": {
         "icon": {
-            "item": "minecraft:porkchop"
+            "item": "minecraft:iron_sword"
         },
         "title": {
             "translate": "advancements.schr0cleaver.disarmament.title"
